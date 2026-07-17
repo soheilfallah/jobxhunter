@@ -44,8 +44,10 @@ with Firecrawl.
 - **Google Calendar**: `create_event` — book interviews.
 
 ## Prose voice + rendering (external skills)
-- **`/humanizer`** then **`/academic-prose`** — the voice/de-slop pass. Cowork-side; if absent, do it
-  inline from `cv-mistakes.md` (never skip the pass).
+- **`/humanizer`** then **`/academic-prose`** — the voice/de-slop pass. Recommended `/humanizer`
+  implementation: **blader/humanizer** (MIT, self-contained, no keys — `npx skills add blader/humanizer`);
+  it detects ~33 AI-writing tells and rewrites to sound human. If neither skill is present, do the pass
+  inline from `cv-mistakes.md` (never skip it).
 - **`docx` / `pdf` / `xlsx`** skills — native rendering in cowork.
 - **`/make-pdf`** (if installed) — human-facing / portfolio PDF. `.docx` stays the ATS submission.
 - Bundled `scripts/` — the self-sufficient Claude Code path (see `scripts` in SKILL.md).

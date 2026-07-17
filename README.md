@@ -204,6 +204,12 @@ Keep `.env` files and MCP configs out of git (this repo's `.gitignore` already e
 connector isn't configured, the skill falls back to `WebSearch`/browser crawling for that lane —
 nothing breaks, it's just less structured. See `references/tools-and-connectors.md` for the full map.
 
+**Recommended companion skills (keyless, optional).** For the CV/cover-letter voice pass the skill
+routes to `/humanizer` (and `/academic-prose`); a good MIT-licensed `/humanizer` is
+[blader/humanizer](https://github.com/blader/humanizer) — `npx skills add blader/humanizer`. For a
+polished human-facing PDF, `/make-pdf` if available. All are optional — the skill de-slops inline and
+renders via its bundled scripts when they're absent.
+
 ## Using it
 
 1. Point the skill at a profile that conforms to `references/master-profile-schema.md`.
