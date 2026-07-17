@@ -101,6 +101,9 @@ job-hunt/
 │   ├── tracker.py               # xlsx + csv tracker; green/lock on Applied; dedupe; priority-view
 │   ├── new_application.py       # create per-job folder + tracker row
 │   └── build_seen_ledger.py     # canonical-key dedupe ledger for the daily hunt
+├── connectors/                  # bundled MCP servers (bring your own key; register in your config)
+│   ├── reed-mcp/                # Reed.co.uk Jobseeker API MCP server
+│   └── adzuna-mcp/              # Adzuna job search + salary-data MCP server
 ├── kb-build/                    # provenance: live JD captures + raw research notes
 └── evals/                       # validation runs (self-contained)
 ```
@@ -194,7 +197,7 @@ sourcing lane has a fallback). Configure the ones you want:
 "mcpServers": {
   "reed": {
     "command": "python",
-    "args": ["path/to/reed-mcp/server.py"],
+    "args": ["path/to/job-hunt/connectors/reed-mcp/server.py"],   // bundled in this repo
     "env": { "REED_API_KEY": "YOUR_OWN_KEY_HERE" }   // your key, never committed
   },
   "firecrawl": {
@@ -244,9 +247,9 @@ profiles/applications directory entirely.
 
 ## Roadmap
 
-- **One-command connector install** — the Reed/Adzuna MCP servers are open-source
-  ([reed-mcp](https://github.com/soheilfallah/reed-mcp), [adzuna-mcp](https://github.com/soheilfallah/adzuna-mcp));
-  next is a PyPI release so setup is `pip install` + your key rather than a git clone.
+- **One-command connector install** — the Reed/Adzuna MCP servers are bundled in this repo under
+  `connectors/`; next is a PyPI release so setup is `pip install <name>` + your key rather than
+  `pip install -e connectors/<name>`.
 - **CLI packaging** — install the skill + scripts via a single command.
 - **Plugin marketplace** — bundle as a Claude plugin so it installs from the marketplace with its
   companion skills and connector prompts wired in.
