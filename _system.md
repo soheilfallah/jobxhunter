@@ -1,18 +1,18 @@
 ---
-title: cv-tailor — job-hunt skill
+title: job-hunt — UK-first job-hunt skill
 type: project
 updated: 2026-07-06
 tags: [project, skill, career, cv, job-search, ats, claude-code]
 status: built
 ---
 
-# cv-tailor — the job-hunt skill
+# job-hunt — the UK-first job-hunt skill
 
 **What it is:** A general-purpose, UK-first **job-hunt skill** (a Claude Code / chat `SKILL.md` skill).
 CV tailoring at its core — read a master profile plus a job description and produce an ATS-friendly,
 slop-free CV that survives both the parser and the six-second human scan — extended with job
-**sourcing** (Indeed/Dice connectors, a WebSearch→WebFetch→browser deep-crawl fallback, and UK
-boards), **company discovery + cold outreach** (find target companies via Clay/Ahrefs/web, find the
+**sourcing** (Indeed/Reed/Adzuna/Dice connectors, a Firecrawl→WebSearch→browser deep-crawl fallback,
+and UK boards), **company discovery + cold outreach** (find target companies via Clay/Ahrefs/web, find the
 named contact, cold-email them from the user's own spoken words), cover letters, a recruiter-persona
 scoring loop, an "alternative world" L2 mode (a realistic stronger persona plus the delta to reach
 it), and application tracking.
@@ -25,7 +25,7 @@ this project, under `career/job-hunt/`, precisely to keep the tool and the perso
 
 ## Layout
 ```
-projects/cv-tailor/
+projects/job-hunt/
 ├── SKILL.md              # the skill: workflow map + commands (tailor, recruiter loop, L2, cover letter, track)
 ├── references/           # the distilled knowledge base (progressive disclosure)
 │   ├── cv-craft.md, career-narrative.md, cover-letter.md

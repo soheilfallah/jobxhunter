@@ -1,4 +1,4 @@
-# cv-tailor — a UK-first job-hunt skill
+# job-hunt — a UK-first job-hunt skill
 
 A general-purpose, UK-first **job-hunt skill** for Claude (Claude Code / chat, via a `SKILL.md`
 skill). Its core is **CV tailoring** — read a master profile plus a job description and produce an
@@ -75,7 +75,7 @@ COVER LETTER / COLD MAIL → TRACK & FILE.**
 ## Architecture
 
 ```
-cv-tailor/
+job-hunt/
 ├── SKILL.md                     # the skill: workflow map + commands + non-negotiables
 ├── references/                  # the distilled knowledge base (progressive disclosure)
 │   ├── cv-craft.md              # bullet anatomy, section design, quantification

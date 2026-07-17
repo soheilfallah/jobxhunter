@@ -1,5 +1,5 @@
 ---
-name: cv-tailor
+name: job-hunt
 description: >-
   UK-first job-hunt skill. Core is CV tailoring: read a master profile plus a job description
   and produce an ATS-friendly, slop-free CV that survives both the ATS parser and the
@@ -14,7 +14,7 @@ description: >-
   for a role, or track job applications.
 ---
 
-# cv-tailor — the job-hunt skill
+# job-hunt — the UK-first job-hunt skill (CV tailoring at its core)
 
 CV tailoring at the core; cover letters, a recruiter loop, an alternative-world mode, and
 application tracking around it. UK-first. Works in chat and in Claude Code.
