@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Personal data feed — never publish real profiles or filed applications.
+# In this build these live OUTSIDE the skill (career/job-hunt/); if you nest a
+# data dir inside the skill, exclude it here:
+/profiles/
+/applications/
+tracker.xlsx
+tracker.csv
+
+# Rendered documents (regenerated from markdown by scripts/render_docx.py)
+*.docx
+
+# Optional: exclude eval runs if they contain anything you don't want public.
+# The included eval uses a SAMPLE persona; keep or scrub before publishing.
+# evals/*-run/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+dist/

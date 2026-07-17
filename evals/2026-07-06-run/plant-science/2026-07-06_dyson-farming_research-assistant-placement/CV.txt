@@ -1,0 +1,49 @@
+JULIO PEPE
+London, UK | +44 7XXX XXXXXX | julio.pepe@example.com | linkedin.com/in/juliopepe
+
+
+PROFESSIONAL SUMMARY
+====================
+Horticultural researcher with hands-on experience of field and glasshouse crop trials, plant phenotyping and biochemical sampling across research and commercial settings. BSc in Horticultural Science and an MSc in Controlled Environment Agriculture, with a peer-reviewed publication on crop growth optimisation. Practised at accurate data collection, experimental record-keeping and organised experimental record-keeping and attention to detail across concurrent trials, and glasshouse operations, and motivated by sustainable food production.
+
+EXPERIENCE
+==========
+Graduate Researcher — Photosynthesis Laboratory, University of Tehran
+February 2023 – July 2024
+  - Designed and ran controlled-environment crop trials on light effects on plant growth and phytochemical composition, from establishment through to harvest and data analysis.
+  - Conducted crop assessments and phenotyping — biomass partitioning, leaf-area analysis and growth-rate measurement — recording trial observations to a consistent standard.
+  - Prepared and processed plant samples for laboratory analysis, including pigment extraction and biochemical assays (chlorophyll, carotenoid, flavonoid, phenolic quantification).
+  - Managed daily trial operations: environmental monitoring, crop maintenance and systematic data collection across concurrent experiments, recording and managing trial data in Microsoft Excel.
+  - Analysed experimental data using statistical methods (ANOVA, regression, correlation) in R and Python, and published the findings in the peer-reviewed journal MDPI Plants (2024).
+Greenhouse Operations Supervisor — University of Tehran (concurrent with research role)
+December 2022 – November 2023
+  - Ran glasshouse facilities supporting multiple plant-breeding and physiology trials, coordinating experimental setup, maintenance schedules and harvest operations.
+  - Managed irrigation and fertigation, climate control and environmental monitoring, keeping conditions and data quality consistent across concurrent research projects.
+  - Maintained detailed records of environmental parameters and crop development, and trained students on glasshouse protocols and health-and-safety procedures.
+Crop Production Manager — Citrus (self-employed), Mazandaran, Iran
+January 2016 – October 2022
+  - Ran a commercial citrus operation end to end — planting, irrigation and fertigation, crop protection, monitoring and harvest — applying agronomic practice across multiple growing seasons.
+  - Supported university students with experimental setup, data recording and sample handling on plant-science trials.
+
+EDUCATION
+=========
+MSc Controlled Environment Agriculture — University of Tehran, Iran
+  - Plant science and sustainable crop production under controlled conditions. (UK equivalent: Master's degree.)
+BSc Horticultural Science and Engineering — Sari Agricultural Sciences & Natural Resources University, Iran
+  - Horticulture, crop production and agronomy. (UK equivalent: Bachelor's degree.)
+MSc Big Data and Data Science Technology — Northumbria University, London
+2024 – 2025
+  - Statistics, data management and programming (Python, SQL) — supporting accurate research-data handling and analysis.
+
+SKILLS
+======
+  - Crop research: field and glasshouse trials, experimental design, plant phenotyping, crop assessment, plant sampling, environmental monitoring, harvest operations
+  - Laboratory: sample preparation and processing, biochemical assays, UV-Vis spectrophotometry, chlorophyll fluorescence, ImageJ analysis
+  - Crop management: greenhouse operations, irrigation and fertigation, climate control, crop protection, agronomy, biosecurity and health & safety
+  - Data: accurate data collection and record-keeping, statistical analysis (ANOVA, regression), R, Python, Microsoft Excel and Office
+  - Practical: willing to travel between sites; comfortable with outdoor and seasonal fieldwork
+
+CERTIFICATIONS
+==============
+  - Level 3 Emergency First Aid at Work (EFAW)
+  - HSE Laboratory Safety

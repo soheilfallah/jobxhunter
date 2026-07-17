@@ -1,0 +1,45 @@
+DR ANNA PETROVA
+Coventry, UK | +44 7XXX XXXXXX | a.petrova@email.com | linkedin.com/in/annapetrova
+
+
+PROFESSIONAL SUMMARY
+====================
+Plant molecular biologist specialising in Agrobacterium-mediated crop transformation and molecular genetics. PhD in Plant Sciences with four years' hands-on experience developing and optimising transformation protocols across model and crop species, including bacterial strain engineering and molecular cloning. Published in plant biotechnology journals and experienced in interdisciplinary, grant-funded research teams.
+
+EXPERIENCE
+==========
+Postdoctoral Research Associate — Department of Plant Sciences, University of Cambridge
+October 2023 – Present
+  - Developed and optimised Agrobacterium-mediated transformation protocols for recalcitrant crop species, raising stable transformation efficiency by roughly 40% over the lab's prior baseline.
+  - Engineered and evaluated Agrobacterium strains for altered virulence, using molecular cloning to assemble and test vir-gene constructs.
+  - Applied molecular genetics techniques — Golden Gate and Gibson cloning, qPCR genotyping, CRISPR editing — to characterise transformed lines.
+  - Managed plant growth across glasshouse and controlled-environment facilities, coordinating material for transformation pipelines.
+  - Co-authored three peer-reviewed papers and presented at two international plant-biotechnology conferences.
+PhD Researcher — Plant Transformation & Molecular Genetics, John Innes Centre / UEA
+October 2019 – September 2023
+  - Doctoral research on the bacterial genetics of Agrobacterium tumefaciens and its interaction with host plants during transformation.
+  - Built and screened mutant bacterial libraries to identify determinants of virulence and transformation efficiency.
+  - Routine molecular cloning, plant tissue culture, regeneration and selection of transformed material.
+  - Mentored two MSc students and maintained detailed experimental records to research-governance standards.
+
+EDUCATION
+=========
+PhD Plant Sciences — John Innes Centre / University of East Anglia
+2019 – 2023
+  - Thesis: bacterial genetics of Agrobacterium virulence in crop transformation.
+MSc Plant Biotechnology (Distinction) — University of Nottingham
+2018 – 2019
+BSc Biological Sciences (First Class) — University of Bristol
+2015 – 2018
+
+SKILLS
+======
+  - Transformation: Agrobacterium-mediated transformation, protocol optimisation, tissue culture, regeneration and selection
+  - Molecular genetics: molecular cloning (Golden Gate, Gibson), CRISPR editing, qPCR, PCR, mutant library construction, bacterial genetics
+  - Plant growth: glasshouse and controlled-environment crop growth, breeding-line maintenance
+  - Analysis & communication: experimental design, data analysis (R), scientific writing, conference presentation
+
+CERTIFICATIONS
+==============
+  - Genetic modification (GM) and biosafety training
+  - Plant health and biosecurity

@@ -1,0 +1,306 @@
+---
+name: cv-tailor
+description: >-
+  UK-first job-hunt skill. Core is CV tailoring: read a master profile plus a job description
+  and produce an ATS-friendly, slop-free CV that survives both the ATS parser and the
+  six-second recruiter scan. Also finds and deep-crawls roles (Indeed/Reed/Adzuna/Dice connectors
+  plus a Firecrawl → WebSearch/browser crawl fallback), discovers target companies and cold-emails the right contact,
+  writes cover letters and cold emails from the user's own spoken words, runs a recruiter-persona
+  scoring loop that critiques and revises drafts, generates an "alternative world" ideal-candidate
+  CV plus the gap-to-close, and tracks every application (applied rows locked). The master profile
+  is a decoupled data feed — swap the path to use any profile; skill logic never changes. Use
+  whenever the user wants to find, search, or crawl for jobs, tailor a CV or résumé to a job, write
+  a cover letter or cold email, find companies to cold-email, score a CV against a job description,
+  see the ideal candidate for a role, or track job applications.
+---
+
+# cv-tailor — the job-hunt skill
+
+CV tailoring at the core; cover letters, a recruiter loop, an alternative-world mode, and
+application tracking around it. UK-first. Works in chat and in Claude Code.
+
+## The one rule everything hangs on
+
+**The master profile is the only source of truth for any submittable document.** The skill
+*selects, reframes, reorders, and emphasises* — it never invents a fact. If evidence for a JD
+requirement isn't in the profile, that's a **gap to surface, not a blank to fill**. Only the L2
+alternative-world persona may generate beyond the profile, and it is never submittable. Hold this
+line in every command below.
+
+## Inputs
+
+- **Profile** (the data feed): a markdown file conforming to `references/master-profile-schema.md`.
+  A demo fixture ships at `assets/sample-profile.md` (a sample persona). For real use, point at your
+  own profile (e.g. a private file under `career/job-hunt/profiles/`). Point at any conforming file to
+  tailor for anyone — skill logic is identical regardless of whose profile it is.
+- **Job description**: pasted text, a file, or an Indeed/URL the skill captures.
+- **Level** (CV only): `L0` / `L1` (default) / `L2`, with an optional `%` knob within L1. See
+  `references/tailoring-levels.md`.
+- **Applications root**: default `D:\soh-workspace\career\job-hunt\applications`.
+
+## Reference map (progressive disclosure — load only what the step needs)
+
+| When you're… | Read |
+|---|---|
+| decomposing a JD | `references/jd-analysis.md` |
+| matching keywords for a family | `references/keyword-taxonomy/<family>.md` |
+| writing bullets, summary, sections | `references/cv-craft.md` |
+| framing a non-linear / career-change story | `references/career-narrative.md` |
+| de-slopping / choosing verbs | `references/cv-mistakes.md` (route prose to `/humanizer` + `/academic-prose` if present — see "Tools & external skills") |
+| ensuring the render parses | `references/ats-mechanics.md` |
+| applying UK norms | `references/uk-conventions.md` |
+| scoring as the recruiter | `references/recruiter-rubric.md` |
+| choosing/operating the dial | `references/tailoring-levels.md` |
+| reading the profile | `references/master-profile-schema.md` |
+| writing a cover letter | `references/cover-letter.md` |
+| finding jobs to apply to (sourcing) | `references/job-search-guide.md` |
+| finding target companies + cold-emailing them | `references/company-discovery-cold-outreach.md` |
+
+Keyword families: `plant-science-research`, `research-assistant-lead`, `ai-technician-junior-ai`,
+`data-research-analysis`, `security-frontline`. Pick the closest; if none fit, decompose the JD
+directly with `jd-analysis.md` and note the taxonomy gap.
+
+## Tools & external skills (surface-aware routing)
+
+The skill leans on other skills/tools for prose voice, rendering, and JD capture. **Detect what this
+surface exposes** (list your skills/tools if unsure) and route accordingly — every route has a
+self-sufficient fallback, so the skill never hard-depends on an optional tool.
+
+- **Prose voice (the de-slop pass).** Invoke `/humanizer`, then `/academic-prose`, on the final
+  CV/cover-letter prose. These are the preferred voice pass. If neither is present on this surface
+  (they're typically in cowork/Desktop, not always in Claude Code), enforce voice inline from
+  `references/cv-mistakes.md` — that catalog is complete enough to do the pass by hand. Never skip the
+  pass just because the skills are absent.
+- **Rendering the CV / cover letter.**
+  - **cowork / Claude Desktop:** the native `docx`, `pdf`, and `xlsx` file-creation skills produce the
+    CV `.docx`, an optional recruiter-facing `.pdf`, and the `tracker.xlsx`. Hold the ATS rules
+    regardless of renderer (no tables/columns/text-boxes/graphics — `references/ats-mechanics.md`).
+  - **Claude Code:** the bundled `scripts/` are the default and self-sufficient (`render_docx.py` →
+    ATS-safe `.docx` + `.txt`; `tracker.py` → `tracker.xlsx`).
+  - **Polished PDF (either surface):** `render_docx.py`/the `docx` skill do NOT emit PDF. For a
+    human-facing / portfolio PDF, route the CV markdown through the installed **`/make-pdf`** skill.
+    Use it only for the human copy — **submit the `.docx` to ATS**, never a make-pdf PDF (it isn't
+    guaranteed ATS-parseable). Use PDF for direct-to-human sends or when a JD explicitly asks for PDF.
+- **JD capture fallback.** SOURCE prefers the job connectors + Firecrawl. Where Firecrawl isn't
+  connected on this surface, the installed **`/scrape`** skill is an alternative single-page JD puller
+  before dropping to WebFetch/Claude-in-Chrome.
+
+---
+
+## Command: SOURCE (find jobs)
+
+The discovery front-end that precedes tailoring — see `references/job-search-guide.md`. Given a
+target family (and the candidate's location / right-to-work constraints), find live UK roles:
+
+> **Tool names are written bare here** (`search_jobs`, `reed_search_jobs`, `firecrawl_scrape`) because
+> the prefix depends on your surface. Your environment exposes the same tools under one of two
+> conventions — resolve each name to whichever your surface uses:
+> - **Claude Code / this CLI:** `mcp__<server>__<tool>` — e.g. `mcp__reed__reed_search_jobs`,
+>   `mcp__adzuna__adzuna_search_jobs`, `mcp__firecrawl__firecrawl_scrape`.
+> - **Claude Desktop / cowork:** `<server>:<tool>` — e.g. `reed:reed_search_jobs`,
+>   `adzuna:adzuna_search_jobs`, `firecrawl:firecrawl_scrape`. The Indeed/Dice connectors surface as
+>   `Indeed:*` / `Dice:*` here (vs `mcp__claude_ai_Indeed__*` in Code).
+>
+> If a name doesn't resolve, list your available tools and match by the `<server>` + `<tool>` pair —
+> the connector server names are `Indeed`, `reed`, `adzuna`, `Dice`, `firecrawl`.
+
+1. Pull search keywords from the family's `TITLE VARIANTS` in `references/keyword-taxonomy/<family>.md`.
+2. **Fan out across every connected job connector — one search per title variant, per connector** —
+   then dedupe hits by company+role. Don't stop at the first board; each covers different roles:
+   - **Indeed** (`search_jobs`, `country_code='GB'`) — the broad UK workhorse.
+   - **Reed** (`reed_search_jobs`, `locationName` + `distanceFromLocation` in **miles**) — strong on
+     UK security, data, admin and agency roles.
+   - **Adzuna** (`adzuna_search_jobs`, `country='gb'`) — wide UK aggregator; also gives labour-market
+     salary context (`adzuna_salary_histogram`, `adzuna_top_companies`) to fill a band the JD omits.
+   - **Dice** (`search_jobs` on the Dice connector) — US-leaning tech; worth a pass for the AI/data
+     families only (weak UK coverage).
+   When the connectors don't cover a role/board (niche board, institute page, company careers
+   portal), run the **deep-crawl fallback** — see `references/job-search-guide.md`, "Deep search
+   without a connector": `WebSearch` → **Firecrawl** (`firecrawl_scrape` / `firecrawl_crawl` /
+   `firecrawl_extract`, now connected) → `WebFetch` / **Claude-in-Chrome** for JS- or login-gated
+   pages — then extract and distil the JD.
+3. **Triage** each hit with the knockout sweep (`jd-analysis.md` §0) and optionally vet the employer
+   with Indeed's `get_company_data` (reviews, salary bands) or Adzuna salary tools. Drop
+   hard-knockout fails.
+4. **Capture** survivors — pull the FULL JD text before tailoring, never tailor off the search
+   snippet: Indeed `get_job_details(job_id)`, Reed `reed_get_job_details(jobId)` (also returns
+   normalised yearly salary + apply URL), Adzuna → fetch the result's `redirect_url`. If none of
+   those yield the full text (external ATS, PDF, bare listing), **crawl the apply/JD URL with
+   Firecrawl** (`firecrawl_scrape` for one page, `firecrawl_extract` to pull structured JD fields)
+   and fall back to `WebFetch` / Claude-in-Chrome only if Firecrawl can't reach it. Hand off to
+   TRACK & FILE + TAILOR; log triaged-out roles as `Skipped` so the search is fully recorded.
+
+When presenting connector results to the user, add the AI-search disclosure (verify details with the
+employer). Sourcing is profile-agnostic — match searches to the family, not to a person.
+
+## Command: DISCOVER + COLD MAIL (the hidden job market)
+
+For when there is no advert — target companies directly. See
+`references/company-discovery-cold-outreach.md`. Pipeline:
+
+1. **DISCOVER** — build a ranked target-company list for the family + location using several angles:
+   `WebSearch`/`WebFetch`/browser for directories, association member lists and accelerator cohorts;
+   **Clay** (`find-and-enrich-company`, `query-objects`) to enrich/filter; **Ahrefs**
+   (`site-explorer-organic-competitors`) to surface same-sector "related companies" from a known
+   domain; **Indeed** `get_company_data` to vet each. Rank by fit, location/right-to-work, and stage.
+2. **ENRICH** — find the *named* owner of the hire/work (hiring manager, team lead, jobs.ac.uk
+   "informal enquiries" contact) and a verified email via **Clay**
+   (`find-and-enrich-contacts-at-company`). Never cold-mail `info@`.
+3. **COLD MAIL** — **required input: the user's own spoken/verbal narrative** (a voice note or ramble)
+   on why this company and what they'd bring. **If it isn't supplied, ask for it and wait — never
+   cold-generate.** Write the email FROM their words: preserve the spoken cadence, strip only true
+   filler, never corporatise it. 120–180 words, specific human subject line, one clear low-friction
+   ask, tailored CV attached, truth rule applies (claims map to profile evidence). UK email etiquette
+   ("Kind regards"). Draft via **Gmail** `create_draft` for the user to review/send.
+4. **TRACK** — log each target with `new_application.py --category cold-outreach --status Cold-emailed`;
+   flip to `Replied` on a response; one polite follow-up after ~5–7 working days, then stop. Companies
+   researched but passed over are logged `Skipped`.
+
+## Command: TAILOR (the core)
+
+Given profile + JD + level, produce a tailored CV. Six steps:
+
+1. **Parse the JD** → a JD-analysis object (must-haves, nice-to-haves, hard knockouts, seniority,
+   tone, keywords, salary band). Follow `references/jd-analysis.md`. Capture the JD text for filing.
+2. **Build the coverage matrix** — every requirement mapped to real profile evidence, marked
+   **strong / partial / adjacent-provisional / hard-gap** (`tailoring-levels.md`, "Gap classes").
+   This matrix is the spine: it drives selection, it's what the recruiter scores against, and its
+   hard gaps define the L2 delta. *Hard gaps* (no plausible basis) are surfaced, never filled.
+   *Adjacent-provisional* items (a skill under another name, or one a listed role obviously implies)
+   are handled by the provisional mechanism — see step 4 and the end-of-run confirmation — not
+   dropped and not treated as gaps.
+3. **Select and order** — pull the matching skills cluster from the profile's warehouse using the
+   family taxonomy as a *palette* (match to real evidence, never add a skill the profile lacks);
+   drop weak/irrelevant material; order for this JD and this reader.
+4. **Draft** — bullets as `strong verb + real task + method + quantified outcome` (`cv-craft.md`).
+   Weave keywords naturally and in-context; pair every acronym with its expansion, e.g. "NLP
+   (natural language processing)". Respect the level: L0 faithful, L1 aggressive-but-true (the `%`
+   sets how aggressive), L2 the alternative-world persona (see its own section).
+   - **Anti-mirroring guard (learned from eval — critical):** mirror the JD's *vocabulary* only onto
+     *real profile evidence* or a **plausible basis**. It is fabrication to paste a JD term with
+     nothing behind it — e.g. "quasi-experimental" when the profile only has true experimental
+     designs, or "data security" when the profile says "detailed records": drop those or surface as
+     a hard gap.
+   - **Provisional inclusions (no interruption):** when a JD term has a *plausible basis* — an
+     equivalent skill under a different name, or one a listed role obviously implies but doesn't
+     state — you MAY provisionally include it rather than dropping it and underselling the candidate.
+     Add it to the draft AND to a **"pending confirmation" list in the job's `notes.md`**, and keep
+     going. Do not stop mid-draft. These are gated by the end-of-run confirmation (step 6). Full
+     rules and tone in `tailoring-levels.md` ("Gap classes, provisional inclusions").
+5. **Voice pass + integrity check** — run `/humanizer` then `/academic-prose` if present on this
+   surface (else do the pass inline — see "Tools & external skills"); strip everything
+   in the `cv-mistakes.md` catalog (buzzwords, unquantified claims, responsibilities-not-achievements,
+   tense/date drift). Apply `uk-conventions.md` (CV not résumé, two pages, UK spelling/dates, no
+   photo/DOB, right-to-work phrasing when a JD asks). Also run these three checks every time:
+   - **Date consistency:** normalise all dates to one format ("Mon YYYY – Mon YYYY"); label genuinely
+     concurrent roles "(concurrent…)" so overlaps don't read as errors; add the target-role headline
+     line for the six-second scan.
+   - **Gap check:** scan the timeline for unexplained recent gaps (a common one: the tail between a
+     course ending and "present"). Surface any gap to the user for an honest line — never paper it over.
+   - **Truth sweep:** re-read every line against the profile; any claim not traceable to it *and not
+     on the pending-confirmation list* is a violation to fix before rendering. (Provisional items are
+     allowed through here because they are gated by step 6's confirmation.)
+6. **Render + end-of-run confirmation** — write the CV as markdown in the
+   `assets/cv-markdown-template.md` convention, then render per surface (see "Tools & external
+   skills"). In Claude Code:
+   ```
+   python scripts/render_docx.py --in <cv.md> --outdir <job-folder>
+   ```
+   produces ATS-safe `CV.docx` (no tables/columns/text-boxes/graphics) **and** `CV.txt`; in cowork use
+   the native `docx` skill for the same ATS-safe output. **The `.docx` is the ATS submission.** If the
+   user also wants a polished human-facing copy, additionally route the CV markdown through `/make-pdf`
+   — label it the human/portfolio PDF, not the ATS file. Then run the recruiter loop and file it (below).
+   - **Before the CV is treated as final, run the pending-confirmation batch** if any provisional
+     items were added (step 4). Present the whole list as ONE neutral yes/no memory-jog — *not* an
+     accusation; the premise is the person likely did this and forgot to write it, or names it
+     differently. On *yes*, keep it (offer to add it to the master profile); on *no*, remove it and
+     re-render, and it may become a surfaced gap. Nothing provisional ships as "final" unconfirmed.
+     Exact framing and tone: `tailoring-levels.md` ("Gap classes, provisional inclusions").
+
+Output to the user: the CV, the coverage matrix (with hard gaps called out), the end-of-run
+confirmation batch (if any provisional items), and — after the loop — the recruiter scorecard so they
+see *why* it's strong.
+
+## Command: RECRUITER LOOP (critic + test harness)
+
+Adopt a **JD-specific recruiter persona** (`references/recruiter-rubric.md`) — a fintech hiring
+manager, an NHS panel, a university PI, a security ops manager all read differently. Score the draft
+on the five dimensions (ATS/keyword coverage, six-second scan, requirement coverage, authenticity/
+slop, red flags). Return the structured scorecard: per-dimension score + justification, overall
+score, PASS/REVISE verdict, and a short list of **specific, actionable fixes ranked by impact**.
+
+Loop: score → fixes → tailorer revises → re-score. Stop at **PASS** (default threshold: overall ≥
+4.0/5 AND no dimension < 3, AND the "would I forward this?" test passes) or after **3 passes**.
+Never "fix" a low score by inventing evidence — if the gap is real, surface it (and optionally offer
+the L2 delta). The same rubric scores eval batches in `evals/`.
+
+## Command: L2 — THE ALTERNATIVE WORLD
+
+Produce a *different realistic person* who already holds what the JD wants and would win the
+interview — realistic, not heavenly-perfect; a clean CV with **no watermark or disclaimer on the
+artifact**. Deliver it **alongside the delta**: the specific experience, skills, and certs that
+separate the real candidate (from the profile) from this persona. The delta is the point — it's the
+user's roadmap. Never present L2 as submittable; state in-conversation/`notes.md` that it's a target
+persona. Full rules: `references/tailoring-levels.md`.
+
+## Command: COVER LETTER
+
+Shares the JD analysis and profile feed but produces a letter, not a CV. **Required input: a short
+brain-dump** of the user's own thoughts on *this* role (why they want it, their angle, any company
+connection) — **invite a spoken/verbal narrative** (a voice note or ramble; work from the transcript,
+keep the spoken cadence). **If it isn't supplied, ask for it and wait — never cold-generate.** Write
+the letter *from* the user's words: preserve their voice and cadence, strip slop but never de-voice them
+(a de-slopped letter that no longer sounds like them is a failure). Claims map to real profile
+evidence (same truth rule). Run the same voice pass (`/humanizer` + `/academic-prose`, or inline).
+UK conventions; render to `.docx` + plain text (bundled script or the `docx` skill), and route through
+`/make-pdf` if the user wants a human-facing PDF to send directly. The L0–L2 dial does NOT
+apply — a cover letter is inherently first-person and truthful. Full craft: `references/cover-letter.md`.
+
+## Command: TRACK & FILE (every run)
+
+Every job — including ones considered and skipped — is filed and logged. Nothing is lost.
+
+**Create the job folder + tracker row** (status defaults to `Drafted`; use `Skipped` for
+considered-but-passed):
+```
+python scripts/new_application.py --root <apps> --category <cat> --company "<Co>" \
+    --role "<Role>" --date <YYYY-MM-DD> --jd-file <jd.txt> \
+    --location "<loc>" --link "<url>" --source <Indeed|LinkedIn|…> --ats <platform> \
+    --pay "<band>" --level <L0|L1> [--status Skipped]
+```
+This makes `applications\<category>\<date>_<company>_<role>\` with `job-description.md` and
+`notes.md`, and adds one tracker row. Categories are dynamic — create whatever fits (ai,
+research-assistant, plant-science, data, security, …). Render the CV into that folder; put the
+brain-dump, coverage matrix, recruiter scorecard, and any L2 delta into `notes.md`.
+
+**When the user says "I applied to this one":**
+```
+python scripts/tracker.py update --root <apps> --key "<folder_path>" --data '{"status":"Applied"}'
+```
+This stamps `date_applied`, turns the row **green**, and **locks** it (sheet protection) so the
+record can't be lost. Later updates (`Interview`/`Rejected`/`Offer`) stamp the matching date and
+recolour. Applied rows are final — the script refuses silent overwrites (pass `"_force": true` to
+override deliberately).
+
+The tracker is `tracker.xlsx` + a `tracker.csv` mirror. **Always** change tracker state through
+`scripts/tracker.py`, never by hand — it owns the green/lock/date logic deterministically.
+
+## Scripts (bundled, deterministic)
+
+- `scripts/render_docx.py` — markdown CV → ATS-safe `.docx` + `.txt`. Never emits tables/columns/
+  text-boxes/images.
+- `scripts/tracker.py` — `init` / `add` / `update` / `show` on the tracker; green fill + lock on
+  Applied; CSV mirror. Row key = `folder_path`.
+- `scripts/new_application.py` — create the per-job folder set + tracker row in one call.
+
+Requires Python with `python-docx` and `openpyxl` (installed here).
+
+## Hold-the-line invariants
+
+1. Master profile is truth for L0/L1; gaps surfaced, never filled.
+2. ATS-safe rendering — no tables, columns, or graphics in the CV.
+3. No slop — enforced against `cv-mistakes.md`.
+4. UK conventions on by default.
+5. L2 is realistic-not-perfect, unwatermarked, delta stated in conversation/notes, never submittable.
+6. Profile schema stays generic — the profile is swappable data; skill logic never keys off who it is.
+7. Every job filed into a category folder and logged; applied rows green and locked; skipped jobs recorded.

@@ -1,0 +1,49 @@
+JULIO PEPE
+London, UK | +44 7XXX XXXXXX | julio.pepe@example.com | linkedin.com/in/juliopepe
+
+Research Assistant — quantitative research & data | Right to work in the UK
+
+PROFESSIONAL SUMMARY
+====================
+Researcher with over two years' practical experience designing, running and analysing empirical studies, combining strong quantitative research methods with hands-on data manipulation in Python, R and SQL. Peer-reviewed author with a keen eye for detail and accurate research documentation. Holds an MSc in Data Science alongside a science research background, and is trained in laboratory health and safety.
+
+EXPERIENCE
+==========
+Graduate Researcher — Photosynthesis Laboratory, University of Tehran
+February 2023 – July 2024
+  - Designed, conducted and evaluated controlled experimental research projects end to end, from study design through data collection to analysis and write-up.
+  - Applied quantitative research methods and statistical analysis (ANOVA, regression, correlation) in R and Python to interpret experimental datasets.
+  - Maintained full and accurate documentation and records across concurrent projects, contributing to quality assurance of research outputs.
+  - Communicated findings in writing to a peer-reviewed standard, publishing in the journal MDPI Plants (2024), and collaborated with MSc and PhD colleagues on protocols and interpretation.
+Greenhouse Operations Supervisor — University of Tehran (concurrent with research role)
+December 2022 – November 2023
+  - Supported multiple concurrent research and trial projects, coordinating experimental setup and ensuring consistent data quality and accurate record-keeping.
+  - Identified and managed operational risks across projects, and reviewed technical documentation and protocols for accuracy.
+  - Trained and mentored students in research procedures, methodology and health-and-safety standards.
+Crop Production Manager — Citrus (self-employed), Mazandaran, Iran
+January 2016 – October 2022
+  - Supported university researchers and students with experimental setup, data recording and reference management on applied science projects.
+  - Managed operations, scheduling and budgets, working both independently and as part of a team.
+
+EDUCATION
+=========
+MSc Big Data and Data Science Technology — Northumbria University, London
+2024 – 2025
+  - Data manipulation and management, statistics and programming (Python, SQL); understanding of data structure and characteristics.
+MSc Controlled Environment Agriculture — University of Tehran, Iran
+  - Research-methods-led master's in a science discipline. (UK equivalent: Master's degree.)
+BSc Horticultural Science and Engineering — Sari Agricultural Sciences & Natural Resources University, Iran
+  - Science degree with a research and experimental methods element. (UK equivalent: Bachelor's degree.)
+
+SKILLS
+======
+  - Research methods: experimental design, quantitative research designs, data collection, evaluation, quality assurance
+  - Data manipulation & analysis: Python (pandas, NumPy), R, SQL, statistical analysis (ANOVA, regression), Excel, data management and quality control
+  - Documentation & communication: accurate research record-keeping, reviewing technical/scientific documentation, scientific writing, peer-reviewed publication, stakeholder communication
+  - Working style: keen attention to detail, critical thinking, project coordination, independent and collaborative teamwork
+  - Safety: HSE Laboratory Safety, Emergency First Aid at Work
+
+CERTIFICATIONS
+==============
+  - HSE Laboratory Safety
+  - Level 3 Emergency First Aid at Work (EFAW)
