@@ -49,11 +49,18 @@ import sys
 
 try:
     from docx import Document
-    from docx.shared import Pt, RGBColor
+    from docx.shared import Pt, RGBColor, Mm, Inches
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.oxml.ns import qn
 except ImportError:
     sys.exit("python-docx is required: pip install python-docx")
+
+# Page size by market. UK-first default is A4; Canada/US use US Letter. python-docx
+# otherwise defaults to Letter, so UK renders needed this to be correct.
+PAGE_SIZES = {
+    "a4": (Mm(210), Mm(297)),         # UK and most of the world
+    "letter": (Inches(8.5), Inches(11)),  # Canada, US
+}
 
 BODY_FONT = "Calibri"      # widely parseable, standard
 BODY_SIZE = 10.5
@@ -111,15 +118,17 @@ def _strip_md_inline(text):
     return text
 
 
-def build_docx(tokens, out_path):
+def build_docx(tokens, out_path, page="a4"):
     doc = Document()
     # base style
     normal = doc.styles["Normal"]
     normal.font.name = BODY_FONT
     normal.font.size = Pt(BODY_SIZE)
     normal.font.color.rgb = DARK
-    # tight margins for two-page fit
+    width, height = PAGE_SIZES.get(page, PAGE_SIZES["a4"])
+    # tight margins for two-page fit; explicit page size (A4 vs US Letter by market)
     for s in doc.sections:
+        s.page_width, s.page_height = width, height
         s.top_margin = s.bottom_margin = Pt(36)      # 0.5"
         s.left_margin = s.right_margin = Pt(54)      # 0.75"
 
@@ -222,6 +231,8 @@ def main():
     ap.add_argument("--out-txt")
     ap.add_argument("--outdir")
     ap.add_argument("--basename", default="CV")
+    ap.add_argument("--page", choices=("a4", "letter"), default="a4",
+                    help="page size: a4 (UK/world, default) or letter (Canada/US market=ca).")
     args = ap.parse_args()
 
     with open(args.infile, encoding="utf-8") as f:
@@ -236,9 +247,9 @@ def main():
         out_docx = args.out_docx or (os.path.splitext(args.infile)[0] + ".docx")
         out_txt = args.out_txt or (os.path.splitext(args.infile)[0] + ".txt")
 
-    build_docx(tokens, out_docx)
+    build_docx(tokens, out_docx, page=args.page)
     build_txt(tokens, out_txt)
-    print(f"Wrote {out_docx}")
+    print(f"Wrote {out_docx} ({args.page.upper()})")
     print(f"Wrote {out_txt}")
 
 

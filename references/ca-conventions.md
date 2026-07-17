@@ -53,8 +53,9 @@ immigration detail in the profile's **Confidential hold**, never on the résumé
 
 ## ATS notes (Canada)
 Same universal ATS rules as `ats-mechanics.md` (single column, no tables/text-boxes/graphics,
-standard headings, .docx). The one Canada-specific parser point: render on **US Letter**, and expect
-**NOC codes** (National Occupational Classification) to matter for government/Job-Bank and
+standard headings, .docx). The one Canada-specific parser point: render on **US Letter** —
+`render_docx.py --page letter` (the bundled script defaults to A4 for `uk`; pass `letter` for `ca`).
+Expect **NOC codes** (National Occupational Classification) to matter for government/Job-Bank and
 immigration-linked applications — mirror the posting's NOC/title language where given.
 
 ## Deltas vs `uk-conventions.md` (quick table)

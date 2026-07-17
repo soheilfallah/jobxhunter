@@ -286,9 +286,9 @@ Given profile + JD + level, produce a tailored CV. Six steps:
      allowed through here because they are gated by step 6's confirmation.)
 6. **Render + end-of-run confirmation** — write the CV as markdown in the
    `assets/cv-markdown-template.md` convention, then render per surface (see "Tools & external
-   skills"). In Claude Code:
+   skills"). In Claude Code — **pass `--page` by market** (`a4` default for `uk`; `letter` for `ca`/US):
    ```
-   python scripts/render_docx.py --in <cv.md> --outdir <job-folder>
+   python scripts/render_docx.py --in <cv.md> --outdir <job-folder> --page <a4|letter>
    ```
    produces ATS-safe `CV.docx` (no tables/columns/text-boxes/graphics) **and** `CV.txt`; in cowork use
    the native `docx` skill for the same ATS-safe output. **The `.docx` is the ATS submission.** If the
@@ -382,7 +382,7 @@ stays the system of record. Clean duplicate rows with `tracker.py dedupe` (dry-r
 - `scripts/init_workspace.py` — scaffold a new workspace (Setup mode): tree + profile template +
   playbook + empty ledger + tracker init, then stop. Idempotent; won't clobber a populated workspace.
 - `scripts/render_docx.py` — markdown CV → ATS-safe `.docx` + `.txt`. Never emits tables/columns/
-  text-boxes/images.
+  text-boxes/images. `--page a4` (default, UK/world) or `--page letter` (Canada/US, market `ca`).
 - `scripts/tracker.py` — `init` / `add` / `update` / `show` / **`dedupe`** / **`priority-view`**;
   green fill + lock on Applied; CSV mirror. Row key = `folder_path`; dedupe key = canonical link.
 - `scripts/new_application.py` — per-job folder + tracker row in one call (auto-inits + preflights).
