@@ -28,6 +28,10 @@ tracker.csv
 # The included eval uses a SAMPLE persona; keep or scrub before publishing.
 # evals/*-run/
 
+# Local Claude session notes — session-continuity docs, never published
+*.local.md
+PROJECT-STATUS.local.md
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
