@@ -3,15 +3,15 @@ name: cv-tailor
 description: >-
   UK-first job-hunt skill. Core is CV tailoring: read a master profile plus a job description
   and produce an ATS-friendly, slop-free CV that survives both the ATS parser and the
-  six-second recruiter scan. Also finds and deep-crawls roles (Indeed/Reed/Adzuna/Dice connectors
-  plus a Firecrawl → WebSearch/browser crawl fallback), discovers target companies and cold-emails the right contact,
-  writes cover letters and cold emails from the user's own spoken words, runs a recruiter-persona
-  scoring loop that critiques and revises drafts, generates an "alternative world" ideal-candidate
-  CV plus the gap-to-close, and tracks every application (applied rows locked). The master profile
-  is a decoupled data feed — swap the path to use any profile; skill logic never changes. Use
-  whenever the user wants to find, search, or crawl for jobs, tailor a CV or résumé to a job, write
-  a cover letter or cold email, find companies to cold-email, score a CV against a job description,
-  see the ideal candidate for a role, or track job applications.
+  six-second recruiter scan. Also finds and deep-crawls roles (Indeed/Reed/Adzuna/Dice connectors,
+  with a Firecrawl/WebSearch crawl fallback), discovers target companies and cold-emails the right
+  contact, writes cover letters and cold emails from the user's own spoken words, runs a
+  recruiter-persona scoring loop, generates an "alternative world" ideal-candidate CV plus the
+  gap-to-close, and tracks every application (applied rows locked). The master profile is a
+  decoupled data feed — swap the path for any profile; skill logic never changes. Use whenever the
+  user wants to find, search, or crawl for jobs, tailor a CV or résumé, write a cover letter or cold
+  email, find companies to cold-email, score a CV against a job description, see the ideal candidate
+  for a role, or track job applications.
 ---
 
 # cv-tailor — the job-hunt skill
