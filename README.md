@@ -96,6 +96,7 @@ job-hunt/
 ├── scripts/                     # deterministic Python helpers
 │   ├── _lib.py                  # workspace resolution + dependency preflight
 │   ├── init_workspace.py        # scaffold a new workspace (Setup mode)
+│   ├── setup_connectors.py      # connector doctor — configured vs missing + bring-your-own-key guide
 │   ├── render_docx.py           # markdown CV → ATS-safe .docx + .txt
 │   ├── tracker.py               # xlsx + csv tracker; green/lock on Applied; dedupe; priority-view
 │   ├── new_application.py       # create per-job folder + tracker row
@@ -205,10 +206,16 @@ connector isn't configured, the skill falls back to `WebSearch`/browser crawling
 nothing breaks, it's just less structured. See `references/tools-and-connectors.md` for the full map.
 
 **Recommended companion skills (keyless, optional).** For the CV/cover-letter voice pass the skill
-routes to `/humanizer` (and `/academic-prose`); a good MIT-licensed `/humanizer` is
-[blader/humanizer](https://github.com/blader/humanizer) — `npx skills add blader/humanizer`. For a
-polished human-facing PDF, `/make-pdf` if available. All are optional — the skill de-slops inline and
-renders via its bundled scripts when they're absent.
+routes to `/humanizer`, then `/academic-prose`. A good MIT-licensed `/humanizer` is
+[blader/humanizer](https://github.com/blader/humanizer) — `npx skills add blader/humanizer`.
+`/academic-prose` is optional and has no public default the skill assumes — bring your own if you have
+one. For a polished human-facing PDF, `/make-pdf` if available. All are optional — the skill de-slops
+inline (`references/cv-mistakes.md`) and renders via its bundled scripts when they're absent.
+
+**First-run setup.** New users don't have the connectors yet. Run
+`python scripts/setup_connectors.py` for a report of what's configured and step-by-step guidance to
+get your own free keys and register the ones you want. Full walkthrough:
+`references/connector-setup.md`.
 
 ## Using it
 
@@ -231,6 +238,14 @@ them before publishing if you prefer. A suggested `.gitignore` for a personal de
 profiles/applications directory entirely.
 
 ---
+
+## Roadmap
+
+- **One-command connector install** — publish the Reed/Adzuna MCP servers (npm/pip) so setup is
+  `npx`/`pip install` + your key, instead of pointing at a local clone.
+- **CLI packaging** — install the skill + scripts via a single command.
+- **Plugin marketplace** — bundle as a Claude plugin so it installs from the marketplace with its
+  companion skills and connector prompts wired in.
 
 ## Status
 

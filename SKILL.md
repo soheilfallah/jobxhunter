@@ -67,6 +67,7 @@ line in every command below.
 | finding target companies + cold-emailing them | `references/company-discovery-cold-outreach.md` |
 | running the autonomous daily hunt / scaffolding a workspace | `references/daily-hunt.md` |
 | which tool/connector/skill to use (the manifest) | `references/tools-and-connectors.md` |
+| onboarding a new user's connectors + API keys | `references/connector-setup.md` |
 
 Keyword families: `plant-science-research`, `research-assistant-lead`, `ai-technician-junior-ai`,
 `data-research-analysis`, `security-frontline`. Pick the closest; if none fit, decompose the JD
@@ -111,6 +112,17 @@ rich **profile template** (a warehouse, not a CV) + a starter `_RUN-PLAYBOOK.md`
 copies the scripts in, runs `tracker.py init`, then stops for the user to fill the profile. It runs a
 dependency **preflight** first (openpyxl + python-docx) so the tracker can never half-commit. Full
 detail: `references/daily-hunt.md`.
+
+**Then onboard the connectors (bring-your-own-keys).** A new user has the skill but not the MCP
+connectors. Run the doctor and guide them — never assume the connectors exist:
+```
+python scripts/setup_connectors.py          # what's configured vs missing + how to add each
+```
+For each connector the user wants, point them to the free key (Firecrawl / Reed / Adzuna), then — once
+they hand over a key — **offer to register it for them**: read their Claude config, back it up, merge
+the `--emit`ted snippet under `mcpServers` with their real key, and tell them to restart. Every
+connector is optional; missing ones fall back to WebSearch/browser. Full walkthrough:
+`references/connector-setup.md`.
 
 ## Command: DAILY HUNT (autonomous run — populated workspace)
 
