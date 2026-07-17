@@ -56,9 +56,11 @@ load — check the config path and the key.
 
 ## Connector availability by surface
 - **Firecrawl** — public: `npx firecrawl-mcp` works for anyone with a key.
-- **Reed / Adzuna** — need their small Python MCP servers. Until those are published, point the config
-  at a local clone of each server (`command: python`, `args: [<path>/server.py]`). Packaging them for
-  one-command install (npm/pip) + a plugin-marketplace bundle is on the roadmap (see README backlog).
+- **Reed / Adzuna** — small open-source Python MCP servers:
+  - Reed: https://github.com/soheilfallah/reed-mcp
+  - Adzuna: https://github.com/soheilfallah/adzuna-mcp
+  Clone the one you want, `pip install -e .`, then point the config `args` at its `server.py` and set
+  your key in `env`. A one-command install (PyPI) + a plugin-marketplace bundle is on the roadmap.
 - **Indeed / Dice** — claude.ai OAuth connectors; no local config.
 
 ## Voice-pass companion skills (optional, keyless)

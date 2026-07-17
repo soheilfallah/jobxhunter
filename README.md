@@ -244,8 +244,9 @@ profiles/applications directory entirely.
 
 ## Roadmap
 
-- **One-command connector install** — publish the Reed/Adzuna MCP servers (npm/pip) so setup is
-  `npx`/`pip install` + your key, instead of pointing at a local clone.
+- **One-command connector install** — the Reed/Adzuna MCP servers are open-source
+  ([reed-mcp](https://github.com/soheilfallah/reed-mcp), [adzuna-mcp](https://github.com/soheilfallah/adzuna-mcp));
+  next is a PyPI release so setup is `pip install` + your key rather than a git clone.
 - **CLI packaging** — install the skill + scripts via a single command.
 - **Plugin marketplace** — bundle as a Claude plugin so it installs from the marketplace with its
   companion skills and connector prompts wired in.

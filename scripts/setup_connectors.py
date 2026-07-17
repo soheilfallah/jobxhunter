@@ -32,18 +32,20 @@ CONNECTORS = {
     "reed": {
         "what": "UK job search — Reed.co.uk (security/data/admin/agency roles)",
         "key_url": "https://www.reed.co.uk/developers  (free Jobseeker API key)",
-        "public": False,
+        "public": True,
         "config": {"command": "python", "args": ["<path/to/reed-mcp/server.py>"],
                    "env": {"REED_API_KEY": "<YOUR_REED_KEY>"}},
-        "note": "Needs the reed-mcp server (Python). Until it's published, clone/point at the server path.",
+        "note": "Clone the server: git clone https://github.com/soheilfallah/reed-mcp ; "
+                "pip install -e it, then set args to its server.py. (PyPI one-command install: roadmap.)",
     },
     "adzuna": {
         "what": "UK job search + salary/labour-market data — Adzuna",
         "key_url": "https://developer.adzuna.com  (free app_id + app_key)",
-        "public": False,
+        "public": True,
         "config": {"command": "python", "args": ["<path/to/adzuna-mcp/server.py>"],
                    "env": {"ADZUNA_APP_ID": "<YOUR_APP_ID>", "ADZUNA_APP_KEY": "<YOUR_APP_KEY>"}},
-        "note": "Needs the adzuna-mcp server (Python). Until published, clone/point at the server path.",
+        "note": "Clone the server: git clone https://github.com/soheilfallah/adzuna-mcp ; "
+                "pip install -e it, then set args to its server.py. (PyPI one-command install: roadmap.)",
     },
 }
 # Connectors you enable in claude.ai (OAuth) — no local config / key here.
