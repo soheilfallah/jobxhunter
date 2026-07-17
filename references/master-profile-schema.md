@@ -13,7 +13,10 @@ Plain markdown with `##` section headers matching the field names below. The tai
 ## Fields
 
 ### `## Identity`
-Name; location (city/area — full address optional); phone (UK format); professional email; LinkedIn; portfolio/GitHub/website; **right-to-work status** (e.g. "UK — Skilled Worker visa", "British citizen", "requires sponsorship"). Right-to-work is load-bearing because many UK JDs knock out on it.
+Name; location (city/area — full address optional); phone (local format for the market); professional email; LinkedIn; portfolio/GitHub/website; **work-authorisation status expressed for the market** (UK: "British citizen", "Skilled Worker visa", "requires sponsorship"; Canada: "Canadian citizen", "permanent resident", "open/closed work permit", "requires sponsorship/LMIA"). Work authorisation is load-bearing because many JDs knock out on it.
+
+### `## Career targets & market`
+Priority-ordered target job families (1 = most wanted); bridge/fallback lanes; last-resort lanes; salary floor; work pattern; and the **market** — the country/labour-market the hunt runs in, e.g. `uk`, `ca`, `us`. **The market is the switch** that selects the conventions layer (`uk-conventions.md` / `ca-conventions.md` / …), the job-board list, and the connectors the skill uses. If the market isn't stated, infer it from `location` + work authorisation and confirm with the user before tailoring. One profile can hold more than one target market (e.g. UK + Canada) — the run picks the active one.
 
 ### `## Headline / positioning` (optional but useful)
 One or two lines the person uses to describe themselves per track (e.g. a "horticultural researcher" line AND a "data analyst" line). Gives the tailorer honest raw material for the summary without inventing a stance.

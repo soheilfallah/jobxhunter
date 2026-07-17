@@ -18,6 +18,7 @@ venv/
 # data dir inside the skill, exclude it here:
 /profiles/
 /applications/
+/dump/
 tracker.xlsx
 tracker.csv
 

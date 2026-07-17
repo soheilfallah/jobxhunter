@@ -37,6 +37,24 @@ SCRIPT_FILES = ["_lib.py", "tracker.py", "new_application.py", "render_docx.py",
 
 SEEN_LEDGER_HEADER = "job_key,status,category,company,role,link,folder_path,last_seen\n"
 
+DUMP_README = """\
+# Dump everything about yourself here
+
+Drop ANY files about you into this folder, in any format — the skill reads them all and builds your
+master profile for you (the INTAKE command; best in cowork). Messy is fine.
+
+Good things to add:
+- Old CVs / résumés (any version) and cover letters
+- Your LinkedIn export (Profile -> Save to PDF, or the full data-export archive)
+- Certificates, licences, transcripts, degree certificates (PDF or photo)
+- Brag docs, notes, brain-dumps — freeform is welcome
+- Performance reviews, reference letters, portfolio/project write-ups
+- Job ads you liked (helps infer your target roles + market/country)
+- A short note: your location, work authorisation, salary floor, and where you want to work
+
+Then run INTAKE. Nothing here is published — this folder stays private to your workspace.
+"""
+
 PROFILE_TEMPLATE = """\
 <!--
 MASTER PROFILE / DATA FEED for the job-hunt skill — a WAREHOUSE, not a CV.
@@ -194,7 +212,8 @@ def main():
         return
 
     print(f"Scaffolding workspace at {root}")
-    for d in (profiles_dir(root), applications_dir(root), daily_dir(root), scripts_dir(root)):
+    dump = os.path.join(root, "dump")
+    for d in (profiles_dir(root), applications_dir(root), daily_dir(root), scripts_dir(root), dump):
         os.makedirs(d, exist_ok=True)
         print(f"  dir     {os.path.relpath(d, root)}/")
 
@@ -211,6 +230,7 @@ def main():
                      PLAYBOOK_TEMPLATE, root, args.force)
     _write_if_absent(os.path.join(daily_dir(root), "seen-jobs.csv"),
                      SEEN_LEDGER_HEADER, root, args.force)
+    _write_if_absent(os.path.join(dump, "README.md"), DUMP_README, root, args.force)
 
     # Initialise the tracker (idempotent).
     init = subprocess.run([sys.executable, os.path.join(HERE, "tracker.py"),
@@ -221,10 +241,11 @@ def main():
         sys.stderr.write(init.stderr)
         sys.exit(init.returncode)
 
-    print("\nSETUP COMPLETE — next step is YOURS:")
-    print(f"  1. Fill in profiles/{args.name}.md (it's a warehouse, not a CV).")
-    print("  2. Then run the daily hunt against this workspace.")
-    print("Stopping here so the profile isn't hunted against while empty.")
+    print("\nSETUP COMPLETE — build your profile one of two ways:")
+    print("  EASY (recommended): drop your CVs / LinkedIn export / certificates / notes into")
+    print(f"    dump/  (see dump/README.md), then run INTAKE — the skill builds profiles/{args.name}.md for you.")
+    print(f"  MANUAL: fill in profiles/{args.name}.md by hand (it's a warehouse, not a CV).")
+    print("Then run the daily hunt. Stopping here so nothing runs against an empty profile.")
 
 
 if __name__ == "__main__":

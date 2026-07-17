@@ -48,6 +48,19 @@ line in every command below.
   live match, files everything, and writes a dated summary. If no workspace resolves, it **scaffolds**
   one and stops for the user to fill their profile. See `references/daily-hunt.md` (SETUP + DAILY RUN).
 
+## Market (which country's path) — read from the profile, not hard-coded
+
+The profile's **market** field (`## Career targets & market` — `uk` / `ca` / …) is the switch that
+selects three things; resolve it once per run (if unset, infer from `location` + work authorisation and
+confirm with the user):
+- **CV conventions:** `uk` → `references/uk-conventions.md`; `ca` → `references/ca-conventions.md`
+  (résumé not CV, US-Letter, Canadian spelling, YYYY-MM-DD, French-as-asset, PR/work-permit phrasing).
+- **Job boards & sourcing lanes:** see `references/job-search-guide.md` (UK boards vs Canada boards).
+- **Connectors:** `uk` → Reed + Adzuna(`gb`) + Indeed; `ca` → **Adzuna(`ca`) + Indeed(`CA`)** (Reed is
+  UK-only, skip it for `ca`) + Firecrawl for everything else. All optional; missing ones fall back.
+The skill is UK-first only in its defaults — the logic is market-driven, so adding a market = add a
+conventions doc + a board list + a connector map, nothing in the engine changes.
+
 ## Reference map (progressive disclosure — load only what the step needs)
 
 | When you're… | Read |
@@ -58,7 +71,8 @@ line in every command below.
 | framing a non-linear / career-change story | `references/career-narrative.md` |
 | de-slopping / choosing verbs | `references/cv-mistakes.md` (route prose to `/humanizer` + `/academic-prose` if present — see "Tools & external skills") |
 | ensuring the render parses | `references/ats-mechanics.md` |
-| applying UK norms | `references/uk-conventions.md` |
+| applying market CV norms | pick by the profile's **market**: `references/uk-conventions.md` (`uk`) · `references/ca-conventions.md` (`ca`) |
+| building a profile from a user's dump folder (first run) | `references/profile-intake.md` |
 | scoring as the recruiter | `references/recruiter-rubric.md` |
 | choosing/operating the dial | `references/tailoring-levels.md` |
 | reading the profile | `references/master-profile-schema.md` |
@@ -99,6 +113,29 @@ self-sufficient fallback, so the skill never hard-depends on an optional tool.
   before dropping to WebFetch/Claude-in-Chrome.
 
 ---
+
+## Command: INTAKE (build the profile from a dump folder — the true first run)
+
+The easiest on-ramp for a new user, ideal in **cowork**: instead of filling a blank template, the user
+**dumps everything they have about themselves** into `<workspace>/dump/` — old CVs/résumés, a LinkedIn
+PDF export, cover letters, certificates, transcripts, brag docs, freeform notes, even job ads they
+liked — and the skill reads it all and **builds the master profile** for them. Then it detects the
+market and hands off. Full method: `references/profile-intake.md`.
+
+1. Ensure the workspace + `dump/` exist (SETUP/`init_workspace.py` creates `dump/` with a README).
+2. **Read every file in `dump/`** — in cowork the agent can read PDFs, DOCX, images, and text. Extract
+   real facts only (roles, dates, skills, education, licences, numbers, outputs, contact, location,
+   work authorisation).
+3. **Synthesise the master profile** into `profiles/<name>.md` per `references/master-profile-schema.md`
+   — a WAREHOUSE, not a CV. Never invent; where the dump is silent, leave a gap and ask.
+4. **Detect the market** (`## Career targets & market`) from location + work authorisation + target
+   geography, and set it (`uk`/`ca`/…). This is what later picks the conventions/boards/connectors.
+5. **Surface gaps and conflicts** for the user to confirm (missing dates, the "never claim" list, the
+   confidential-hold items) — one neutral batch, never an accusation.
+6. Hand off to DAILY HUNT (or TAILOR) using the market path chosen in step 4.
+
+Truth rule applies throughout: the profile may only contain what the dump (and the user's confirmations)
+actually support.
 
 ## Command: SETUP (scaffold a workspace — first run / new user)
 

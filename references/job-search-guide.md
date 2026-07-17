@@ -95,6 +95,41 @@ capture**.
 Treat raw crawl output as noisy: extract only the JD/vacancy content, discard nav/boilerplate, then
 run it through the same triage (`jd-analysis.md` §0) and CAPTURE step as any connector result.
 
+## Canada boards & connectors (market = `ca`)
+
+For a Canadian profile, swap the UK boards for these and use `ca-conventions.md`. **You don't need a
+new connector — Canada works out of the box:**
+
+**Connectors (already integrable — bring your own key):**
+- **Adzuna** with `country='ca'` — the tool's Adzuna connector already supports Canada (CAD salaries,
+  same tools). This is the primary structured source for `ca`. *(A public community MCP also exists:
+  `folathecoder/adzuna-job-search-mcp`, 12 countries.)*
+- **Indeed** — Indeed.ca is Canada's #1 board by reach; use the Indeed connector with `country_code='CA'`.
+  Indeed also publishes an official MCP (`docs.indeed.com/mcp`).
+- **Firecrawl** — for any board without a connector (Job Bank, University Affairs, company careers).
+- **Reed is UK-only — skip it for `ca`.**
+
+**Optional add-on sources (integrable without building from scratch, if you want more Canada coverage):**
+- **Government of Canada Job Bank** (jobbank.gc.ca) — free, national, bilingual, immigrant-friendly.
+  No live per-query REST key, but its data is on the **Open Government CKAN API** (free; monthly
+  CSV/JSON/XML datasets) plus a beta Labour-Market-Information API and XML job feeds. Good for bulk/
+  cross-check; crawl individual postings with Firecrawl for live search.
+- **JobSpy MCP** (`borgius/jobspy-mcp-server`) — free multi-board scraper MCP covering Indeed, LinkedIn,
+  Glassdoor, ZipRecruiter, Google Jobs — gives broad Canadian coverage in one server.
+- **Free no-key job APIs** (mostly remote/global): **Jobicy** (`jobicy.com/api/v2/remote-jobs`, no auth,
+  salary data), **Arbeitnow** (no auth, ATS jobs), **Careerjet** / **Jooble** (public search APIs).
+
+**Canadian boards by lane** (search via Indeed/Firecrawl):
+| Lane | Primary | Specialist / highest-signal |
+|---|---|---|
+| general | **Indeed.ca**, **LinkedIn**, **Job Bank**, Glassdoor | **Eluta** (quality-listing aggregator) |
+| academic / research | Job Bank, LinkedIn | **University Affairs** (universityaffairs.ca), **CAUT**, individual university career portals |
+| healthcare | Job Bank, Indeed | provincial health-authority sites; HealthForceOntario etc. |
+| tech / AI / data | LinkedIn, Indeed | **ITJobs.ca**, **MaRS**, company careers pages |
+| students / grads / early-career | Indeed, Job Bank | **TalentEgg** |
+
+Note bilingual/federal & Quebec roles often need French (see `ca-conventions.md`).
+
 ## UK boards by job family
 
 No single board covers everything. Map the family to its real home:
