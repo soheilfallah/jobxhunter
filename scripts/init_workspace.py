@@ -16,7 +16,7 @@ Creates:
   <root>/applications/tracker.xlsx+csv   # via tracker.py init
 
 Usage:
-  python init_workspace.py --workspace <dir> [--name soheil] [--force]
+  python init_workspace.py --workspace <dir> [--name alex] [--force]
 """
 import argparse
 import os
@@ -173,7 +173,7 @@ def _write_if_absent(path, content, base, force=False):
 def main():
     ap = argparse.ArgumentParser(description="Scaffold a job-hunt workspace (Setup mode).")
     ap.add_argument("--workspace", help="workspace root (else JOBHUNT_DIR / discovery)")
-    ap.add_argument("--name", default="profile", help="profile file basename (e.g. soheil)")
+    ap.add_argument("--name", default="profile", help="profile file basename (e.g. alex)")
     ap.add_argument("--force", action="store_true", help="scaffold even if workspace exists")
     args = ap.parse_args()
 

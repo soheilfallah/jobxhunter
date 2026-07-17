@@ -5,6 +5,11 @@ fallback. **Detect what the surface exposes** (list your tools/skills if unsure)
 accordingly — every route has a self-sufficient fallback, so the skill never hard-depends on an
 optional tool.
 
+> **Bring your own keys.** No API keys ship with this skill and none are in the repo. Each connector
+> below is an MCP server the user registers in their own Claude config with their own key (see the
+> README, "Connectors & API keys — bring your own"). The skill only calls tools by name; it never
+> holds a credential. Every connector is optional — absent ones fall back to WebSearch/browser.
+
 ## Tool-name convention (both surfaces)
 Tool names are written **bare** (`reed_search_jobs`). Resolve each to your surface's prefix:
 - **Claude Code:** `mcp__<server>__<tool>` — e.g. `mcp__reed__reed_search_jobs`.

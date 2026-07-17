@@ -87,7 +87,7 @@ Example:
 
 ```
 Sara Ahmadi
-Manchester, UK · +44 7700 900123 · sara.ahmadi@gmail.com
+Manchester, UK · +44 7700 900123 · sara.ahmadi@example.com
 linkedin.com/in/sara-ahmadi · github.com/sahmadi
 ```
 

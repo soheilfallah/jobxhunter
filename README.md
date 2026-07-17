@@ -54,7 +54,8 @@ COVER LETTER / COLD MAIL → TRACK & FILE.**
 
 | Command | What it does |
 |---|---|
-| **SOURCE** | Finds live roles via job connectors (Indeed, Dice) and, when they don't cover a board, a deep-crawl fallback (`WebSearch` → `WebFetch` → browser automation; or a Firecrawl-style crawl MCP if connected). Triages each hit against hard knockouts before tailoring. |
+| **SETUP / DAILY HUNT** | Scaffolds a job-hunt **workspace** for a new user (profile template + tracker + playbook) then stops; or, on a populated workspace, runs an autonomous **daily hunt** — sources, triages, tailors every new live match, files everything, and writes a dated summary. See `references/daily-hunt.md`. |
+| **SOURCE** | Finds live roles via job connectors (Indeed, Reed, Adzuna, Dice — bring your own keys) and, when they don't cover a board, a deep-crawl fallback (Firecrawl → `WebSearch` → browser automation). Triages each hit against hard knockouts before tailoring. |
 | **DISCOVER + COLD MAIL** | The hidden job market: builds a ranked target-company list (web search + Clay enrichment + Ahrefs "related companies"), finds the *named* hiring contact and a verified email, and drafts a short, human cold email — written from the user's own **spoken/verbal narrative**, voice preserved. |
 | **TAILOR** (core) | Parse JD → build a coverage matrix → select & order evidence → draft (verb + task + method + outcome, keywords woven in, acronyms paired) → voice pass + integrity checks → render ATS-safe `.docx` + plain-text. |
 | **RECRUITER LOOP** | Adopts a JD-specific recruiter persona (a fintech manager reads differently from an NHS panel) and scores the draft on five dimensions, returning a scorecard + ranked, actionable fixes. Loops until it passes a threshold or a pass limit. |
@@ -93,9 +94,12 @@ job-hunt/
 │   └── keyword-taxonomy/        # weighted keyword maps per job family
 ├── assets/                      # CV markdown-input template, render contract, sample-profile.md (demo)
 ├── scripts/                     # deterministic Python helpers
+│   ├── _lib.py                  # workspace resolution + dependency preflight
+│   ├── init_workspace.py        # scaffold a new workspace (Setup mode)
 │   ├── render_docx.py           # markdown CV → ATS-safe .docx + .txt
-│   ├── tracker.py               # xlsx + csv tracker; green/lock on Applied
-│   └── new_application.py       # create per-job folder + tracker row
+│   ├── tracker.py               # xlsx + csv tracker; green/lock on Applied; dedupe; priority-view
+│   ├── new_application.py       # create per-job folder + tracker row
+│   └── build_seen_ledger.py     # canonical-key dedupe ledger for the daily hunt
 ├── kb-build/                    # provenance: live JD captures + raw research notes
 └── evals/                       # validation runs (self-contained)
 ```
@@ -155,10 +159,50 @@ What it proved:
 ## Requirements
 
 - Claude Code (or a `SKILL.md`-compatible Claude host).
-- Python 3 with `python-docx` and `openpyxl` (`pip install python-docx openpyxl`).
-- Optional connectors that enhance sourcing/outreach if available in the host: a job search connector
-  (e.g. Indeed/Dice), a company/contact enrichment connector (e.g. Clay), a competitor-discovery
-  source (e.g. Ahrefs), email drafting (e.g. Gmail), and browser automation for deep crawls.
+- Python 3 with `python-docx` and `openpyxl` (`pip install python-docx openpyxl`). The scripts
+  **preflight** these and fail with the exact fix if missing.
+- Optional connectors that enhance sourcing/outreach — **bring your own** (see next section).
+
+---
+
+## Connectors & API keys — bring your own
+
+**This skill ships with NO API keys, and none are committed to this repo.** The job connectors are
+Model-Context-Protocol (MCP) servers that *you* register in *your own* Claude config, each with *your
+own* key. The skill only ever calls tools **by name** (`reed_search_jobs`, `adzuna_search_jobs`,
+`firecrawl_scrape`, …) — it never contains a credential. Your keys live in your MCP config
+(`~/.claude.json` for Claude Code, or the Claude Desktop config) — a file **outside this repository**.
+Never paste a key into a skill file, a profile, or a commit.
+
+Every connector is **optional**: the skill detects what you've configured and degrades gracefully
+(each sourcing lane has a fallback). Configure the ones you want:
+
+| Connector | Get a key | Cost |
+|---|---|---|
+| **Reed** (UK jobs) | https://www.reed.co.uk/developers — free Jobseeker API key | free |
+| **Adzuna** (UK jobs + salary data) | https://developer.adzuna.com — free `app_id` + `app_key` | free tier |
+| **Firecrawl** (JD crawling) | https://www.firecrawl.dev — API key (`fc-…`) | free tier + paid |
+| **Indeed / Dice** (jobs) | via their claude.ai connectors (OAuth — no manual key) | per host |
+| **Clay / Ahrefs / Gmail / Calendar** (discovery + outreach) | your own accounts / connectors | per service |
+
+**How to register (example — Reed, Claude Code `~/.claude.json`):**
+```jsonc
+"mcpServers": {
+  "reed": {
+    "command": "python",
+    "args": ["path/to/reed-mcp/server.py"],
+    "env": { "REED_API_KEY": "YOUR_OWN_KEY_HERE" }   // your key, never committed
+  },
+  "firecrawl": {
+    "command": "npx",
+    "args": ["-y", "firecrawl-mcp"],
+    "env": { "FIRECRAWL_API_KEY": "YOUR_OWN_KEY_HERE" }
+  }
+}
+```
+Keep `.env` files and MCP configs out of git (this repo's `.gitignore` already excludes `.env`). If a
+connector isn't configured, the skill falls back to `WebSearch`/browser crawling for that lane —
+nothing breaks, it's just less structured. See `references/tools-and-connectors.md` for the full map.
 
 ## Using it
 
