@@ -36,7 +36,17 @@ line in every command below.
 - **Job description**: pasted text, a file, or an Indeed/URL the skill captures.
 - **Level** (CV only): `L0` / `L1` (default) / `L2`, with an optional `%` knob within L1. See
   `references/tailoring-levels.md`.
-- **Applications root**: default `D:\soh-workspace\career\job-hunt\applications`.
+- **Workspace** (the unit of state — path-agnostic, never hard-coded): a directory holding
+  `profiles/` + `applications/`. Resolve it once per run: **explicit path → `JOBHUNT_DIR` env →
+  discovery → none ⇒ Setup mode** (`python scripts/_lib.py resolve`). All paths derive from it. Full
+  contract + Setup/Daily-run: `references/daily-hunt.md`.
+
+## Two ways to run
+
+- **On-demand (classic):** the user hands over one JD → run TAILOR (+ recruiter loop, cover letter).
+- **Autonomous daily hunt:** point the skill at a workspace → it sources, triages, tailors every new
+  live match, files everything, and writes a dated summary. If no workspace resolves, it **scaffolds**
+  one and stops for the user to fill their profile. See `references/daily-hunt.md` (SETUP + DAILY RUN).
 
 ## Reference map (progressive disclosure — load only what the step needs)
 
@@ -55,6 +65,8 @@ line in every command below.
 | writing a cover letter | `references/cover-letter.md` |
 | finding jobs to apply to (sourcing) | `references/job-search-guide.md` |
 | finding target companies + cold-emailing them | `references/company-discovery-cold-outreach.md` |
+| running the autonomous daily hunt / scaffolding a workspace | `references/daily-hunt.md` |
+| which tool/connector/skill to use (the manifest) | `references/tools-and-connectors.md` |
 
 Keyword families: `plant-science-research`, `research-assistant-lead`, `ai-technician-junior-ai`,
 `data-research-analysis`, `security-frontline`. Pick the closest; if none fit, decompose the JD
@@ -86,6 +98,29 @@ self-sufficient fallback, so the skill never hard-depends on an optional tool.
   before dropping to WebFetch/Claude-in-Chrome.
 
 ---
+
+## Command: SETUP (scaffold a workspace — first run / new user)
+
+When no workspace resolves (no path, no `JOBHUNT_DIR`, discovery finds nothing), the user is new.
+**Scaffold and stop** — do not hunt against an empty profile:
+```
+python scripts/init_workspace.py --workspace <dir> [--name <who>]
+```
+This builds the workspace contract (`profiles/`, `applications/`, `daily-hunt/`, `scripts/`), drops a
+rich **profile template** (a warehouse, not a CV) + a starter `_RUN-PLAYBOOK.md` + empty dedupe ledger,
+copies the scripts in, runs `tracker.py init`, then stops for the user to fill the profile. It runs a
+dependency **preflight** first (openpyxl + python-docx) so the tracker can never half-commit. Full
+detail: `references/daily-hunt.md`.
+
+## Command: DAILY HUNT (autonomous run — populated workspace)
+
+The repeatable daily hunt. Read `references/daily-hunt.md` and follow it: read the playbook → read the
+profile fresh → concurrency lock + rebuild ledger → **source** the priority families (live connectors,
+LIVE-only, new-since-last-run) → knockout sweep → **tailor every new live match (no cap)** → prep
+cover-letter scaffolds and flag braindumps → **track & file** every job (Drafted/Skipped with reason +
+link) → rebuild ledger + regenerate the priority view → write a dated `daily-hunt/<DATE>-summary.md`
+(same-day re-run ⇒ `-run-b`). Never touch `Applied` rows; never claim a profile "never-claim" gap;
+dedupe on the canonical link key, not folder slugs.
 
 ## Command: SOURCE (find jobs)
 
@@ -268,10 +303,12 @@ python scripts/new_application.py --root <apps> --category <cat> --company "<Co>
     --location "<loc>" --link "<url>" --source <Indeed|LinkedIn|…> --ats <platform> \
     --pay "<band>" --level <L0|L1> [--status Skipped]
 ```
-This makes `applications\<category>\<date>_<company>_<role>\` with `job-description.md` and
-`notes.md`, and adds one tracker row. Categories are dynamic — create whatever fits (ai,
-research-assistant, plant-science, data, security, …). Render the CV into that folder; put the
-brain-dump, coverage matrix, recruiter scorecard, and any L2 delta into `notes.md`.
+This makes `<category>/<date>_<company>_<role>/` with `job-description.md` and `notes.md`, and adds
+one tracker row (it **auto-inits** the tracker on first use and **preflights** deps first, so the row
+is never silently dropped). Categories are dynamic — create whatever fits (ai, research-assistant,
+plant-science, data, security, …). Render the CV into that folder; put the brain-dump, coverage
+matrix, recruiter scorecard, and any L2 delta into `notes.md`. Pass `--link` always so the dedupe
+ledger key resolves.
 
 **When the user says "I applied to this one":**
 ```
@@ -283,24 +320,40 @@ recolour. Applied rows are final — the script refuses silent overwrites (pass 
 override deliberately).
 
 The tracker is `tracker.xlsx` + a `tracker.csv` mirror. **Always** change tracker state through
-`scripts/tracker.py`, never by hand — it owns the green/lock/date logic deterministically.
+`scripts/tracker.py`, never by hand — it owns the green/lock/date logic deterministically. For the
+day-to-day worklist, generate the prioritised view (`tracker.py priority-view` →
+`tracker-priority.xlsx`: Drafted-first, soonest-closing next, closing ≤7d in red); the full tracker
+stays the system of record. Clean duplicate rows with `tracker.py dedupe` (dry-run by default;
+`--apply` to rewrite; it dedupes on the canonical link key and never drops `Applied` rows).
 
 ## Scripts (bundled, deterministic)
 
+- `scripts/_lib.py` — workspace resolution (`resolve`) + dependency `preflight` (openpyxl +
+  python-docx, fails loudly with the exact fix so the tracker never half-commits). Import or CLI.
+- `scripts/init_workspace.py` — scaffold a new workspace (Setup mode): tree + profile template +
+  playbook + empty ledger + tracker init, then stop. Idempotent; won't clobber a populated workspace.
 - `scripts/render_docx.py` — markdown CV → ATS-safe `.docx` + `.txt`. Never emits tables/columns/
   text-boxes/images.
-- `scripts/tracker.py` — `init` / `add` / `update` / `show` on the tracker; green fill + lock on
-  Applied; CSV mirror. Row key = `folder_path`.
-- `scripts/new_application.py` — create the per-job folder set + tracker row in one call.
+- `scripts/tracker.py` — `init` / `add` / `update` / `show` / **`dedupe`** / **`priority-view`**;
+  green fill + lock on Applied; CSV mirror. Row key = `folder_path`; dedupe key = canonical link.
+- `scripts/new_application.py` — per-job folder + tracker row in one call (auto-inits + preflights).
+- `scripts/build_seen_ledger.py` — rebuild `daily-hunt/seen-jobs.csv` (canonical job key → status)
+  from the tracker; run at the start and end of every daily hunt.
 
-Requires Python with `python-docx` and `openpyxl` (installed here).
+Requires Python with `python-docx` and `openpyxl`. The scripts **preflight** these and fail with the
+exact `pip install` if missing — they never proceed into a half-commit.
 
 ## Hold-the-line invariants
 
-1. Master profile is truth for L0/L1; gaps surfaced, never filled.
+1. Master profile is truth for L0/L1; gaps surfaced, never filled. **Never claim a technique the
+   profile lists under "never claim"; respect confidential holds** (capability, not protected specifics).
 2. ATS-safe rendering — no tables, columns, or graphics in the CV.
 3. No slop — enforced against `cv-mistakes.md`.
 4. UK conventions on by default.
 5. L2 is realistic-not-perfect, unwatermarked, delta stated in conversation/notes, never submittable.
 6. Profile schema stays generic — the profile is swappable data; skill logic never keys off who it is.
 7. Every job filed into a category folder and logged; applied rows green and locked; skipped jobs recorded.
+8. **Path-agnostic** — resolve the workspace root at runtime; never hard-code a machine path.
+9. **Daily hunt:** only LIVE roles, only NEW roles (dedupe on the canonical link key, never a folder
+   slug), **no cap** on how many to tailor; the tracker is owned only by `tracker.py` and `Applied`
+   rows are never touched; same-day re-runs append (`-run-b`), never overwrite.

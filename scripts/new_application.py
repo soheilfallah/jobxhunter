@@ -26,6 +26,8 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from _lib import preflight  # noqa: E402
 
 
 def slug(text, maxlen=40):
@@ -54,6 +56,11 @@ def main():
     ap.add_argument("--notes", default="")
     ap.add_argument("--no-track", action="store_true", help="skip tracker row (folder only)")
     args = ap.parse_args()
+
+    # Fail loudly BEFORE creating any folder if the tracker can't be written —
+    # otherwise a missing openpyxl leaves an orphan folder with no tracker row.
+    if not args.no_track:
+        preflight([("openpyxl", "openpyxl", "tracker.xlsx read/write (tracker.py)")])
 
     cat_dir = os.path.join(args.root, slug(args.category, 30))
     folder = os.path.join(cat_dir, f"{args.date}_{slug(args.company, 24)}_{slug(args.role, 30)}")

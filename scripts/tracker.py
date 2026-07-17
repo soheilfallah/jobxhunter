@@ -26,18 +26,23 @@ import json
 import os
 import sys
 
-try:
-    from openpyxl import Workbook, load_workbook
-    from openpyxl.styles import PatternFill, Font, Protection, Alignment
-    from openpyxl.utils import get_column_letter
-except ImportError:
-    sys.exit("openpyxl is required: pip install openpyxl")
+# Preflight before importing openpyxl so a missing dep fails LOUDLY with the exact
+# fix, instead of a bare sys.exit that let callers half-commit (folder but no row).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _lib import preflight  # noqa: E402
+preflight([("openpyxl", "openpyxl", "tracker.xlsx read/write (tracker.py)")])
+
+from openpyxl import Workbook, load_workbook  # noqa: E402
+from openpyxl.styles import PatternFill, Font, Protection, Alignment  # noqa: E402
+from openpyxl.utils import get_column_letter  # noqa: E402
 
 COLUMNS = [
     "logged_date", "category", "company", "role", "location", "link", "source",
     "ats_platform", "pay", "level_used", "status", "date_applied",
     "date_interviewed", "date_rejected", "date_offer", "follow_up",
     "cv_path", "cover_letter_path", "folder_path", "notes",
+    # appended (not inserted) so existing trackers keep their column positions:
+    "closing_date", "fit_score",
 ]
 
 # status -> the date column it stamps (if any)
@@ -232,16 +237,173 @@ def cmd_show(root):
         print(f"  [{d['status']:<11}] {d['category']:<20} {d['company']:<22} {d['role']}")
 
 
+# status precedence for choosing which duplicate to keep (higher = keep)
+STATUS_RANK = {"Offer": 6, "Interviewed": 5, "Interview": 5, "Rejected": 4,
+               "Applied": 4, "Replied": 3, "Cold-emailed": 2, "Drafted": 1,
+               "Skipped": 0}
+# post-application states are NEVER auto-deleted as a duplicate
+PROTECTED = {"Applied", "Interview", "Interviewed", "Offer", "Rejected"}
+
+
+def _dedupe_key(d):
+    """Canonical job key: normalised link, else folder_path. Never the folder slug alone."""
+    from build_seen_ledger import canonical_key
+    return canonical_key(d.get("link", ""), d.get("folder_path", ""))
+
+
+def cmd_dedupe(root, apply=False):
+    wb, ws = _load(root)
+    rows = _rows_as_dicts(ws)
+    groups = {}
+    for d in rows:
+        k = _dedupe_key(d)
+        if k:
+            groups.setdefault(k, []).append(d)
+
+    to_delete = set()      # _row numbers to drop
+    merges = {}            # _row -> {col: value} to backfill into an unprotected keeper
+    warnings = []
+    for k, grp in groups.items():
+        if len(grp) < 2:
+            continue
+        protected = [d for d in grp if str(d.get("status")) in PROTECTED]
+        rank = lambda d: (STATUS_RANK.get(str(d.get("status")), 0), -d["_row"])
+        if protected:
+            keeper = max(protected, key=rank)
+            if len(protected) > 1:
+                warnings.append(f"  ! {k}: {len(protected)} post-application rows "
+                                f"(rows {[d['_row'] for d in protected]}) — NOT auto-merged, review by hand")
+            # only delete UNprotected duplicates; never touch a protected/Applied row
+            for d in grp:
+                if d is not keeper and str(d.get("status")) not in PROTECTED:
+                    to_delete.add(d["_row"])
+        else:
+            keeper = max(grp, key=rank)
+            backfill = {}
+            for d in grp:
+                if d is keeper:
+                    continue
+                to_delete.add(d["_row"])
+                for col in COLUMNS:  # fill keeper's blanks from the dup
+                    if not keeper.get(col) and d.get(col):
+                        backfill.setdefault(col, d[col])
+            if backfill:
+                merges[keeper["_row"]] = backfill
+
+    dup_count = len(to_delete)
+    print(f"Dedupe scan: {len(rows)} rows, {len(groups)} unique keys, "
+          f"{dup_count} duplicate row(s) to remove.")
+    for w in warnings:
+        print(w)
+    if dup_count == 0 and not merges:
+        print("Nothing to dedupe.")
+        return
+    for r in sorted(to_delete):
+        d = next(x for x in rows if x["_row"] == r)
+        print(f"  - drop row {r}: [{d.get('status')}] {d.get('company')} / {d.get('role')}")
+
+    if not apply:
+        print("\nDRY RUN — re-run with --apply to rewrite the tracker.")
+        return
+
+    # Rebuild the sheet from survivors (keeps ordering, reapplies styles/locks).
+    survivors = [d for d in rows if d["_row"] not in to_delete]
+    for d in survivors:
+        if d["_row"] in merges:
+            d.update(merges[d["_row"]])
+    new_wb, new_ws = _new_workbook()
+    for d in survivors:
+        new_ws.append([d.get(c, "") for c in COLUMNS])
+        _apply_row_style(new_ws, new_ws.max_row, str(d.get("status", "Drafted")))
+    _save(new_wb, new_ws, root)
+    print(f"\nApplied: removed {dup_count} duplicate row(s); {len(survivors)} rows remain.")
+
+
+# priority buckets for the day-to-day worklist (lower sorts first)
+PRIORITY_BUCKET = {
+    "Drafted": 0,                                            # actionable — tailor/apply
+    "Cold-emailed": 1, "Replied": 1, "Interview": 1,
+    "Interviewed": 1, "Offer": 1,                            # in-progress
+    "Applied": 2,                                            # done for now — sinks
+    "Rejected": 3, "Skipped": 3, "Not applied": 3,           # dead / watch — bottom
+}
+PRIORITY_VIEW_COLUMNS = ["status", "company", "role", "location",
+                         "closing_date", "fit_score", "link"]
+
+
+def _parse_date(s):
+    try:
+        return datetime.date.fromisoformat(str(s)[:10])
+    except (ValueError, TypeError):
+        return None
+
+
+def _fit_num(v):
+    """Fit/recruiter score -> float for sorting (higher = better). Blank -> -1."""
+    try:
+        return float(str(v).split("/")[0].strip())
+    except (ValueError, AttributeError):
+        return -1.0
+
+
+def cmd_priority_view(root):
+    _, ws = _load(root)
+    rows = _rows_as_dicts(ws)
+    today = datetime.date.today()
+    far = datetime.date(9999, 12, 31)
+
+    def sort_key(d):
+        bucket = PRIORITY_BUCKET.get(str(d.get("status")), 2)
+        close = _parse_date(d.get("closing_date")) or far      # no date -> last
+        fit = -_fit_num(d.get("fit_score"))                    # higher fit first
+        return (bucket, close, fit)
+
+    rows.sort(key=sort_key)
+
+    wb = Workbook()
+    out = wb.active
+    out.title = "worklist"
+    out.append(PRIORITY_VIEW_COLUMNS)
+    for i, name in enumerate(PRIORITY_VIEW_COLUMNS, start=1):
+        c = out.cell(row=1, column=i)
+        c.fill = HEADER_FILL
+        c.font = HEADER_FONT
+        width = {"role": 30, "company": 24, "location": 20, "link": 40}.get(name, 14)
+        out.column_dimensions[get_column_letter(i)].width = width
+    out.freeze_panes = "A2"
+
+    red = PatternFill("solid", fgColor="F4CCCC")
+    amber = PatternFill("solid", fgColor="FCE4D6")
+    close_col = PRIORITY_VIEW_COLUMNS.index("closing_date") + 1
+    for d in rows:
+        out.append([d.get(c, "") for c in PRIORITY_VIEW_COLUMNS])
+        r = out.max_row
+        cd = _parse_date(d.get("closing_date"))
+        if cd:
+            days = (cd - today).days
+            if days <= 7:
+                out.cell(row=r, column=close_col).fill = red      # closes within a week
+            elif days <= 14:
+                out.cell(row=r, column=close_col).fill = amber
+
+    path = os.path.join(root, "tracker-priority.xlsx")
+    wb.save(path)
+    print(f"Prioritised worklist: {path} ({len(rows)} rows; Drafted first, "
+          f"soonest-closing next, closing≤7d in red). Full tracker stays the system of record.")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Application tracker (xlsx + csv).")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("init", "add", "update", "show"):
+    for name in ("init", "add", "update", "show", "dedupe", "priority-view"):
         p = sub.add_parser(name)
         p.add_argument("--root", required=True, help="applications directory")
         if name in ("add", "update"):
             p.add_argument("--data", required=True, help="JSON object of column values")
         if name == "update":
             p.add_argument("--key", required=True, help="folder_path of the row to update")
+        if name == "dedupe":
+            p.add_argument("--apply", action="store_true", help="rewrite (default: dry run)")
     args = ap.parse_args()
     data = json.loads(args.data) if getattr(args, "data", None) else {}
     if args.cmd == "init":
@@ -252,6 +414,10 @@ def main():
         cmd_update(args.root, args.key, data)
     elif args.cmd == "show":
         cmd_show(args.root)
+    elif args.cmd == "dedupe":
+        cmd_dedupe(args.root, apply=args.apply)
+    elif args.cmd == "priority-view":
+        cmd_priority_view(args.root)
 
 
 if __name__ == "__main__":
