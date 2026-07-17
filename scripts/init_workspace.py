@@ -31,11 +31,21 @@ from _lib import (  # noqa: E402
     preflight, is_workspace, resolve_workspace_root,
     applications_dir, daily_dir, profiles_dir, scripts_dir,
 )
+from dump_manifest import FIELDS as MANIFEST_FIELDS  # noqa: E402
 
 SCRIPT_FILES = ["_lib.py", "tracker.py", "new_application.py", "render_docx.py",
-                "build_seen_ledger.py"]
+                "build_seen_ledger.py", "dump_manifest.py"]
 
 SEEN_LEDGER_HEADER = "job_key,status,category,company,role,link,folder_path,last_seen\n"
+MANIFEST_HEADER = ",".join(MANIFEST_FIELDS) + "\n"
+
+CHANGELOG_TEMPLATE = """\
+# Intake changelog
+
+Each intake run appends what it added or changed in the master profile.
+Newest entries at the bottom. The profile itself is the source of truth;
+this is the audit trail.
+"""
 
 DUMP_README = """\
 # Dump everything about yourself here
@@ -52,7 +62,12 @@ Good things to add:
 - Job ads you liked (helps infer your target roles + market/country)
 - A short note: your location, work authorisation, salary floor, and where you want to work
 
-Then run INTAKE. Nothing here is published — this folder stays private to your workspace.
+Then run INTAKE. It scans this folder into `_manifest.csv` (so re-runs only pick up what's new),
+reads what it can, and for any file it can't read as text here (Word/PDF/image) it leaves a placeholder
+under `../profiles/_intake/placeholders/` so nothing is lost — read those in cowork/Desktop or convert
+them to text and drop the text version here.
+
+Nothing here is published — this folder stays private to your workspace.
 """
 
 PROFILE_TEMPLATE = """\
@@ -149,7 +164,9 @@ Edit the lessons section as you learn what works for this profile.
    Applied rows are final/locked — never touch them.
 7. **File everything** — Drafted (tailored) or Skipped (with a reason + source link), so the
    ledger key always resolves.
-8. **Cover letters are never cold-generated** — prep the scaffold, flag "needs brain-dump".
+8. **Cover letters in the autonomous run default to a scaffold** — prep it and flag "needs brain-dump"
+   (no user is present to brainstorm with). The on-demand COVER LETTER command may draft a profile-only
+   letter without a brain-dump (recommended, not required), flagging the "why this company" paragraph.
 
 ## Sourcing lanes (live connectors first)
 Board choice follows the profile's target priority order. Connectors available now
@@ -168,6 +185,65 @@ candidate cannot truthfully meet → Skip with the reason.
 
 ## Lessons learned (append as you go)
 - (e.g. "Harper Adams reposts CCES RA roles ~quarterly — keep on watch-list.")
+"""
+
+WORKSPACE_MAP_TEMPLATE = """\
+# Workspace map — what every folder and file here is for
+
+This directory is your job-hunt **workspace**: the single home for your profile, the raw material it's
+built from, and every application. It's path-agnostic and private (keep it gitignored). This map is
+generated at setup so the structure is always self-explaining and trustworthy.
+
+```
+<this folder>/
+  WORKSPACE-MAP.md            ← you are here
+  dump/                       ← drop RAW material about yourself here (any format)
+    README.md                 ← what to put in dump/
+    _manifest.csv             ← INTAKE's book-keeping: one row per file, with a status
+  profiles/
+    {name}.md                 ← THE MASTER PROFILE — a warehouse of everything true about you
+    _intake/                  ← intake internals (private)
+      placeholders/           ← a stub for each dump file that couldn't be read as text here
+      CHANGELOG.md            ← what each intake run added to the profile
+  applications/
+    tracker.xlsx | .csv       ← the system of record (owned ONLY by scripts/tracker.py)
+    tracker-priority.xlsx     ← generated day-to-day worklist (Drafted-first, soonest-closing)
+    <category>/<YYYY-MM-DD>_<company>_<role>/
+      job-description.md      ← the captured full JD
+      notes.md                ← coverage matrix, brain-dump, recruiter scorecard, L2 delta
+      CV.md  CV.docx  CV.txt  ← the tailored CV (markdown source + rendered outputs)
+      cover-letter.*          ← if generated
+    daily-hunt/
+      _RUN-PLAYBOOK.md        ← hard rules + lessons — read FIRST every hunt
+      seen-jobs.csv           ← dedupe ledger (canonical job key -> status)
+      <YYYY-MM-DD>-summary.md ← one dated summary per hunt run
+  scripts/                    ← a portable copy of the skill's deterministic scripts
+```
+
+## How the profile stays current
+Drop files into `dump/`, then run INTAKE. It runs `scripts/dump_manifest.py scan`, which records each
+file in `dump/_manifest.csv` with a status:
+`new` (read it now) · `updated` (changed, re-read) · `ingested` (already in the profile, skip) ·
+`unreadable` (a format it can't read as text here — a placeholder is left under
+`profiles/_intake/placeholders/`) · `missing` (removed from dump/). Because it diffs against the
+manifest, re-running intake only processes genuinely new material — so the profile grows every time you
+add something, without redoing old work.
+
+## Output-format contract (Word + PDF both matter — use each for its job)
+- **`CV.docx`** — the **ATS submission**. Single-column, no tables/graphics; parses cleanly. Rendered by
+  `scripts/render_docx.py` (Claude Code) or the native `docx` skill (cowork).
+- **`CV.txt`** — the plain-text mirror, for pasting into web forms and eyeballing what the ATS sees.
+- **PDF** — a **human-facing / portfolio copy only**, produced via the `/make-pdf` skill on request.
+  Do **not** submit the make-pdf PDF to an ATS (it isn't guaranteed ATS-parseable); send it only when a
+  human asked for a PDF directly or a JD explicitly requires one.
+- **`tracker.xlsx` + `tracker.csv`** — the application log. Always change it through `scripts/tracker.py`
+  (it owns the green-fill + lock on `Applied` rows); never hand-edit.
+
+## Trust rules
+- The **master profile is the only source of truth** for any submitted document — the skill selects and
+  reframes from it, never invents.
+- `dump/`, `profiles/` (incl. `_intake/`) are **personal data** — keep the workspace out of any public repo.
+- Every job — applied or skipped — is filed in a category folder and logged, so nothing is lost.
 """
 
 
@@ -213,7 +289,10 @@ def main():
 
     print(f"Scaffolding workspace at {root}")
     dump = os.path.join(root, "dump")
-    for d in (profiles_dir(root), applications_dir(root), daily_dir(root), scripts_dir(root), dump):
+    intake = os.path.join(profiles_dir(root), "_intake")
+    placeholders = os.path.join(intake, "placeholders")
+    for d in (profiles_dir(root), intake, placeholders, applications_dir(root),
+              daily_dir(root), scripts_dir(root), dump):
         os.makedirs(d, exist_ok=True)
         print(f"  dir     {os.path.relpath(d, root)}/")
 
@@ -231,6 +310,10 @@ def main():
     _write_if_absent(os.path.join(daily_dir(root), "seen-jobs.csv"),
                      SEEN_LEDGER_HEADER, root, args.force)
     _write_if_absent(os.path.join(dump, "README.md"), DUMP_README, root, args.force)
+    _write_if_absent(os.path.join(dump, "_manifest.csv"), MANIFEST_HEADER, root, args.force)
+    _write_if_absent(os.path.join(intake, "CHANGELOG.md"), CHANGELOG_TEMPLATE, root, args.force)
+    _write_if_absent(os.path.join(root, "WORKSPACE-MAP.md"),
+                     WORKSPACE_MAP_TEMPLATE.format(name=args.name), root, args.force)
 
     # Initialise the tracker (idempotent).
     init = subprocess.run([sys.executable, os.path.join(HERE, "tracker.py"),

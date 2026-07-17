@@ -123,16 +123,29 @@ liked — and the skill reads it all and **builds the master profile** for them.
 market and hands off. Full method: `references/profile-intake.md`.
 
 1. Ensure the workspace + `dump/` exist (SETUP/`init_workspace.py` creates `dump/` with a README).
-2. **Read every file in `dump/`** — in cowork the agent can read PDFs, DOCX, images, and text. Extract
-   real facts only (roles, dates, skills, education, licences, numbers, outputs, contact, location,
-   work authorisation).
-3. **Synthesise the master profile** into `profiles/<name>.md` per `references/master-profile-schema.md`
-   — a WAREHOUSE, not a CV. Never invent; where the dump is silent, leave a gap and ask.
-4. **Detect the market** (`## Career targets & market`) from location + work authorisation + target
+2. **Scan the dump first — `python scripts/dump_manifest.py scan --workspace <root>`.** This writes
+   `dump/_manifest.csv` and tells you exactly what to read: **new/updated** text files to ingest,
+   **unreadable** files (Word/PDF/image/binary) for which it auto-creates an empty **placeholder stub**
+   under `profiles/_intake/placeholders/` so nothing is lost, and **ingested** files to skip. This is
+   what makes a re-run incremental — only genuinely new material is processed.
+3. **Read every actionable file** — in cowork the agent can read PDFs, DOCX, images, and text (PDFs and
+   images also read in Claude Code). Extract real facts only (roles, dates, skills, education, licences,
+   numbers, outputs, contact, location, work authorisation). As each file's facts land in the profile,
+   record it: `dump_manifest.py mark --path "<rel>" --status ingested`, delete its placeholder, and log
+   the delta to `profiles/_intake/CHANGELOG.md`.
+4. **Synthesise / enrich the master profile** into `profiles/<name>.md` per
+   `references/master-profile-schema.md` — a WAREHOUSE, not a CV. First run creates it; later runs
+   **merge** (keep prior confirmations + the "never claim" list). Never invent; where the dump is
+   silent, leave a gap and ask.
+5. **Run the profile enrichment interview** (`references/profile-intake.md`) — ask targeted starter
+   questions wherever a bullet is unquantified, a skill has no project behind it, a date is ambiguous,
+   or a target is unset, and write answers straight into the profile. This kills vague statements at the
+   source, so every downstream CV/cover letter stays concrete. Ask in small neutral memory-jog batches.
+6. **Detect the market** (`## Career targets & market`) from location + work authorisation + target
    geography, and set it (`uk`/`ca`/…). This is what later picks the conventions/boards/connectors.
-5. **Surface gaps and conflicts** for the user to confirm (missing dates, the "never claim" list, the
-   confidential-hold items) — one neutral batch, never an accusation.
-6. Hand off to DAILY HUNT (or TAILOR) using the market path chosen in step 4.
+7. **Surface gaps and conflicts** for the user to confirm (missing dates, the "never claim" list,
+   still-unreadable dump files, confidential-hold items) — one neutral batch, never an accusation.
+8. Hand off to DAILY HUNT (or TAILOR) using the market path chosen in step 6.
 
 Truth rule applies throughout: the profile may only contain what the dump (and the user's confirmations)
 actually support.
@@ -144,11 +157,12 @@ When no workspace resolves (no path, no `JOBHUNT_DIR`, discovery finds nothing),
 ```
 python scripts/init_workspace.py --workspace <dir> [--name <who>]
 ```
-This builds the workspace contract (`profiles/`, `applications/`, `daily-hunt/`, `scripts/`), drops a
-rich **profile template** (a warehouse, not a CV) + a starter `_RUN-PLAYBOOK.md` + empty dedupe ledger,
-copies the scripts in, runs `tracker.py init`, then stops for the user to fill the profile. It runs a
-dependency **preflight** first (openpyxl + python-docx) so the tracker can never half-commit. Full
-detail: `references/daily-hunt.md`.
+This builds the workspace contract (`profiles/` + `profiles/_intake/`, `dump/` with its `_manifest.csv`,
+`applications/`, `daily-hunt/`, `scripts/`), drops a rich **profile template** (a warehouse, not a CV) +
+a starter `_RUN-PLAYBOOK.md` + empty dedupe ledger, generates a **`WORKSPACE-MAP.md`** documenting every
+folder/tracker + the Word/PDF output contract, copies the scripts in, runs `tracker.py init`, then stops
+for the user to fill the profile (or run INTAKE against `dump/`). It runs a dependency **preflight**
+first (openpyxl + python-docx) so the tracker can never half-commit. Full detail: `references/daily-hunt.md`.
 
 **Then onboard the connectors (bring-your-own-keys).** A new user has the skill but not the MCP
 connectors. Run the doctor and guide them — never assume the connectors exist:
@@ -188,9 +202,17 @@ target family (and the candidate's location / right-to-work constraints), find l
 > If a name doesn't resolve, list your available tools and match by the `<server>` + `<tool>` pair —
 > the connector server names are `Indeed`, `reed`, `adzuna`, `Dice`, `firecrawl`.
 
+**Source-effort dial (user's choice — see `references/job-search-guide.md`).** Default is **`full`**:
+fan out across all connectors, then the web-crawl net — maximum coverage. Switch to **`budget`** when the
+user wants to save tokens ("quick hunt"): search in cost order and stop early — **Tier 1 claude.ai
+connectors (Indeed/Dice) → Tier 2 MCP servers (Reed/Adzuna) → Tier 3 web-search net (WebSearch →
+Firecrawl)**, climbing only while results are thin. Firecrawl captures each full JD in both modes; in
+`budget` mode, note any tier skipped for cost so the search isn't implied exhaustive.
+
 1. Pull search keywords from the family's `TITLE VARIANTS` in `references/keyword-taxonomy/<family>.md`.
-2. **Fan out across every connected job connector — one search per title variant, per connector** —
-   then dedupe hits by company+role. Don't stop at the first board; each covers different roles:
+2. **Fan out across every connected job connector — one search per title variant, per connector** (in
+   `budget` mode, work the tiers above in order instead) — then dedupe hits by company+role. Don't stop
+   at the first board; each covers different roles:
    - **Indeed** (`search_jobs`, `country_code='GB'`) — the broad UK workhorse.
    - **Reed** (`reed_search_jobs`, `locationName` + `distanceFromLocation` in **miles**) — strong on
      UK security, data, admin and agency roles.
@@ -229,7 +251,10 @@ For when there is no advert — target companies directly. See
    domain; **Indeed** `get_company_data` to vet each. Rank by fit, location/right-to-work, and stage.
 2. **ENRICH** — find the *named* owner of the hire/work (hiring manager, team lead, jobs.ac.uk
    "informal enquiries" contact) and a verified email via **Clay**
-   (`find-and-enrich-contacts-at-company`). Never cold-mail `info@`.
+   (`find-and-enrich-contacts-at-company`) or **RocketReach** (`rocketreach_search_people` to find the
+   profile, then `rocketreach_lookup_person` to get the verified email — a PAID lookup credit, so check
+   `rocketreach_account` first and use it frugally, one confirmed target at a time). Never cold-mail
+   `info@`.
 3. **COLD MAIL** — **required input: the user's own spoken/verbal narrative** (a voice note or ramble)
    on why this company and what they'd bring. **If it isn't supplied, ask for it and wait — never
    cold-generate.** Write the email FROM their words: preserve the spoken cadence, strip only true
@@ -329,13 +354,19 @@ persona. Full rules: `references/tailoring-levels.md`.
 
 ## Command: COVER LETTER
 
-Shares the JD analysis and profile feed but produces a letter, not a CV. **Required input: a short
+Shares the JD analysis and profile feed but produces a letter, not a CV. **Best input: a short
 brain-dump** of the user's own thoughts on *this* role (why they want it, their angle, any company
-connection) — **invite a spoken/verbal narrative** (a voice note or ramble; work from the transcript,
-keep the spoken cadence). **If it isn't supplied, ask for it and wait — never cold-generate.** Write
-the letter *from* the user's words: preserve their voice and cadence, strip slop but never de-voice them
-(a de-slopped letter that no longer sounds like them is a failure). Claims map to real profile
-evidence (same truth rule). Run the same voice pass (`/humanizer` + `/academic-prose`, or inline).
+connection) — **always ask for it first and strongly encourage it**, and **invite a spoken/verbal
+narrative** (a voice note or ramble; work from the transcript, keep the spoken cadence). Offer a quick
+3–5 prompt brainstorm as the easy on-ramp ("What first caught your eye about them? Which of your
+projects felt most like this job?"). **But the brain-dump is recommended, not required: if it isn't
+supplied, draft anyway from the JD + profile** — build motivation only from what the profile/research
+honestly support (never fabricate familiarity), keep it a touch shorter, and **flag the "why this
+company" paragraph as profile-only** in your return note so the user fixes the input rather than
+wordsmithing the output. Where the brain-dump exists, write the letter *from* the user's words: preserve
+their voice and cadence, strip slop but never de-voice them (a de-slopped letter that no longer sounds
+like them is a failure). Claims map to real profile evidence (same truth rule). Run the same voice pass
+(`/humanizer` + `/academic-prose`, or inline).
 UK conventions; render to `.docx` + plain text (bundled script or the `docx` skill), and route through
 `/make-pdf` if the user wants a human-facing PDF to send directly. The L0–L2 dial does NOT
 apply — a cover letter is inherently first-person and truthful. Full craft: `references/cover-letter.md`.
@@ -386,6 +417,9 @@ stays the system of record. Clean duplicate rows with `tracker.py dedupe` (dry-r
 - `scripts/tracker.py` — `init` / `add` / `update` / `show` / **`dedupe`** / **`priority-view`**;
   green fill + lock on Applied; CSV mirror. Row key = `folder_path`; dedupe key = canonical link.
 - `scripts/new_application.py` — per-job folder + tracker row in one call (auto-inits + preflights).
+- `scripts/dump_manifest.py` — `scan` the `dump/` folder into `dump/_manifest.csv` (per-file status)
+  and create placeholder stubs for unreadable formats; `mark` a file `ingested`. Makes INTAKE
+  incremental and format-safe. Import or CLI.
 - `scripts/build_seen_ledger.py` — rebuild `daily-hunt/seen-jobs.csv` (canonical job key → status)
   from the tracker; run at the start and end of every daily hunt.
 

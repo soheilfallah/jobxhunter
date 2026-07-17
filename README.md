@@ -12,6 +12,58 @@ knowledge base never change based on whose profile they read.
 
 ---
 
+## Install
+
+This repo is both a **Claude Code plugin** and a plain **skill** — pick one.
+
+### Option A — install as a plugin (recommended)
+
+In a Claude Code session:
+
+```
+/plugin marketplace add soheilfallah/job-hunt
+/plugin install job-hunt@soheil-job-hunt
+/reload-plugins
+```
+
+That lands the skill, its scripts, and the six slash commands, and declares the job connectors. Then:
+
+- **Set your keys (optional, prompted on enable):** Reed, Adzuna, and Firecrawl keys are the plugin's
+  user-config values — paste them when prompted, or leave blank to fall back to web search. Nothing is
+  committed anywhere. (Indeed/Dice are separate claude.ai connectors you enable in your host.)
+- **Python-based connectors need deps once:** the bundled Reed and Adzuna MCP servers are Python and need
+  `pip install mcp httpx python-dotenv` on a Python 3 that's on your PATH. Firecrawl (npx) needs nothing.
+  If you skip this, those two connectors simply don't start and sourcing falls back — nothing else breaks.
+
+Verify with `/plugin list` and `/help` (the `job-hunt` skill + `/job-hunt:*` commands should appear).
+
+**CLI equivalent** (non-interactive):
+```
+claude plugin marketplace add soheilfallah/job-hunt
+claude plugin install job-hunt@soheil-job-hunt
+```
+
+### Option B — install as a plain skill (also works in Claude Desktop / cowork)
+
+```
+git clone https://github.com/soheilfallah/job-hunt ~/.claude/skills/job-hunt
+pip install python-docx openpyxl
+```
+
+Restart Claude, and `/job-hunt` is available. The skill payload is just `SKILL.md` + `references/` +
+`assets/` + `scripts/`; the clone brings everything it needs.
+
+### First run (either option)
+
+Ask for **setup** (or run `/job-hunt:setup`). It scaffolds a private **workspace** — `profiles/`,
+`dump/`, `applications/`, a tracker, and a `WORKSPACE-MAP.md` — then stops. Drop your CVs/notes into
+`dump/` and run **intake** (`/job-hunt:intake`) to build your master profile. See "Using it" below.
+
+The slash commands the plugin adds: `/job-hunt:setup`, `:intake`, `:hunt`, `:tailor`, `:cover-letter`,
+`:discover`. You can also just talk to the skill in plain language — the commands are shortcuts.
+
+---
+
 ## The problem it solves
 
 Job applications fail in two places at once. An **ATS parser** (Workday, Greenhouse, Taleo, …) has to
@@ -247,12 +299,14 @@ profiles/applications directory entirely.
 
 ## Roadmap
 
-- **One-command connector install** — the Reed/Adzuna MCP servers are bundled in this repo under
-  `connectors/`; next is a PyPI release so setup is `pip install <name>` + your key rather than
-  `pip install -e connectors/<name>`.
-- **CLI packaging** — install the skill + scripts via a single command.
-- **Plugin marketplace** — bundle as a Claude plugin so it installs from the marketplace with its
-  companion skills and connector prompts wired in.
+- **✅ Plugin packaging (done)** — ships as a Claude Code plugin (`.claude-plugin/plugin.json` +
+  `marketplace.json`), installable via `/plugin marketplace add soheilfallah/job-hunt` →
+  `/plugin install job-hunt@soheil-job-hunt`, with the skill, six slash commands, and the Reed/Adzuna/
+  Firecrawl connectors declared (keys via the plugin's user-config, never committed). See **Install**.
+- **Zero-dep connectors** — the Reed/Adzuna MCP servers are Python (need `mcp`/`httpx`); next is a PyPI
+  release (or a bundled venv-on-first-run hook) so no manual `pip install` step is needed.
+- **Companion skills auto-wired** — bundle the `/humanizer` / `/make-pdf` prompts so the voice-and-PDF
+  passes are one install rather than a separate add.
 
 ## Status
 
