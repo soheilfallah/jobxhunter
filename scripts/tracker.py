@@ -29,7 +29,7 @@ import sys
 # Preflight before importing openpyxl so a missing dep fails LOUDLY with the exact
 # fix, instead of a bare sys.exit that let callers half-commit (folder but no row).
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _lib import preflight  # noqa: E402
+from _lib import preflight, safe_cell  # noqa: E402
 preflight([("openpyxl", "openpyxl", "tracker.xlsx read/write (tracker.py)")])
 
 from openpyxl import Workbook, load_workbook  # noqa: E402
@@ -161,7 +161,7 @@ def _write_csv(ws, root):
         w = csv.writer(f)
         w.writerow(COLUMNS)
         for d in _rows_as_dicts(ws):
-            w.writerow([d[c] for c in COLUMNS])
+            w.writerow([safe_cell(d[c]) for c in COLUMNS])
 
 
 def _save(wb, ws, root):
@@ -192,7 +192,7 @@ def cmd_add(root, data):
             if _normkey(d["folder_path"]) == key:
                 print(f"Row already exists for folder_path={data.get('folder_path')} (row {d['_row']}); use update.")
                 return
-    row = [data.get(col, "") for col in COLUMNS]
+    row = [safe_cell(data.get(col, "")) for col in COLUMNS]
     ws.append(row)
     r = ws.max_row
     _apply_row_style(ws, r, data.get("status", "Drafted"))
@@ -218,12 +218,12 @@ def cmd_update(root, key, data):
     data = {k: v for k, v in data.items() if k != "_force"}
     for k, v in data.items():
         if k in COLUMNS:
-            ws.cell(row=r, column=COLUMNS.index(k) + 1, value=v)
+            ws.cell(row=r, column=COLUMNS.index(k) + 1, value=safe_cell(v))
     new_status = data.get("status", target.get("status"))
     # auto-stamp the matching date column if a status implies one and it's empty
     date_col = STATUS_DATE.get(str(new_status))
     if date_col and not ws.cell(row=r, column=COLUMNS.index(date_col) + 1).value:
-        ws.cell(row=r, column=COLUMNS.index(date_col) + 1, value=data.get(date_col, _today()))
+        ws.cell(row=r, column=COLUMNS.index(date_col) + 1, value=safe_cell(data.get(date_col, _today())))
     _apply_row_style(ws, r, str(new_status))
     _save(wb, ws, root)
     print(f"Updated row {r} -> status={new_status}")
@@ -313,7 +313,7 @@ def cmd_dedupe(root, apply=False):
             d.update(merges[d["_row"]])
     new_wb, new_ws = _new_workbook()
     for d in survivors:
-        new_ws.append([d.get(c, "") for c in COLUMNS])
+        new_ws.append([safe_cell(d.get(c, "")) for c in COLUMNS])
         _apply_row_style(new_ws, new_ws.max_row, str(d.get("status", "Drafted")))
     _save(new_wb, new_ws, root)
     print(f"\nApplied: removed {dup_count} duplicate row(s); {len(survivors)} rows remain.")
@@ -376,7 +376,7 @@ def cmd_priority_view(root):
     amber = PatternFill("solid", fgColor="FCE4D6")
     close_col = PRIORITY_VIEW_COLUMNS.index("closing_date") + 1
     for d in rows:
-        out.append([d.get(c, "") for c in PRIORITY_VIEW_COLUMNS])
+        out.append([safe_cell(d.get(c, "")) for c in PRIORITY_VIEW_COLUMNS])
         r = out.max_row
         cd = _parse_date(d.get("closing_date"))
         if cd:

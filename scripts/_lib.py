@@ -33,6 +33,24 @@ REQUIRED_DEPS = [
     ("docx", "python-docx", "CV .docx rendering (render_docx.py)"),
 ]
 
+# Characters that make a spreadsheet cell execute as a formula / DDE payload when
+# opened in Excel or LibreOffice. Untrusted job-ad text (company, role, notes) flows
+# into the tracker, so it MUST be neutralised before it lands in a cell or CSV row.
+_FORMULA_TRIGGERS = ("=", "+", "-", "@", "\t", "\r", "|")
+
+
+def safe_cell(value):
+    """Neutralise spreadsheet formula/DDE injection.
+
+    If a STRING value begins with a formula trigger (= + - @ tab CR |), prefix it
+    with an apostrophe so Excel/LibreOffice treat the whole cell as literal text
+    rather than a formula. Non-strings (ints, dates) and safe strings pass through
+    unchanged. This is the standard OWASP CSV-injection mitigation.
+    """
+    if isinstance(value, str) and value and value[0] in _FORMULA_TRIGGERS:
+        return "'" + value
+    return value
+
 
 # ---------------------------------------------------------------- dependencies
 def check_deps(deps=REQUIRED_DEPS):

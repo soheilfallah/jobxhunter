@@ -62,6 +62,11 @@ def main():
     if not args.no_track:
         preflight([("openpyxl", "openpyxl", "tracker.xlsx read/write (tracker.py)")])
 
+    # Sanitize --date before it's interpolated raw into the folder name (company/role
+    # are slugged, date wasn't) — keep only digits + hyphens so a value like '../../x'
+    # cannot traverse out of the workspace.
+    args.date = re.sub(r"[^0-9-]", "", args.date)[:10] or datetime.date.today().isoformat()
+
     cat_dir = os.path.join(args.root, slug(args.category, 30))
     folder = os.path.join(cat_dir, f"{args.date}_{slug(args.company, 24)}_{slug(args.role, 30)}")
     os.makedirs(folder, exist_ok=True)

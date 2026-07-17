@@ -20,6 +20,7 @@ Usage:
 """
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -176,6 +177,9 @@ def main():
     ap.add_argument("--name", default="profile", help="profile file basename (e.g. alex)")
     ap.add_argument("--force", action="store_true", help="scaffold even if workspace exists")
     args = ap.parse_args()
+
+    # Sanitize --name before it becomes a filename under profiles/ (prevents traversal).
+    args.name = re.sub(r"[^A-Za-z0-9._-]", "", args.name) or "profile"
 
     preflight()  # deps must be present so the tracker init won't half-commit
 

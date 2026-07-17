@@ -10,6 +10,7 @@ Transport: stdio.
 
 import json
 import os
+import re
 from enum import Enum
 from typing import Any, Optional
 
@@ -148,7 +149,18 @@ def _clean(params: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+# Adzuna auth travels in the URL query string (app_id/app_key). An exception or an
+# upstream error body can echo that credential-bearing URL back — scrub it so keys
+# never reach the agent transcript or logs.
+_CRED_RE = re.compile(r"(app_id|app_key)=[^&\s]+", re.IGNORECASE)
+
+
 def _handle_api_error(exc: Exception) -> str:
+    """Build the actionable message, then redact any leaked credentials."""
+    return _CRED_RE.sub(r"\1=REDACTED", _api_error_message(exc))
+
+
+def _api_error_message(exc: Exception) -> str:
     """Turn an exception into an actionable message for the agent."""
     if isinstance(exc, RuntimeError):
         return f"Error: {exc}"

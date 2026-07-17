@@ -24,7 +24,7 @@ from urllib.parse import urlsplit
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from _lib import resolve_workspace_root, applications_dir, daily_dir  # noqa: E402
+from _lib import resolve_workspace_root, applications_dir, daily_dir, safe_cell  # noqa: E402
 
 LEDGER_COLUMNS = ["job_key", "status", "category", "company", "role", "link",
                   "folder_path", "last_seen"]
@@ -96,7 +96,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=LEDGER_COLUMNS)
         w.writeheader()
         for rec in seen.values():
-            w.writerow(rec)
+            w.writerow({k: safe_cell(v) for k, v in rec.items()})
 
     print(f"Ledger rebuilt: {out} ({len(seen)} unique job keys from {tracker_csv})")
 
