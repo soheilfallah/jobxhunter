@@ -3,27 +3,43 @@
 You are writing a UK cover letter FROM the user's own words. This document is your
 rulebook. Read the whole thing before drafting.
 
-## The one non-negotiable input: the brain-dump
+## The best input: the brain-dump (strongly recommended, not required)
 
 - The letter is built from TWO inputs: (1) the user's brain-dump — their raw,
   unpolished thoughts on why they want THIS role at THIS company — and (2) profile
-  evidence (the same evidence base the CV draws on).
-- If the brain-dump is missing, STOP. Ask for it and wait. Never cold-generate a
-  cover letter from the JD and profile alone. A prompt like: "Before I draft this,
-  tell me in your own words — messy is fine — why you want this job and this
-  company. A few sentences of honest rambling beats a blank page." Then wait for
-  the answer.
+  evidence (the same evidence base the CV draws on). The brain-dump is what makes
+  the "why this company" paragraph ring true, so **always ask for it first** and
+  strongly encourage it — a few sentences of honest rambling beats a blank page.
+- **But do not STOP if it's missing.** If the user has none, or wants to proceed
+  without one, **draft anyway** from the JD + profile. When you do:
+  - Build motivation from what the profile and honest research support (real
+    products used, a genuine sector interest evidenced in the profile, a concrete
+    skill match) — never fabricate familiarity or feelings the user never stated.
+  - **Flag the profile-only paragraph.** In the return note, say plainly that the
+    "why this company / this role" paragraph is running on profile + research only
+    and will be generic until the user adds a line or two of their own — so they
+    fix the *input*, not wordsmith the output.
+  - Keep it a touch shorter and more restrained rather than padding a fake
+    motivation to full length.
+- **Offer a quick brainstorm as the easy on-ramp** (this is the suggestion, not a
+  gate). Present 3–5 starter prompts the user can answer in a sentence each or skip:
+  - "What first caught your eye about *them* — a product, a post, a person, a value?"
+  - "Which of your projects felt most like *this* job?"
+  - "Why now — what's pulling you toward this kind of role?"
+  - "If you got it, what's the first thing you'd want to work on there?"
+  - "Any real connection — you use their product, know someone, applied before?"
+  Even one answer lifts the letter out of generic; make clear they can reply by
+  voice note or just skip and let you draft from the profile.
 - **Invite a spoken/verbal narrative.** The most natural brain-dump is often
   spoken, not typed — a voice note or a stream-of-consciousness ramble. Explicitly
   offer that: "A voice note or just talking it out is perfect — I'll work from
   your transcript." Spoken input is looser, warmer and more digressive than
   writing; that IS the voice to preserve. Work from the transcript, keep the
   spoken cadence, and tidy only true filler/repetition — do not flatten it into
-  written formality. (The cold-outreach command shares this exact rule — see
+  written formality. (The cold-outreach command shares this rule — see
   `company-discovery-cold-outreach.md`.)
-- If the brain-dump is thin (one line), you may draft, but flag which paragraphs
-  are running on fumes and ask targeted follow-ups ("What actually caught your eye
-  about them?", "Which of your projects felt most like this job?").
+- If the brain-dump is thin (one line), draft, but flag which paragraphs are
+  running on fumes and ask the targeted follow-ups above.
 
 ## CENTRAL RULE: tone preservation
 
@@ -191,7 +207,8 @@ Better patterns (always seeded from the brain-dump, never invented):
 
 ## Final checks before returning a draft
 
-1. Brain-dump present and actually used? (Point to phrases that survived.)
+1. Brain-dump used where supplied (point to phrases that survived); if none was
+   given, is the "why this company" paragraph flagged as profile-only in the note?
 2. Voice test passed — could the user have typed this?
 3. Every factual claim traceable to the profile?
 4. Named recipient hunted for; sincerely/faithfully matches the salutation?

@@ -6,7 +6,13 @@ directory** discovered or created at runtime — no hard-coded machine paths, ev
 ## Workspace contract
 ```
 <job-hunt>/
+  WORKSPACE-MAP.md                # plain-language map of this whole tree (generated at SETUP)
+  dump/                           # user drops raw files here; INTAKE reads them -> profile
+    _manifest.csv                 # dump_manifest.py: per-file status (new/ingested/unreadable/…)
   profiles/<name>.md              # master profile = source of truth (a WAREHOUSE, not a CV)
+    _intake/                      # intake book-keeping (private)
+      placeholders/               # stub per un-extractable dump file (nothing lost)
+      CHANGELOG.md                # what each intake run added to the profile
   applications/
     tracker.xlsx | tracker.csv    # owned ONLY by tracker.py
     tracker-priority.xlsx         # generated day-to-day worklist (tracker.py priority-view)
@@ -52,7 +58,10 @@ user to fill the profile. Idempotent; refuses to clobber a populated workspace. 
 2. **Source.** Derive families/keywords from the profile's **priority order**. One search per
    title-variant across every priority family + bridge/fallback lanes, using the live connectors
    (`references/tools-and-connectors.md`; board choice follows the lane — academic→jobs.ac.uk searched
-   one discipline facet at a time, commercial→Adzuna/Reed, niche→Firecrawl). Verify each hit is
+   one discipline facet at a time, commercial→Adzuna/Reed, niche→Firecrawl). Honour the **source-effort
+   dial** (`references/job-search-guide.md`): `full` (default, fan out across all connectors + the crawl
+   net) or `budget` (tiered connectors→MCP→web with early-stop) if the user asked to save tokens. Verify
+   each hit is
    **LIVE** (expired listings redirect / say "no longer advertised" — never tailor those). **Knockout
    sweep** (below). Keep only roles **new since last run** (canonical key not in the ledger).
 3. **Tailor** every surviving new live match — **no cap**, best-fit-first, soonest-closing-first. For
@@ -60,8 +69,11 @@ user to fill the profile. Idempotent; refuses to clobber a populated workspace. 
    hard-gap) → select+order from the profile → draft → voice + **truth/integrity check** → render
    ATS-safe `CV.docx`+`CV.txt`. Surface hard gaps; put provisional inclusions in `notes.md` "pending
    confirmation" (don't block). Run the recruiter loop; save the scorecard and set `fit_score`.
-4. **Cover letters — never cold-generate.** Do the JD analysis, prep the scaffold, flag
-   "**needs the user's brain-dump**" in `notes.md`. List these in the summary.
+4. **Cover letters — default to scaffold, don't auto-send.** In the unattended daily run there's no
+   user present to brainstorm with, so do the JD analysis, prep the scaffold, and flag
+   "**needs the user's brain-dump**" in `notes.md`; list these in the summary. (The on-demand
+   COVER LETTER command *can* draft a profile-only letter without a brain-dump — recommended, not
+   required — but the autonomous run leaves that final voice pass to the user.)
 5. **Track & file** every job via the scripts — `Drafted` (tailored) or `Skipped` (with a reason) —
    always with the source **link** so the ledger key resolves. Set `closing_date`/`fit_score` where
    known. **Never touch `Applied` rows.** Rebuild the ledger at the end; regenerate the priority view

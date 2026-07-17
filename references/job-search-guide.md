@@ -16,6 +16,30 @@ find live JDs          save JD     CV/letter    score/revise      folder + track
 Every listing you surface — even ones you decide against — should be captured with a status
 (`Drafted` or `Skipped`) so the tracker records the whole search, not just the wins.
 
+## Source-effort dial — `full` (default) vs `budget`
+
+How hard to search is a **user choice** about coverage vs cost. Default to `full`; switch to `budget`
+when the user asks to "save tokens", "quick hunt", or "just a quick look". Either way, **Firecrawl
+captures each survivor's full JD** (never tailor off a snippet).
+
+- **`full` (default) — maximum coverage.** Fan out across **all four job connectors at once**
+  (Indeed, Reed, Adzuna, Dice), one search per title variant, dedupe by company+role, **then** run the
+  deep-crawl net (`WebSearch` → **Firecrawl**) so niche/company-careers roles aren't missed. Nothing is
+  skipped for cost. This is the behaviour the rest of this doc describes.
+- **`budget` — tiered with early-stop.** Search in cost order and **stop climbing once you have enough**
+  good live matches for the family (rough target: ~8–10 solid, un-knocked-out hits; the user can set
+  their own number). Cap the title-variants and boards per tier.
+  1. **Tier 1 — claude.ai job connectors:** **Indeed** + **Dice** (Dice only for AI/data families).
+     These are already on and cheap to query.
+  2. **Tier 2 — MCP job servers:** **Reed** + **Adzuna** (`gb`). Add these when Tier 1 is thin or you
+     want salary context.
+  3. **Tier 3 — web-search net:** `WebSearch` → **Firecrawl** deep-crawl for boards/companies no
+     connector covers — run this last, as the completeness net, only if the earlier tiers came up short
+     for a family. Skipping it is the main saving.
+
+Record which mode ran in the run summary so a later, fuller pass knows what wasn't covered. In `budget`
+mode, if a tier is skipped for cost, **say so** — don't imply the search was exhaustive.
+
 ## Connectors available in this environment
 
 Use these first; they return structured data you can act on directly. **Fan out across all four job
