@@ -5,6 +5,20 @@ help them get their **own** free keys, and register the ones they want. **No key
 skill** and every connector is **optional** — if one isn't configured the skill falls back to
 WebSearch/browser crawling for that lane, so nothing breaks.
 
+## How setup works (the agent does the plumbing — you bring the key)
+
+Each connector (Reed, Adzuna, **Firecrawl**) needs **your own account and API key** — sign-ups are
+free. The flow is always the same three steps:
+
+1. **You sign up** at the provider and copy your key (Firecrawl also requires a free account).
+2. **You paste the key to the agent** in chat — e.g. "here's my Firecrawl key: fc-…".
+3. **The agent sets up the MCP for you** — it reads your Claude config, backs it up, merges the
+   connector under `mcpServers` with your key, and tells you to restart. You never hand-edit JSON.
+
+Tell the user this explicitly at setup: *"To use Reed/Adzuna/Firecrawl you'll each need your own free
+API key. Sign up, paste the key here, and I'll register the connector for you."* Never proceed with a
+placeholder — wait for the user's real key, then register.
+
 ## Step 1 — check what's already there
 ```
 python scripts/setup_connectors.py          # human report (configured vs missing + how to add)

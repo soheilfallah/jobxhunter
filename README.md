@@ -175,8 +175,11 @@ own* key. The skill only ever calls tools **by name** (`reed_search_jobs`, `adzu
 (`~/.claude.json` for Claude Code, or the Claude Desktop config) — a file **outside this repository**.
 Never paste a key into a skill file, a profile, or a commit.
 
-Every connector is **optional**: the skill detects what you've configured and degrades gracefully
-(each sourcing lane has a fallback). Configure the ones you want:
+**The setup flow:** you sign up for a connector and get **your own free API key** (Firecrawl needs a
+free account too), then **paste the key to Claude in chat** — and **Claude sets up the MCP server for
+you** (backs up your config, adds the entry, tells you to restart). You never hand-edit JSON. Every
+connector is **optional**: the skill detects what you've configured and degrades gracefully (each
+sourcing lane has a fallback). Configure the ones you want:
 
 | Connector | Get a key | Cost |
 |---|---|---|

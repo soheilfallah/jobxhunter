@@ -144,9 +144,10 @@ def main():
         mark = "OK" if n in registered else "  "
         print(f"  [{mark}] {n} — {how}")
 
-    print("\nNext: get a free key for a missing connector, then ask the skill to register it "
-          "(it will merge the snippet into your config with a backup). Full guide: "
-          "references/connector-setup.md")
+    print("\nHow to add one: sign up for the connector (Firecrawl needs a free account too), copy "
+          "YOUR OWN key, then paste it to the agent in chat — it registers the MCP for you (backs up "
+          "your config, merges the entry, tells you to restart). You never edit JSON by hand. "
+          "Full guide: references/connector-setup.md")
 
 
 if __name__ == "__main__":
