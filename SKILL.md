@@ -17,7 +17,8 @@ description: >-
 # job-hunt — the UK-first job-hunt skill (CV tailoring at its core)
 
 CV tailoring at the core; cover letters, a recruiter loop, an alternative-world mode, and
-application tracking around it. UK-first. Works in chat and in Claude Code.
+application tracking around it. UK-first, with Canada built in (market-driven — see below). Works in
+chat and in Claude Code.
 
 ## The one rule everything hangs on
 
@@ -69,7 +70,8 @@ conventions doc + a board list + a connector map, nothing in the engine changes.
 | matching keywords for a family | `references/keyword-taxonomy/<family>.md` |
 | writing bullets, summary, sections | `references/cv-craft.md` |
 | framing a non-linear / career-change story | `references/career-narrative.md` |
-| de-slopping / choosing verbs | `references/cv-mistakes.md` (route prose to `/humanizer` + `/academic-prose` if present — see "Tools & external skills") |
+| enforcing voice + register (the writing model) | `references/writing-voice.md` (the self-contained de-slop + register standard) |
+| de-slopping / choosing verbs | `references/cv-mistakes.md` (the CV-specific mistake + banned-buzzword catalogue) |
 | ensuring the render parses | `references/ats-mechanics.md` |
 | applying market CV norms | pick by the profile's **market**: `references/uk-conventions.md` (`uk`) · `references/ca-conventions.md` (`ca`) |
 | building a profile from a user's dump folder (first run) | `references/profile-intake.md` |
@@ -93,11 +95,11 @@ The skill leans on other skills/tools for prose voice, rendering, and JD capture
 surface exposes** (list your skills/tools if unsure) and route accordingly — every route has a
 self-sufficient fallback, so the skill never hard-depends on an optional tool.
 
-- **Prose voice (the de-slop pass).** Invoke `/humanizer`, then `/academic-prose`, on the final
-  CV/cover-letter prose. These are the preferred voice pass. If neither is present on this surface
-  (they're typically in cowork/Desktop, not always in Claude Code), enforce voice inline from
-  `references/cv-mistakes.md` — that catalog is complete enough to do the pass by hand. Never skip the
-  pass just because the skills are absent.
+- **Prose voice (the de-slop pass).** `references/writing-voice.md` is the skill's own **writing model** —
+  a register-aware (CV / cover letter / cold email) standard for stripping AI tells and hitting the right
+  formality. It's fully self-contained: the agent applies it **inline** on every final draft, together with
+  the `cv-mistakes.md` banned-buzzword catalogue. No external tools or plugins required — never ship prose
+  that hasn't been through it.
 - **Rendering the CV / cover letter.**
   - **cowork / Claude Desktop:** the native `docx`, `pdf`, and `xlsx` file-creation skills produce the
     CV `.docx`, an optional recruiter-facing `.pdf`, and the `tracker.xlsx`. Hold the ATS rules
@@ -296,10 +298,9 @@ Given profile + JD + level, produce a tailored CV. Six steps:
      Add it to the draft AND to a **"pending confirmation" list in the job's `notes.md`**, and keep
      going. Do not stop mid-draft. These are gated by the end-of-run confirmation (step 6). Full
      rules and tone in `tailoring-levels.md` ("Gap classes, provisional inclusions").
-5. **Voice pass + integrity check** — run `/humanizer` then `/academic-prose` if present on this
-   surface (else do the pass inline — see "Tools & external skills"); strip everything
-   in the `cv-mistakes.md` catalog (buzzwords, unquantified claims, responsibilities-not-achievements,
-   tense/date drift). Apply `uk-conventions.md` (CV not résumé, two pages, UK spelling/dates, no
+5. **Voice pass + integrity check** — apply the writing model (`references/writing-voice.md`) inline, and
+   strip everything in the `cv-mistakes.md` catalog (buzzwords, unquantified claims,
+   responsibilities-not-achievements, tense/date drift). Apply `uk-conventions.md` (CV not résumé, two pages, UK spelling/dates, no
    photo/DOB, right-to-work phrasing when a JD asks). Also run these three checks every time:
    - **Date consistency:** normalise all dates to one format ("Mon YYYY – Mon YYYY"); label genuinely
      concurrent roles "(concurrent…)" so overlaps don't read as errors; add the target-role headline
@@ -366,7 +367,7 @@ company" paragraph as profile-only** in your return note so the user fixes the i
 wordsmithing the output. Where the brain-dump exists, write the letter *from* the user's words: preserve
 their voice and cadence, strip slop but never de-voice them (a de-slopped letter that no longer sounds
 like them is a failure). Claims map to real profile evidence (same truth rule). Run the same voice pass
-(`/humanizer` + `/academic-prose`, or inline).
+(the writing model, `references/writing-voice.md`).
 UK conventions; render to `.docx` + plain text (bundled script or the `docx` skill), and route through
 `/make-pdf` if the user wants a human-facing PDF to send directly. The L0–L2 dial does NOT
 apply — a cover letter is inherently first-person and truthful. Full craft: `references/cover-letter.md`.
