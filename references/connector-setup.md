@@ -64,8 +64,7 @@ load — check the config path and the key.
   is on the roadmap.
 - **Indeed / Dice** — claude.ai OAuth connectors; no local config.
 
-## Voice-pass companion skills (optional, keyless)
-- **`/humanizer`** — recommended: [blader/humanizer](https://github.com/blader/humanizer) (MIT):
-  `npx skills add blader/humanizer`.
-- **`/academic-prose`** — optional; only if you have an academic-prose skill (there's no public default
-  the skill assumes). Absent → the inline `cv-mistakes.md` de-slop covers the pass.
+## Voice pass — built in, no companion needed
+The CV/cover-letter voice and de-slop pass is the skill's own **writing model**
+(`references/writing-voice.md`) plus the `cv-mistakes.md` catalogue. It's applied inline and needs no
+companion skill, plugin, or key.

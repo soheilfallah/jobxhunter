@@ -68,7 +68,9 @@ that no longer sounds like the user is a FAILURE, even if every sentence is clea
 
 ### De-slopping without de-voicing
 
-Strip slop — but every cut must leave the user's words behind, not yours.
+Strip slop — but every cut must leave the user's words behind, not yours. The mechanical de-slop rules
+(AI tells, em-dash ban, buzzwords, register) live in the writing model, `references/writing-voice.md`;
+for a cover letter, apply its **voice-preservation** register, not its neutral-CV register.
 
 - CUT: filler ("I believe that", "I feel as though"), hedges stacked two deep,
   throat-clearing openers, empty intensifiers ("very", "truly", "incredibly"),

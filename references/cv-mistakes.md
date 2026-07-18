@@ -1,11 +1,10 @@
 # CV Failure Modes — Researched Catalog (UK-first)
 
-Scope note: this document is the CV-specific failure catalog. When the humanizer or
-academic-prose skills are available, route the actual prose REWRITING to them — they own
-tone, rhythm, and de-slopping of running text. THIS doc supplies what those general skills
-do not carry: the CV-domain banned list, the verb allow-list, UK norms, and the
-recruiter-cited failure modes with fixes. Consult it during audit and drafting; hand the
-sentences to the rewriting skills with these constraints attached.
+Scope note: this document is the CV-specific failure catalog. The general voice/rewriting standard —
+tone, rhythm, register, and AI-tell stripping of running text — is the writing model,
+`references/writing-voice.md`. THIS doc supplies what the general model does not carry: the CV-domain
+banned list, the verb allow-list, UK norms, and the recruiter-cited failure modes with fixes. Consult it
+during audit and drafting, and apply it alongside the writing model.
 
 Context that justifies the severity below: the Ladders eye-tracking study measured a
 7.4-second initial screen; recruiters scan in an F-pattern (top lines + left edge), so the
@@ -304,7 +303,7 @@ nothing to fix and everything to miss.
 Final gate before output: run this catalog as a checklist — §1 scan for banned terms, §2
 verb check on every bullet opener, §4 number check on every achievement, §7 tense/date
 sweep, §11 detail sweep. A CV that clears all eleven categories is ready for the
-humanizer pass, not before.
+writing-model voice pass (`references/writing-voice.md`), not before.
 
 ---
 

@@ -43,11 +43,10 @@ with Firecrawl.
 - **Gmail**: `create_draft`, `search_threads` — draft outreach, track replies.
 - **Google Calendar**: `create_event` — book interviews.
 
-## Prose voice + rendering (external skills)
-- **`/humanizer`** then **`/academic-prose`** — the voice/de-slop pass. Recommended `/humanizer`
-  implementation: **blader/humanizer** (MIT, self-contained, no keys — `npx skills add blader/humanizer`);
-  it detects ~33 AI-writing tells and rewrites to sound human. If neither skill is present, do the pass
-  inline from `cv-mistakes.md` (never skip it).
+## Prose voice + rendering
+- **Writing model (built in)** — the voice/de-slop pass is the skill's own `references/writing-voice.md`,
+  a register-aware standard covering ~33 AI-writing tells, plus the `cv-mistakes.md` banned-buzzword
+  catalogue. Applied inline on every draft; no external skill, plugin, or key required.
 - **`docx` / `pdf` / `xlsx`** skills — native rendering in cowork.
 - **`/make-pdf`** (if installed) — human-facing / portfolio PDF. `.docx` stays the ATS submission.
 - Bundled `scripts/` — the self-sufficient Claude Code path (see `scripts` in SKILL.md).
@@ -60,5 +59,5 @@ tracker) · `build_seen_ledger.py` (dedupe ledger) · `render_docx.py` (ATS-safe
 ## Availability reality (varies by surface — check, don't assume)
 - **Registered/available now:** all four job connectors + Firecrawl (MCP); `/make-pdf`, `/scrape`
   (Claude Code); Clay/Ahrefs/Gmail/Calendar (cowork connectors).
-- **Cowork-side, often NOT in Claude Code:** `/humanizer`, `/academic-prose`, `docx`/`pdf`/`xlsx`.
-  The skill's inline/bundled fallbacks cover their absence.
+- **Cowork-side, often NOT in Claude Code:** the `docx`/`pdf`/`xlsx` rendering skills. The skill's
+  inline/bundled fallbacks cover their absence.

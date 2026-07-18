@@ -2,9 +2,9 @@
 
 **Your real experience in → tailored, ATS-safe applications out — without a single invented fact.**
 
-A UK-first Claude Code **plugin** (and skill) that builds a master profile from your own files, tailors a CV and cover letter to each job, sources live roles across job boards, and tracks every application. The profile is a decoupled data feed — point it at anyone.
+A UK-first Claude Code **plugin** (and skill) — **with Canada built in** — that builds a master profile from your own files, tailors a CV and cover letter to each job, sources live roles across job boards, and tracks every application. The profile is a decoupled data feed — point it at anyone.
 
-![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-6E56CF) ![Market](https://img.shields.io/badge/market-UK--first%20(swappable)-1f6feb) ![Truth rule](https://img.shields.io/badge/truth%20rule-never%20invents%20facts-2ea043)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-6E56CF) ![Market](https://img.shields.io/badge/market-UK%20%2B%20Canada%20built--in-1f6feb) ![Truth rule](https://img.shields.io/badge/truth%20rule-never%20invents%20facts-2ea043)
 
 <!-- Add a short demo GIF here (a /job-hunt:tailor run) — it's the single biggest README upgrade. -->
 
@@ -63,7 +63,7 @@ pip install python-docx openpyxl
 - **Profiling-first, so nothing reads vague.** Intake ingests every file (placeholders for formats it can't read), stays incremental, and asks targeted questions — concrete evidence beats generic filler.
 - **No slop.** A researched ban-list kills "results-driven team player, passionate about synergy."
 - **Everything filed.** Per-job folders + a locked tracker; submit the `.docx` to ATS, keep a PDF for humans.
-- **UK-first, swappable.** UK conventions by default; add a market by dropping in a conventions doc.
+- **UK-first, Canada built in, swappable.** UK conventions by default; Canada works out of the box (US-Letter résumé, Canadian spelling, Job Bank / Indeed.ca / University Affairs). Add another market by dropping in a conventions doc.
 
 ---
 
