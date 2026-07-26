@@ -1,0 +1,49 @@
+name: Feature request
+description: Suggest a capability, a new market, or an improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you hitting?
+      description: Describe the situation, not the solution. What were you trying to do when this came up?
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+      description: Your proposed change, if you have one in mind.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part?
+      options:
+        - CV tailoring
+        - Profile intake
+        - Job sourcing / daily hunt
+        - Cover letter
+        - Company discovery / cold outreach
+        - A new market or country
+        - A new job-board connector
+        - Tracker / filing
+        - Docs
+        - Other
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        **Adding a market?** The engine is market-driven, so a new one is a conventions doc, a board list, and a connector map — nothing in the engine changes. See how `references/ca-conventions.md` does it for Canada.
+
+  - type: checkboxes
+    id: truth-rule
+    attributes:
+      label: The truth rule
+      description: jobsmith never invents a fact about a candidate — it selects and reframes real evidence, and surfaces gaps rather than filling them.
+      options:
+        - label: This request is compatible with that rule
+          required: true

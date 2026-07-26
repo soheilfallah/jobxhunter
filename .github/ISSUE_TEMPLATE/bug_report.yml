@@ -1,0 +1,82 @@
+name: Bug report
+description: Something in jobsmith doesn't work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, two things that are **expected behaviour**, not bugs:
+
+        - `reed` / `adzuna` showing `Missing environment variables: CLAUDE_PLUGIN_ROOT` when you open the *repo itself* as your working directory. Test with `claude --plugin-dir .` from outside the repo.
+        - Fewer job results with no API keys configured. Sourcing falls back to web search by design.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, and what you got instead of what you expected.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Ran /jobsmith:tailor with ...
+        2. ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How is jobsmith installed?
+      options:
+        - Plugin from the marketplace
+        - claude --plugin-dir (local)
+        - Standalone skill (cloned into ~/.claude/skills)
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part?
+      options:
+        - CV tailoring
+        - Profile intake
+        - Job sourcing / daily hunt
+        - Cover letter
+        - Company discovery / cold outreach
+        - Connectors (Reed / Adzuna / Firecrawl)
+        - Tracker / filing
+        - Install or setup
+        - Docs
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Windows 11 / macOS 15 / Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output
+      description: Error text, or the output of `claude mcp list` if it's a connector problem. This is rendered as code, so no backticks needed.
+      render: shell
+
+  - type: checkboxes
+    id: no-secrets
+    attributes:
+      label: Before you submit
+      options:
+        - label: I've removed any API keys, real CV content, and personal details from the text above
+          required: true
