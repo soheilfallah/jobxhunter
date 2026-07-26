@@ -62,7 +62,14 @@ uv lock --script connectors/<name>-mcp/server.py
 
 ## Releasing (maintainer)
 
-The plugin pins an explicit `version`, so **users receive changes only when it's bumped**. Pushing commits alone does nothing. See the Releasing section in the [README](README.md#releasing).
+The plugin pins an explicit `version`, so **users receive changes only when it's bumped**. Pushing commits alone does nothing, and `/plugin update` reports "already at the latest version". To ship:
+
+1. Bump `version` in **both** `.claude-plugin/plugin.json` and the marketplace entry.
+2. Add a matching `## [x.y.z]` section to [`CHANGELOG.md`](CHANGELOG.md).
+3. `python scripts/check_release.py` verifies steps 1 and 2, that the manifests agree on name and version, that no dead URLs or command namespaces crept back in, and that every `owner/repo` reference matches the git remote.
+4. `claude plugin validate . --strict` runs the same check the marketplace review pipeline does.
+
+Steps 3 and 4's automatable parts run on every PR via [`.github/workflows/release-check.yml`](../.github/workflows/release-check.yml), which also asserts the connector lockfiles exist and that `setup_connectors.py` hasn't drifted from `.mcp.json`.
 
 ## Pull requests
 
