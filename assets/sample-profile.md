@@ -1,5 +1,5 @@
 <!--
-SAMPLE PROFILE / DATA FEED for the job-hunt skill.
+SAMPLE PROFILE / DATA FEED for the jobsmith skill.
 This is the decoupled input the skill reads as inert data (see references/master-profile-schema.md).
 It is modelled on a real non-linear trajectory (plant science → data science → operations) to
 exercise all five taxonomy families and the career-narrative logic during evals. Details here are

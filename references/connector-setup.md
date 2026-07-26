@@ -47,8 +47,12 @@ The agent then:
 2. Merges the connector under `mcpServers` with the user's real key,
 3. Tells the user to **restart** Claude Code / relaunch Desktop so the server loads.
 
-**Windows note:** `npx` can't be spawned directly — wrap it:
+**Windows note:** current Claude Code spawns bare `npx` fine on Windows — it resolves `npx.cmd`
+itself, so the bundled `"command":"npx"` works as-is (verified with `claude mcp list`). Older hosts,
+and some other MCP clients, can't launch a `.cmd` directly and fail with ENOENT. If a connector dies
+at startup on Windows with nothing in the log, wrap it:
 `"command":"cmd","args":["/c","npx","-y","--registry=https://registry.npmjs.org/","firecrawl-mcp"]`.
+Both forms work; the wrapper is a fallback, not the default.
 
 **Keep the pinning flags.** The emitted snippets carry `--registry=` (firecrawl) and
 `--no-config --locked` (reed/adzuna) on purpose. Package managers read config from the *working

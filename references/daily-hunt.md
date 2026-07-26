@@ -1,11 +1,11 @@
 # Daily hunt — the autonomous run (workspace contract + Setup + Daily run)
 
-`/job-hunt` runs a repeatable daily job hunt for any user. The unit of state is a **workspace
+`/jobsmith` runs a repeatable daily job hunt for any user. The unit of state is a **workspace
 directory** discovered or created at runtime — no hard-coded machine paths, ever.
 
 ## Workspace contract
 ```
-<job-hunt>/
+<jobsmith>/
   WORKSPACE-MAP.md                # plain-language map of this whole tree (generated at SETUP)
   dump/                           # user drops raw files here; INTAKE reads them -> profile
     _manifest.csv                 # dump_manifest.py: per-file status (new/ingested/unreadable/…)
@@ -32,7 +32,7 @@ career-target priority order, salary floor, geography, confidential holds, confl
 tailorer *selects from* it and never invents facts.
 
 ## Resolve the workspace root (once, path-agnostic)
-Order: **explicit path the user gives → `JOBHUNT_DIR` env → discovery** (a dir with `profiles/` +
+Order: **explicit path the user gives → `JOBSMITH_DIR` env → discovery** (a dir with `profiles/` +
 `applications/`, from cwd upward) **→ none → Setup mode**. Use `scripts/_lib.py`:
 ```
 python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve [--workspace <dir>]     # prints root, or NONE (exit 1)

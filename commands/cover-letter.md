@@ -2,7 +2,7 @@
 description: Write a UK cover letter for a role, in the user's own voice.
 ---
 
-Use the **job-hunt** skill's **COVER LETTER** routine.
+Use the **jobsmith** skill's **COVER LETTER** routine.
 
 Always ask for and strongly encourage a short **brain-dump** first (invite a voice note); offer the 3–5
 starter prompts as an easy on-ramp. But the brain-dump is **recommended, not required** — if none is

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Connector doctor — check which job-hunt MCP connectors are configured, and guide
+"""Connector doctor — check which jobsmith MCP connectors are configured, and guide
 the user to set up the missing ones with THEIR OWN api keys.
 
 No keys ship with the skill. This reads the user's Claude config(s), reports which
@@ -39,7 +39,7 @@ CONNECTORS = {
         "public": True,
         "config": {"command": "uv",
                    "args": ["run", "--no-config", "--locked", "--script",
-                            "<job-hunt>/connectors/reed-mcp/server.py"],
+                            "<jobsmith>/connectors/reed-mcp/server.py"],
                    "env": {"REED_API_KEY": "<YOUR_REED_KEY>"}},
         "note": "Server is BUNDLED in this repo at connectors/reed-mcp/. Requires `uv` "
                 "(https://docs.astral.sh/uv/) — no pip install needed: the script's PEP 723 header "
@@ -53,7 +53,7 @@ CONNECTORS = {
         "public": True,
         "config": {"command": "uv",
                    "args": ["run", "--no-config", "--locked", "--script",
-                            "<job-hunt>/connectors/adzuna-mcp/server.py"],
+                            "<jobsmith>/connectors/adzuna-mcp/server.py"],
                    "env": {"ADZUNA_APP_ID": "<YOUR_APP_ID>", "ADZUNA_APP_KEY": "<YOUR_APP_KEY>"}},
         "note": "Server is BUNDLED in this repo at connectors/adzuna-mcp/. Requires `uv` "
                 "(https://docs.astral.sh/uv/) — no pip install needed: the script's PEP 723 header "
@@ -106,7 +106,7 @@ def _snippet(name):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Job-hunt connector doctor.")
+    ap = argparse.ArgumentParser(description="Jobsmith connector doctor.")
     ap.add_argument("--json", action="store_true", help="machine-readable status")
     ap.add_argument("--emit", help="print one connector's config snippet and exit")
     args = ap.parse_args()
@@ -129,7 +129,7 @@ def main():
         return
 
     cfgs = _config_paths()
-    print("Job-hunt connector setup — you bring your own API keys; none ship with the skill.\n")
+    print("Jobsmith connector setup — you bring your own API keys; none ship with the skill.\n")
     print("Config files found:" if cfgs else "No Claude config found yet.")
     for p, label in cfgs:
         print(f"  - {label}: {p}")

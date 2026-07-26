@@ -2,7 +2,7 @@
 description: Run the autonomous daily hunt — source, triage, tailor, and file every new live role.
 ---
 
-Use the **job-hunt** skill's **DAILY HUNT** routine against the populated workspace.
+Use the **jobsmith** skill's **DAILY HUNT** routine against the populated workspace.
 
 Read the playbook → read the profile fresh → source the priority families → knockout sweep → tailor every
 new live match (no cap) → prep cover-letter scaffolds → track & file every job (Drafted/Skipped) → write a

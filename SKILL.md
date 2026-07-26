@@ -1,7 +1,7 @@
 ---
-name: job-hunt
+name: jobsmith
 description: >-
-  UK-first job-hunt skill. Core is CV tailoring: read a master profile plus a job description
+  Job-hunting skill for the UK and Canada (more markets coming). Core is CV tailoring: read a master profile plus a job description
   and produce an ATS-friendly, slop-free CV that survives both the ATS parser and the
   six-second recruiter scan. Also finds and deep-crawls roles (Indeed/Reed/Adzuna/Dice connectors,
   with a Firecrawl/WebSearch crawl fallback), discovers target companies and cold-emails the right
@@ -14,10 +14,10 @@ description: >-
   for a role, or track job applications.
 ---
 
-# job-hunt — the UK-first job-hunt skill (CV tailoring at its core)
+# jobsmith — the job-hunting skill for the UK and Canada (CV tailoring at its core)
 
 CV tailoring at the core; cover letters, a recruiter loop, an alternative-world mode, and
-application tracking around it. UK-first, with Canada built in (market-driven — see below). Works in
+application tracking around it. UK and Canada both ship (market-driven — see below). Works in
 chat and in Claude Code.
 
 ## The one rule everything hangs on
@@ -38,7 +38,7 @@ line in every command below.
 - **Level** (CV only): `L0` / `L1` (default) / `L2`, with an optional `%` knob within L1. See
   `references/tailoring-levels.md`.
 - **Workspace** (the unit of state — path-agnostic, never hard-coded): a directory holding
-  `profiles/` + `applications/`. Resolve it once per run: **explicit path → `JOBHUNT_DIR` env →
+  `profiles/` + `applications/`. Resolve it once per run: **explicit path → `JOBSMITH_DIR` env →
   discovery → none ⇒ Setup mode** (`python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve`). All paths derive from it. Full
   contract + Setup/Daily-run: `references/daily-hunt.md`.
 
@@ -59,7 +59,7 @@ confirm with the user):
 - **Job boards & sourcing lanes:** see `references/job-search-guide.md` (UK boards vs Canada boards).
 - **Connectors:** `uk` → Reed + Adzuna(`gb`) + Indeed; `ca` → **Adzuna(`ca`) + Indeed(`CA`)** (Reed is
   UK-only, skip it for `ca`) + Firecrawl for everything else. All optional; missing ones fall back.
-The skill is UK-first only in its defaults — the logic is market-driven, so adding a market = add a
+The UK is only the default, not a limit — the logic is market-driven, so adding a market = add a
 conventions doc + a board list + a connector map, nothing in the engine changes.
 
 ## Reference map (progressive disclosure — load only what the step needs)
@@ -154,7 +154,7 @@ actually support.
 
 ## Command: SETUP (scaffold a workspace — first run / new user)
 
-When no workspace resolves (no path, no `JOBHUNT_DIR`, discovery finds nothing), the user is new.
+When no workspace resolves (no path, no `JOBSMITH_DIR`, discovery finds nothing), the user is new.
 **Scaffold and stop** — do not hunt against an empty profile:
 ```
 python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]
