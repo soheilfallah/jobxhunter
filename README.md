@@ -167,6 +167,19 @@ Issues and PRs welcome — see [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
 
 **Working on the repo itself?** Opening this directory in Claude Code shows `reed` and `adzuna` as failed connectors, warning `Missing environment variables: CLAUDE_PLUGIN_ROOT`. That's expected and not a bug: your cwd makes `.mcp.json` load as a *project* config, and `${CLAUDE_PLUGIN_ROOT}` only exists when it loads as a *plugin*. Test the real thing with `claude --plugin-dir .` from a directory outside the repo.
 
+### Releasing
+
+This plugin pins an explicit `version`, so **users receive changes only when you bump it** — pushing commits alone does nothing, and `/plugin update` will report "already at the latest version". To ship:
+
+1. Bump `version` in **both** `.claude-plugin/plugin.json` and the marketplace entry.
+2. Add a matching `## [x.y.z]` section to [`CHANGELOG.md`](CHANGELOG.md).
+3. `python scripts/check_release.py` — verifies steps 1 and 2, that the manifests agree on name and version, and that no dead `job-hunt` URLs or command namespaces crept back in.
+4. `claude plugin validate . --strict` — the same check the marketplace review pipeline runs.
+
+Steps 3 and 4's automatable parts run on every PR via [`.github/workflows/release-check.yml`](.github/workflows/release-check.yml), which also asserts the connector lockfiles exist and that `setup_connectors.py` hasn't drifted from `.mcp.json`.
+
+> **A structural warning.** `SKILL.md` lives at the plugin root, which Claude Code supports for a plugin shipping *exactly one* skill. **Do not add a `skills/` directory without also moving `SKILL.md` into it** — creating `skills/` makes the root file stop loading, silently. Verified: the current layout loads 7 skills; adding `skills/` drops it to 6 and the `jobsmith` engine disappears while every command still references it.
+
 MIT © Soheil Fallah — see [`LICENSE`](LICENSE).
 
 *Built with Claude. UK and Canada ship today; the conventions layer is designed for the next market to drop in.*
