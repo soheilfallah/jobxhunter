@@ -27,7 +27,7 @@ A Claude Code **plugin** (and skill) for the **UK and Canada**, with more market
 /jobsmith:setup
 ```
 
-Then drop your old CVs and notes into the `dump/` folder it creates, run `/jobsmith:intake`, and you have a master profile. Everything else tailors from there.
+Then drop your old CVs and notes into the `dump/` folder it creates and run `/jobsmith:intake` to build your master profile.
 
 ---
 
@@ -68,7 +68,7 @@ git clone https://github.com/soheilfallah/jobsmith
 claude --plugin-dir ./jobsmith
 ```
 
-Loads for that session only. The cleanest way to kick the tyres.
+Loads for that session only.
 
 ### As a plain skill
 
@@ -115,15 +115,15 @@ You can also just talk to it in plain language. The commands are shortcuts.
 
 ---
 
-## Why it's different
+## What it does differently
 
 - **It never invents facts.** The master profile is the only source of truth. The skill selects, reframes, and reorders; gaps are surfaced, not faked. No fabricated titles, numbers, or skills.
-- **Beats both readers.** Every CV is built to survive the **ATS parser** *and* the **six-second recruiter scan**, not one at the cost of the other.
-- **A recruiter loop that fights back.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. It caught the tailorer drifting into buzzwords with no basis, and removed them.
-- **Profiling-first, so nothing reads vague.** Intake ingests every file (placeholders for formats it can't read), stays incremental, and asks targeted questions, because concrete evidence beats generic filler.
-- **No slop.** A researched ban-list kills "results-driven team player, passionate about synergy."
-- **Everything filed.** Per-job folders + a locked tracker; submit the `.docx` to ATS, keep a PDF for humans.
-- **Two markets today, more coming.** The UK and Canada both work out of the box: A4 CV vs US-Letter résumé, British vs Canadian spelling, Reed/Adzuna vs Job Bank / Indeed.ca / University Affairs. Market is read from your profile, not hard-coded, so a new one is a conventions doc plus a board list. The engine doesn't change.
+- **Survives both readers.** Every CV is built for the **ATS parser** *and* the **six-second recruiter scan**, not one at the cost of the other.
+- **A recruiter loop.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. In testing it caught the tailorer drifting into unsupported buzzwords, and removed them.
+- **Intake before tailoring.** Intake reads every file in your dump folder (with placeholders for formats it can't parse), runs incrementally, and asks targeted questions to fill thin spots.
+- **No slop.** A researched ban-list blocks phrasing like "results-driven team player, passionate about synergy".
+- **Everything filed.** Per-job folders and a locked tracker. Submit the `.docx` to the ATS, keep a PDF for humans.
+- **Two markets, more coming.** The UK and Canada both work out of the box: A4 CV vs US-Letter résumé, British vs Canadian spelling, Reed/Adzuna vs Job Bank / Indeed.ca / University Affairs. Market is read from your profile, not hard-coded, so a new one is a conventions doc plus a board list. The engine doesn't change.
 
 ---
 
@@ -164,38 +164,23 @@ The pipeline was run end-to-end on live UK job descriptions, with an **independe
 | Research assistant (partial fit) | L1 | 2.9 / 5, real gap surfaced not faked |
 | Junior ML engineer (genuine stretch) | L1 + letter | 2.9 / 5, missing stack disclosed |
 
-Scores discriminate honestly: a true match scored 4.0; genuine stretches scored lower with clear reasons. ATS-safety was verified in the document XML.
+A true match scored 4.0; genuine stretches scored lower, with the reasons stated. ATS-safety was verified in the document XML.
 
 ---
 
 ## Privacy & supply chain
 
-- **Your data stays yours.** The skill is the publishable artifact; your real profiles and filed applications live in a private workspace and are gitignored, never committed. No keys ship in this repo.
+- **Your data stays yours.** Your real profiles and filed applications live in a private workspace and are gitignored, never committed. No keys ship in this repo.
 - **Connector installs can't be hijacked.** `uv` and `npx` read config from the *working directory*, so a stray `uv.toml` or `.npmrc` in whatever folder you opened could otherwise redirect a connector's install to someone else's package index. All three connectors pin resolution to the real registries and to committed hash-verified lockfiles. If you add a dependency, re-run `uv lock --script connectors/<name>-mcp/server.py`. A stale lock fails the connector closed rather than silently resolving something else.
 
 ---
 
-## Contributing & license
+## Contributing
 
-Issues and PRs welcome. Start with **[`CONTRIBUTING.md`](CONTRIBUTING.md)**, which covers the truth rule every change has to hold, how to test a real install, and the three things that silently break the plugin. See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
+Issues and PRs welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md), which covers the truth rule every change has to hold, how to test a real install, and the three things that silently break the plugin. Every change lands through a reviewed pull request.
 
-Every change lands through a reviewed pull request; nothing is pushed straight to `main`.
+See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
 
-**Working on the repo itself?** Opening this directory in Claude Code shows `reed` and `adzuna` as failed connectors, warning `Missing environment variables: CLAUDE_PLUGIN_ROOT`. That's expected and not a bug: your cwd makes `.mcp.json` load as a *project* config, and `${CLAUDE_PLUGIN_ROOT}` only exists when it loads as a *plugin*. Test the real thing with `claude --plugin-dir .` from a directory outside the repo.
-
-### Releasing
-
-This plugin pins an explicit `version`, so **users receive changes only when you bump it**. Pushing commits alone does nothing, and `/plugin update` will report "already at the latest version". To ship:
-
-1. Bump `version` in **both** `.claude-plugin/plugin.json` and the marketplace entry.
-2. Add a matching `## [x.y.z]` section to [`CHANGELOG.md`](CHANGELOG.md).
-3. `python scripts/check_release.py` verifies steps 1 and 2, that the manifests agree on name and version, and that no dead `job-hunt` URLs or command namespaces crept back in.
-4. `claude plugin validate . --strict` runs the same check the marketplace review pipeline does.
-
-Steps 3 and 4's automatable parts run on every PR via [`.github/workflows/release-check.yml`](.github/workflows/release-check.yml), which also asserts the connector lockfiles exist and that `setup_connectors.py` hasn't drifted from `.mcp.json`.
-
-> **A structural warning.** `SKILL.md` lives at the plugin root, which Claude Code supports for a plugin shipping *exactly one* skill. **Do not add a `skills/` directory without also moving `SKILL.md` into it.** Creating `skills/` makes the root file stop loading, silently. Verified: the current layout loads 7 skills; adding `skills/` drops it to 6 and the `jobsmith` engine disappears while every command still references it.
+## Licence
 
 MIT © Soheil Fallah. See [`LICENSE`](LICENSE).
-
-*Built with Claude. UK and Canada ship today; the conventions layer is designed for the next market to drop in.*
