@@ -172,7 +172,9 @@ Scores discriminate honestly: a true match scored 4.0; genuine stretches scored 
 
 ## Contributing & license
 
-Issues and PRs welcome — see [`CHANGELOG.md`](CHANGELOG.md) for what's landed. Run `claude plugin validate . --strict` before opening a PR; it's the same check the marketplace review pipeline runs.
+Issues and PRs welcome — start with **[`CONTRIBUTING.md`](CONTRIBUTING.md)**, which covers the truth rule every change has to hold, how to test a real install, and the three things that silently break the plugin. See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
+
+Every change lands through a reviewed pull request; nothing is pushed straight to `main`.
 
 **Working on the repo itself?** Opening this directory in Claude Code shows `reed` and `adzuna` as failed connectors, warning `Missing environment variables: CLAUDE_PLUGIN_ROOT`. That's expected and not a bug: your cwd makes `.mcp.json` load as a *project* config, and `${CLAUDE_PLUGIN_ROOT}` only exists when it loads as a *plugin*. Test the real thing with `claude --plugin-dir .` from a directory outside the repo.
 
