@@ -5,6 +5,17 @@ help them get their **own** free keys, and register the ones they want. **No key
 skill** and every connector is **optional** — if one isn't configured the skill falls back to
 WebSearch/browser crawling for that lane, so nothing breaks.
 
+> [!IMPORTANT]
+> **Sign-up links — give these to the user directly, don't make them search.**
+>
+> | Connector | Sign up | Priority |
+> |---|---|---|
+> | **Adzuna** | <https://developer.adzuna.com/signup> — returns `app_id` + `app_key` | ⭐ high — the only connector covering **both** UK and Canada, plus salary data |
+> | **Firecrawl** | <https://www.firecrawl.dev> — key starts `fc-` | ⭐ high — without it, JDs on Workday/Greenhouse/Lever and PDFs can't be deep-crawled |
+> | **Reed** | <https://www.reed.co.uk/developers/jobseeker> — Jobseeker API key | medium — **UK only**; skip it for a `ca` market user |
+>
+> All free. Lead with Adzuna and Firecrawl; they buy the most capability per signup.
+
 ## How setup works (the agent does the plumbing — you bring the key)
 
 Each connector (Reed, Adzuna, **Firecrawl**) needs **your own account and API key** — sign-ups are

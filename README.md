@@ -45,7 +45,16 @@ claude plugin marketplace add soheilfallah/jobsmith
 claude plugin install jobsmith@soheil-jobsmith
 ```
 
-Keys (Reed / Adzuna / Firecrawl) are prompted on install and all optional — leave them blank and sourcing falls back to web search. Nothing is committed.
+> [!IMPORTANT]
+> **You'll want free API keys for the job connectors.** Claude Code prompts for them during install, and nothing is committed. jobsmith *runs* without them — sourcing falls back to web search — but you get noticeably fewer roles and job descriptions aren't deep-crawled.
+>
+> | Connector | Get a free key | What you lose without it |
+> |---|---|---|
+> | **[Adzuna](https://developer.adzuna.com/signup)** ⭐ | `developer.adzuna.com/signup` | UK **and Canada** job search, plus salary data |
+> | **[Firecrawl](https://www.firecrawl.dev)** ⭐ | `firecrawl.dev` | Full job-description crawling on Workday / Greenhouse / Lever and PDFs |
+> | **[Reed](https://www.reed.co.uk/developers/jobseeker)** | `reed.co.uk/developers/jobseeker` | UK-only listings (skip it if you're hunting in Canada) |
+>
+> ⭐ = the two that matter most. All are free to start; leave any blank to skip it.
 
 ### Try it without installing
 

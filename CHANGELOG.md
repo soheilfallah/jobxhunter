@@ -18,8 +18,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - Marketplace id is `jobsmith@soheil-jobsmith`.
   - The repository moved to `soheilfallah/jobsmith`. Existing git remotes and
     API references still resolve through GitHub's rename redirect (verified by
-    cloning via the old URL), but the old **web** URL returns 404 — update any
-    bookmarks or links you have shared.
+    cloning via the old URL).
+  - *Correction to an earlier note here:* the old web URL was described as
+    404ing because rename redirects don't cover web URLs. That was wrong — at
+    the time, **both** the old and new URLs 404ed to anyone unauthenticated
+    because the repository was still private. Visibility, not the redirect.
   - **`JOBHUNT_DIR` still works.** The workspace env var is now
     `JOBSMITH_DIR`, but the old name is still read as a fallback, so an
     existing workspace needs no change. New name wins if both are set.
