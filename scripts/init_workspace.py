@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Scaffold a job-hunt workspace (Setup mode).
+"""Scaffold a jobsmith workspace (Setup mode).
 
 Creates the workspace contract for a brand-new user and STOPS so they can fill
-their profile. Path-agnostic: pass --workspace, set JOBHUNT_DIR, or let it use the
+their profile. Path-agnostic: pass --workspace, set JOBSMITH_DIR, or let it use the
 resolver. Idempotent and SAFE: refuses to clobber an already-populated workspace
 (that is discover-and-reuse territory, not setup) unless --force.
 
@@ -72,7 +72,7 @@ Nothing here is published — this folder stays private to your workspace.
 
 PROFILE_TEMPLATE = """\
 <!--
-MASTER PROFILE / DATA FEED for the job-hunt skill — a WAREHOUSE, not a CV.
+MASTER PROFILE / DATA FEED for the jobsmith skill — a WAREHOUSE, not a CV.
 The tailorer SELECTS from this per role and NEVER invents facts. Put EVERYTHING
 true here (even things you won't use often); mark anything you must NEVER claim.
 Fill every section, then re-run the daily hunt. Keep this file private (gitignored).
@@ -190,7 +190,7 @@ candidate cannot truthfully meet → Skip with the reason.
 WORKSPACE_MAP_TEMPLATE = """\
 # Workspace map — what every folder and file here is for
 
-This directory is your job-hunt **workspace**: the single home for your profile, the raw material it's
+This directory is your jobsmith **workspace**: the single home for your profile, the raw material it's
 built from, and every application. It's path-agnostic and private (keep it gitignored). This map is
 generated at setup so the structure is always self-explaining and trustworthy.
 
@@ -266,8 +266,8 @@ def _write_if_absent(path, content, base, force=False):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Scaffold a job-hunt workspace (Setup mode).")
-    ap.add_argument("--workspace", help="workspace root (else JOBHUNT_DIR / discovery)")
+    ap = argparse.ArgumentParser(description="Scaffold a jobsmith workspace (Setup mode).")
+    ap.add_argument("--workspace", help="workspace root (else JOBSMITH_DIR / discovery)")
     ap.add_argument("--name", default="profile", help="profile file basename (e.g. alex)")
     ap.add_argument("--force", action="store_true", help="scaffold even if workspace exists")
     args = ap.parse_args()
@@ -279,7 +279,7 @@ def main():
 
     root = resolve_workspace_root(args.workspace)
     if not root:
-        sys.exit("No workspace path given. Pass --workspace <dir> or set JOBHUNT_DIR.")
+        sys.exit("No workspace path given. Pass --workspace <dir> or set JOBSMITH_DIR.")
     root = os.path.abspath(root)
 
     if is_workspace(root) and not args.force:

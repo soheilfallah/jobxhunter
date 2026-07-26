@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Shared helpers for the job-hunt skill scripts.
+"""Shared helpers for the jobsmith skill scripts.
 
 Two jobs, both about making the skill portable and safe:
 
 1. **Workspace resolution** — never hard-code a machine path. Resolve the
-   workspace root once (explicit arg -> JOBHUNT_DIR env -> discovery -> None) and
+   workspace root once (explicit arg -> JOBSMITH_DIR env -> discovery -> None) and
    derive every sub-path (profiles/, applications/, daily-hunt/) from it.
 
 2. **Dependency preflight** — the tracker must never half-commit. `tracker.py`
@@ -71,7 +71,7 @@ def preflight(deps=REQUIRED_DEPS, exit_on_missing=True):
     if not missing:
         return True
     pkgs = " ".join(pip for _, pip, _ in missing)
-    sys.stderr.write("Job-hunt preflight FAILED — missing Python dependencies:\n")
+    sys.stderr.write("Jobsmith preflight FAILED — missing Python dependencies:\n")
     for imp, pip_name, why in missing:
         sys.stderr.write(f"  - {pip_name}  (import '{imp}') — needed for {why}\n")
     sys.stderr.write(
@@ -86,7 +86,7 @@ def preflight(deps=REQUIRED_DEPS, exit_on_missing=True):
 
 # ------------------------------------------------------------------ workspace
 def is_workspace(path):
-    """A directory is a job-hunt workspace if it holds profiles/ AND applications/."""
+    """A directory is a jobsmith workspace if it holds profiles/ AND applications/."""
     if not path or not os.path.isdir(path):
         return False
     return os.path.isdir(os.path.join(path, PROFILES_DIR)) and \
@@ -123,14 +123,15 @@ def _discover_upward(start):
 def resolve_workspace_root(explicit=None, start=None):
     """Resolve the workspace root, in order:
        1. `explicit` arg (a path passed by the user/agent),
-       2. JOBHUNT_DIR environment variable,
+       2. JOBSMITH_DIR environment variable (JOBHUNT_DIR still honoured — the
+          skill was named job-hunt before 1.2.0, so an existing setup keeps working),
        3. discovery: an existing dir (from `start`/cwd upward) that has
           profiles/ + applications/.
     Returns an absolute path, or None if nothing resolves (caller -> Setup mode).
     An explicit/env path is returned even if not yet populated, so Setup can create it."""
     if explicit:
         return os.path.abspath(explicit)
-    env = os.environ.get("JOBHUNT_DIR")
+    env = os.environ.get("JOBSMITH_DIR") or os.environ.get("JOBHUNT_DIR")
     if env:
         return os.path.abspath(env)
     return _discover_upward(start or os.getcwd())
@@ -160,7 +161,7 @@ def scripts_dir(root):
 
 # ------------------------------------------------------------------------ CLI
 def main():
-    ap = argparse.ArgumentParser(description="Job-hunt shared helpers (preflight / resolve).")
+    ap = argparse.ArgumentParser(description="Jobsmith shared helpers (preflight / resolve).")
     sub_ap = ap.add_subparsers(dest="cmd", required=True)
     sub_ap.add_parser("preflight")
     rp = sub_ap.add_parser("resolve")
@@ -174,7 +175,7 @@ def main():
     elif args.cmd == "resolve":
         root = resolve_workspace_root(args.workspace, args.start)
         if not root:
-            print("NONE — no workspace resolved (arg/JOBHUNT_DIR/discovery all empty). Setup mode.")
+            print("NONE — no workspace resolved (arg/JOBSMITH_DIR/discovery all empty). Setup mode.")
             sys.exit(1)
         print(root)
         print(f"  is_workspace: {is_workspace(root)}")

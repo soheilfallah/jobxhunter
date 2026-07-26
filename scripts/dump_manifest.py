@@ -270,7 +270,7 @@ def cmd_mark(root, rel_path, status, notes):
 def main():
     # --workspace is shared so it works before OR after the subcommand.
     common = argparse.ArgumentParser(add_help=False)
-    common.add_argument("--workspace", help="workspace root (else JOBHUNT_DIR / discovery)")
+    common.add_argument("--workspace", help="workspace root (else JOBSMITH_DIR / discovery)")
 
     ap = argparse.ArgumentParser(
         description="Dump-folder manifest for incremental, format-safe intake.",
@@ -288,7 +288,7 @@ def main():
 
     root = resolve_workspace_root(args.workspace)
     if not root:
-        sys.exit("No workspace resolved. Pass --workspace <dir>, set JOBHUNT_DIR, or run SETUP first.")
+        sys.exit("No workspace resolved. Pass --workspace <dir>, set JOBSMITH_DIR, or run SETUP first.")
     root = os.path.abspath(root)
 
     if args.cmd == "mark":

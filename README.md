@@ -1,6 +1,6 @@
-<img src="assets/brand/job-hunt-icon.svg" width="84" align="left" alt="" hspace="18" vspace="4">
+<img src="assets/brand/jobsmith-icon.svg" width="84" align="left" alt="" hspace="18" vspace="4">
 
-# job-hunt
+# jobsmith
 
 **Your real experience in → tailored, ATS-safe applications out — without a single invented fact.**
 
@@ -10,19 +10,19 @@
 
 A UK-first Claude Code **plugin** (and skill) — **with Canada built in** — that builds a master profile from your own files, tailors a CV and cover letter to each job, sources live roles across job boards, and tracks every application. The profile is a decoupled data feed — point it at anyone.
 
-<!-- Add a short demo GIF here (a /job-hunt:tailor run) — it's the single biggest README upgrade. -->
+<!-- Add a short demo GIF here (a /jobsmith:tailor run) — it's the single biggest README upgrade. -->
 
 ---
 
 ## Quick start
 
 ```
-/plugin marketplace add soheilfallah/job-hunt
-/plugin install job-hunt@soheil-job-hunt
-/job-hunt:setup
+/plugin marketplace add soheilfallah/jobsmith
+/plugin install jobsmith@soheil-jobsmith
+/jobsmith:setup
 ```
 
-Then drop your old CVs and notes into the `dump/` folder it creates, run `/job-hunt:intake`, and you have a master profile. Everything else tailors from there.
+Then drop your old CVs and notes into the `dump/` folder it creates, run `/jobsmith:intake`, and you have a master profile. Everything else tailors from there.
 
 ---
 
@@ -33,16 +33,16 @@ Then drop your old CVs and notes into the `dump/` folder it creates, run `/job-h
 In Claude Code:
 
 ```
-/plugin marketplace add soheilfallah/job-hunt
-/plugin install job-hunt@soheil-job-hunt
+/plugin marketplace add soheilfallah/jobsmith
+/plugin install jobsmith@soheil-jobsmith
 /reload-plugins
 ```
 
 Or from a terminal, for scripted or non-interactive setups:
 
 ```bash
-claude plugin marketplace add soheilfallah/job-hunt
-claude plugin install job-hunt@soheil-job-hunt
+claude plugin marketplace add soheilfallah/jobsmith
+claude plugin install jobsmith@soheil-jobsmith
 ```
 
 Keys (Reed / Adzuna / Firecrawl) are prompted on install and all optional — leave them blank and sourcing falls back to web search. Nothing is committed.
@@ -50,8 +50,8 @@ Keys (Reed / Adzuna / Firecrawl) are prompted on install and all optional — le
 ### Try it without installing
 
 ```bash
-git clone https://github.com/soheilfallah/job-hunt
-claude --plugin-dir ./job-hunt
+git clone https://github.com/soheilfallah/jobsmith
+claude --plugin-dir ./jobsmith
 ```
 
 Loads for that session only. The cleanest way to kick the tyres.
@@ -61,7 +61,7 @@ Loads for that session only. The cleanest way to kick the tyres.
 Also works in Claude Desktop / cowork, which have no plugin system:
 
 ```bash
-git clone https://github.com/soheilfallah/job-hunt ~/.claude/skills/job-hunt
+git clone https://github.com/soheilfallah/jobsmith ~/.claude/skills/jobsmith
 pip install python-docx openpyxl
 ```
 
@@ -81,12 +81,12 @@ In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set — read it as the clone director
 
 | Command | What it does |
 |---|---|
-| `/job-hunt:setup` | Scaffold your private workspace and connect job boards (bring your own keys) |
-| `/job-hunt:intake` | Build your master profile from a folder of raw files — old CVs, LinkedIn export, notes, certificates |
-| `/job-hunt:hunt` | Autonomous daily hunt — source, triage, and tailor every new live role, then file it |
-| `/job-hunt:tailor` | Tailor an ATS-safe CV to one job description, with a recruiter-persona scoring loop |
-| `/job-hunt:cover-letter` | Draft a UK cover letter in your own voice |
-| `/job-hunt:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
+| `/jobsmith:setup` | Scaffold your private workspace and connect job boards (bring your own keys) |
+| `/jobsmith:intake` | Build your master profile from a folder of raw files — old CVs, LinkedIn export, notes, certificates |
+| `/jobsmith:hunt` | Autonomous daily hunt — source, triage, and tailor every new live role, then file it |
+| `/jobsmith:tailor` | Tailor an ATS-safe CV to one job description, with a recruiter-persona scoring loop |
+| `/jobsmith:cover-letter` | Draft a UK cover letter in your own voice |
+| `/jobsmith:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
 
 You can also just talk to it in plain language — the commands are shortcuts.
 
@@ -94,10 +94,10 @@ You can also just talk to it in plain language — the commands are shortcuts.
 
 ## First run
 
-1. **`/job-hunt:setup`** — scaffolds a private workspace (`profiles/`, `dump/`, `applications/`, a tracker, and a `WORKSPACE-MAP.md`), then stops.
+1. **`/jobsmith:setup`** — scaffolds a private workspace (`profiles/`, `dump/`, `applications/`, a tracker, and a `WORKSPACE-MAP.md`), then stops.
 2. **Drop your files** — old CVs, LinkedIn PDF, certificates, notes — into `dump/`.
-3. **`/job-hunt:intake`** — reads them, builds your master profile, and interviews you to fill the thin spots.
-4. **`/job-hunt:tailor`** (one role) or **`/job-hunt:hunt`** (find + tailor many). Say *"I applied to this one"* to lock the tracker row.
+3. **`/jobsmith:intake`** — reads them, builds your master profile, and interviews you to fill the thin spots.
+4. **`/jobsmith:tailor`** (one role) or **`/jobsmith:hunt`** (find + tailor many). Say *"I applied to this one"* to lock the tracker row.
 
 ---
 

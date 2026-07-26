@@ -4,6 +4,26 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-07-26
+
+### Changed
+
+- **Renamed from `job-hunt` to `jobsmith`.** The old name sat in a crowded
+  corner of the community marketplace — of 2269 plugins, 19 are job/career
+  adjacent, and `job-hunt-skills` (a direct competitor, same audience) scored
+  0.64 name similarity. `jobsmith` keeps the searchable "job" token, has no
+  close neighbour in the catalog, and the `-smith` suffix says what the tool
+  actually does: raw material in, something made well out.
+  - Commands are now `/jobsmith:tailor`, `/jobsmith:hunt`, and so on.
+  - Marketplace id is `jobsmith@soheil-jobsmith`.
+  - The repository moved to `soheilfallah/jobsmith`; GitHub redirects the old
+    URL, so existing clones and links keep resolving.
+  - **`JOBHUNT_DIR` still works.** The workspace env var is now
+    `JOBSMITH_DIR`, but the old name is still read as a fallback, so an
+    existing workspace needs no change. New name wins if both are set.
+  - Paths under `career/job-hunt/` are deliberately untouched — that is a
+    private data workspace, not the plugin.
+
 ## [1.1.0] - 2026-07-26
 
 Marketplace-readiness pass. No change to skill behaviour or output quality.
