@@ -175,10 +175,21 @@ def main():
     elif args.cmd == "resolve":
         root = resolve_workspace_root(args.workspace, args.start)
         if not root:
-            print("NONE — no workspace resolved (arg/JOBSMITH_DIR/discovery all empty). Setup mode.")
+            # Exit 1 is the documented signal for "no workspace yet", not a failure.
+            # It is the normal first-run result; say so, because a bare non-zero exit
+            # reads as an error to both humans and agents.
+            print("NONE — no workspace yet. This is the expected first-run result, not an error.")
+            print("  Checked: --workspace arg, JOBSMITH_DIR env, then upward discovery from cwd.")
+            print("  Next: init_workspace.py --workspace <dir> [--name <who>]   (Setup mode)")
             sys.exit(1)
         print(root)
         print(f"  is_workspace: {is_workspace(root)}")
+        # Discovery only walks upward from cwd, so running jobsmith from an
+        # unrelated folder tomorrow resolves to NONE and can scaffold a second
+        # workspace. Say how to pin it while the answer is in front of them.
+        if not os.environ.get("JOBSMITH_DIR"):
+            print("  tip: to reach this workspace from anywhere, set JOBSMITH_DIR="
+                  f"{root}")
 
 
 if __name__ == "__main__":

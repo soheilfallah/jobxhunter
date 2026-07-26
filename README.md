@@ -60,6 +60,8 @@ claude plugin install jobsmith@soheil-jobsmith
 > | **[Reed](https://www.reed.co.uk/developers/jobseeker)** | `reed.co.uk/developers/jobseeker` | UK-only listings (skip it if you're hunting in Canada) |
 >
 > ⭐ = the two that matter most. All are free to start; leave any blank to skip it.
+>
+> Installed from a terminal rather than in-session? Set them afterwards with `/plugin configure jobsmith@soheil-jobsmith`, or pass `--config KEY=VALUE` to `claude plugin install`.
 
 <details>
 <summary><strong>Other ways to install</strong></summary>
