@@ -1,0 +1,11 @@
+JULIO PEPE
+London, UK | +44 7XXX XXXXXX | julio.pepe@example.com | linkedin.com/in/juliopepe
+
+6 July 2026
+Dear Hiring Manager,
+I came into data science from plant research, which is not the usual route into a machine-learning role. I spent a few years running controlled experiments and, honestly, drowning in messy datasets — and the part I ended up enjoying most was cleaning the data up and finding the pattern underneath. That is what pushed me to take the MSc in Big Data and Data Science at Northumbria, and it is why your Junior Machine Learning Engineer role caught my eye: I want to build and test the models, not only analyse the numbers.
+The work you have described is close to what I already do. In my research I cleaned, transformed and analysed large experimental datasets in Python and R, built and validated statistical models to quantify treatment effects, and wrote SQL to pull the data together — then had to explain the results to people who were not technical. My MSc added the machine-learning side: scikit-learn, model building for regression and classification, and a stronger grounding in the maths and statistics behind it. I published a peer-reviewed paper off the back of that analytical work, so I know how to see a piece of analysis through to something people can rely on.
+I will be straight with you about where I am coming from: my background is scientific rather than computer science, and I have not yet worked with big-data tools like Hadoop or Spark in production. What I do bring is real Python and statistics on real data, a habit of careful, well-documented work, and a genuine appetite to learn quickly — which your emphasis on continuous learning tells me matters here.
+I would welcome the chance to talk about the role. Thank you for considering my application.
+Yours faithfully,
+Julio Pepe

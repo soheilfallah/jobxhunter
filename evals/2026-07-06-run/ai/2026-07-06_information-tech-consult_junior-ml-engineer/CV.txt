@@ -1,0 +1,43 @@
+JULIO PEPE
+London, UK | +44 7XXX XXXXXX | julio.pepe@example.com | linkedin.com/in/juliopepe | juliopepe.example.com
+
+Right to work in the UK — no sponsorship required.
+
+PROFESSIONAL SUMMARY
+====================
+Data analyst and MSc Data Science graduate with a research background turning large experimental datasets into statistical insight. Strong in Python (pandas, NumPy, scikit-learn), SQL and applied statistics, with hands-on experience cleaning, transforming and analysing data and communicating findings to non-technical audiences. Motivated to build and test machine-learning models in a junior ML engineering role.
+
+EDUCATION
+=========
+MSc Big Data and Data Science Technology — Northumbria University, London
+2024 – 2025
+  - Machine-learning fundamentals with scikit-learn; Python; SQL and relational databases; data pipelines; statistics. Strong mathematics and statistics foundation.
+MSc Controlled Environment Agriculture — University of Tehran, Iran
+  - Quantitative science master's. (UK equivalent: Master's degree.)
+BSc Horticultural Science and Engineering — Sari Agricultural Sciences & Natural Resources University, Iran
+  - (UK equivalent: Bachelor's degree.)
+
+EXPERIENCE
+==========
+Graduate Researcher — Photosynthesis Laboratory, University of Tehran
+February 2023 – July 2024
+  - Cleaned, transformed and analysed large experimental datasets in Python (pandas, NumPy) and R across concurrent controlled-environment experiments.
+  - Built and validated statistical models (ANOVA, regression, correlation) to quantify treatment effects, and visualised results with Matplotlib.
+  - Managed data collection, quality control and structured record-keeping across concurrent experiments.
+  - Communicated technical findings to non-specialist collaborators and published in the peer-reviewed journal MDPI Plants (2024).
+Crop Production Manager — Citrus (self-employed), Mazandaran, Iran
+January 2016 – October 2022
+  - Ran a commercial citrus operation, keeping records across multiple growing seasons to guide operational decisions.
+  - Supported university students with experimental setup, data recording and analysis.
+
+SKILLS
+======
+  - Programming & ML: Python (pandas, NumPy, Matplotlib, scikit-learn), SQL, machine-learning fundamentals (regression, classification)
+  - Data: data cleaning and transformation, large-dataset analysis, relational databases, data pipelines, quality control
+  - Statistics & maths: applied statistics (ANOVA, regression, correlation), strong mathematics and statistics background
+  - Analysis & tools: R, Excel, Jupyter notebooks, data visualisation
+  - Communication: explaining technical results to non-technical stakeholders
+
+CERTIFICATIONS
+==============
+  - Level 3 Emergency First Aid at Work (EFAW)

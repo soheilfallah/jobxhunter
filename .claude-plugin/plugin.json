@@ -1,0 +1,41 @@
+{
+  "name": "jobsmith",
+  "displayName": "Jobsmith",
+  "version": "1.2.0",
+  "description": "Build a master profile from your own files, tailor ATS-safe CVs to any job description, source live UK and Canada roles, write cover letters, and track every application.",
+  "author": {
+    "name": "Soheil Fallah",
+    "url": "https://github.com/soheilfallah"
+  },
+  "homepage": "https://github.com/soheilfallah/jobsmith",
+  "repository": "https://github.com/soheilfallah/jobsmith",
+  "license": "MIT",
+  "keywords": ["jobs", "job-search", "cv", "resume", "cover-letter", "ats", "uk", "recruitment", "tailoring"],
+  "mcpServers": "./.mcp.json",
+  "userConfig": {
+    "reed_api_key": {
+      "type": "string",
+      "title": "Reed API key",
+      "description": "Optional. Reed.co.uk Jobseeker API key (free at reed.co.uk/developers). Enables the bundled Reed job-search connector. Leave blank to skip Reed — sourcing falls back to web search.",
+      "sensitive": true
+    },
+    "adzuna_app_id": {
+      "type": "string",
+      "title": "Adzuna app id",
+      "description": "Optional. Adzuna app_id (free at developer.adzuna.com). Needed with the app key for the bundled Adzuna connector.",
+      "sensitive": true
+    },
+    "adzuna_app_key": {
+      "type": "string",
+      "title": "Adzuna app key",
+      "description": "Optional. Adzuna app_key that pairs with the app id for the bundled Adzuna connector.",
+      "sensitive": true
+    },
+    "firecrawl_api_key": {
+      "type": "string",
+      "title": "Firecrawl API key",
+      "description": "Optional. Firecrawl API key (fc-... , free tier at firecrawl.dev). Enables full job-description crawling. Leave blank to fall back to WebSearch/WebFetch.",
+      "sensitive": true
+    }
+  }
+}

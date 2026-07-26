@@ -1,0 +1,61 @@
+name: Release check
+
+# The plugin pins an explicit `version`, so users receive changes only when it
+# is bumped — pushing commits alone does nothing. This job makes a forgotten
+# bump, a manifest mismatch, or an undocumented release fail loudly on the PR
+# instead of silently shipping nothing.
+#
+# Deliberately does NOT run `claude plugin validate`: that needs the Claude CLI
+# and an authenticated session, which a public CI runner has neither of. Run it
+# locally before opening a PR (the README says so).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the stale-name scan uses `git grep` over the tree
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Manifest, changelog, and stale-name consistency
+        run: python scripts/check_release.py
+
+      - name: Connector lockfiles are present and current
+        run: |
+          set -e
+          for c in reed adzuna; do
+            test -f "connectors/$c-mcp/server.py.lock" \
+              || { echo "::error::connectors/$c-mcp/server.py.lock is missing. Run: uv lock --script connectors/$c-mcp/server.py"; exit 1; }
+          done
+          echo "both connector lockfiles present"
+
+      - name: .mcp.json and the connector doctor agree
+        run: |
+          python - <<'PY'
+          import json, subprocess, sys
+          mcp = json.load(open('.mcp.json'))['mcpServers']
+          bad = []
+          for name in ('firecrawl', 'reed', 'adzuna'):
+              out = subprocess.run([sys.executable, 'scripts/setup_connectors.py', '--emit', name],
+                                   capture_output=True, text=True).stdout
+              emitted = json.loads(out)[name]
+              a = [x for x in mcp[name]['args'] if 'CLAUDE_PLUGIN_ROOT' not in x]
+              b = [x for x in emitted['args'] if '<jobsmith>' not in x]
+              if mcp[name]['command'] != emitted['command'] or a != b:
+                  bad.append(f"{name}: .mcp.json={mcp[name]['command']} {a} vs doctor={emitted['command']} {b}")
+          if bad:
+              print("::error::setup_connectors.py has drifted from .mcp.json:")
+              for line in bad:
+                  print(f"  {line}")
+              sys.exit(1)
+          print("all three connectors agree")
+          PY

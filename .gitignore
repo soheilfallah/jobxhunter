@@ -1,0 +1,44 @@
+# Secrets — API keys live in MCP configs OUTSIDE this repo; never commit them.
+# This defends against a user dropping keys into a local .env / key file.
+.env
+.env.*
+*.key
+*.pem
+secrets.json
+mcp-config.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Personal data feed — never publish real profiles or filed applications.
+# In this build these live OUTSIDE the skill (career/job-hunt/); if you nest a
+# data dir inside the skill, exclude it here:
+/profiles/
+/applications/
+/dump/
+tracker.xlsx
+tracker.csv
+
+# Rendered documents (regenerated from markdown by scripts/render_docx.py)
+*.docx
+
+# Optional: exclude eval runs if they contain anything you don't want public.
+# The included eval uses a SAMPLE persona; keep or scrub before publishing.
+# evals/*-run/
+
+# Local Claude session notes — session-continuity docs, never published
+*.local.md
+PROJECT-STATUS.local.md
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+dist/
+
+# Local agent/session state — never published
+.claude/
+.claude-flow/
