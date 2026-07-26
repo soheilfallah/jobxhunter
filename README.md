@@ -6,9 +6,9 @@
 
 <br clear="left">
 
-![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-6E56CF) ![Market](https://img.shields.io/badge/market-UK%20%2B%20Canada%20built--in-1f6feb) ![Truth rule](https://img.shields.io/badge/truth%20rule-never%20invents%20facts-2ea043) ![License](https://img.shields.io/badge/license-MIT-blue)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-6E56CF) ![Market](https://img.shields.io/badge/markets-UK%20%2B%20Canada-1f6feb) ![Truth rule](https://img.shields.io/badge/truth%20rule-never%20invents%20facts-2ea043) ![License](https://img.shields.io/badge/license-MIT-blue)
 
-A UK-first Claude Code **plugin** (and skill) — **with Canada built in** — that builds a master profile from your own files, tailors a CV and cover letter to each job, sources live roles across job boards, and tracks every application. The profile is a decoupled data feed — point it at anyone.
+A Claude Code **plugin** (and skill) for the **UK and Canada** — more markets coming — that builds a master profile from your own files, tailors a CV and cover letter to each job, sources live roles across job boards, and tracks every application. The profile is a decoupled data feed — point it at anyone.
 
 <!-- Add a short demo GIF here (a /jobsmith:tailor run) — it's the single biggest README upgrade. -->
 
@@ -85,7 +85,7 @@ In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set — read it as the clone director
 | `/jobsmith:intake` | Build your master profile from a folder of raw files — old CVs, LinkedIn export, notes, certificates |
 | `/jobsmith:hunt` | Autonomous daily hunt — source, triage, and tailor every new live role, then file it |
 | `/jobsmith:tailor` | Tailor an ATS-safe CV to one job description, with a recruiter-persona scoring loop |
-| `/jobsmith:cover-letter` | Draft a UK cover letter in your own voice |
+| `/jobsmith:cover-letter` | Draft a cover letter in your own voice, to your market's conventions |
 | `/jobsmith:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
 
 You can also just talk to it in plain language — the commands are shortcuts.
@@ -109,7 +109,7 @@ You can also just talk to it in plain language — the commands are shortcuts.
 - **Profiling-first, so nothing reads vague.** Intake ingests every file (placeholders for formats it can't read), stays incremental, and asks targeted questions — concrete evidence beats generic filler.
 - **No slop.** A researched ban-list kills "results-driven team player, passionate about synergy."
 - **Everything filed.** Per-job folders + a locked tracker; submit the `.docx` to ATS, keep a PDF for humans.
-- **UK-first, Canada built in, swappable.** UK conventions by default; Canada works out of the box (US-Letter résumé, Canadian spelling, Job Bank / Indeed.ca / University Affairs). Add another market by dropping in a conventions doc.
+- **Two markets today, more coming.** The UK and Canada both work out of the box — A4 CV vs US-Letter résumé, British vs Canadian spelling, Reed/Adzuna vs Job Bank / Indeed.ca / University Affairs. Market is read from your profile, not hard-coded, so a new one is a conventions doc plus a board list — the engine doesn't change.
 
 ---
 
@@ -132,7 +132,7 @@ No keys ship in this repo. Each job board is an optional MCP connector you regis
 | Connector | Key | Cost |
 |---|---|---|
 | **Reed** (UK jobs) | [reed.co.uk/developers](https://www.reed.co.uk/developers) | free |
-| **Adzuna** (UK jobs + salary data) | [developer.adzuna.com](https://developer.adzuna.com) | free tier |
+| **Adzuna** (UK + Canada jobs, salary data) | [developer.adzuna.com](https://developer.adzuna.com) | free tier |
 | **Firecrawl** (job-description crawling) | [firecrawl.dev](https://www.firecrawl.dev) | free tier + paid |
 | **Indeed / Dice** | claude.ai connectors (OAuth) | per host |
 
@@ -169,4 +169,4 @@ Issues and PRs welcome — see [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
 
 MIT © Soheil Fallah — see [`LICENSE`](LICENSE).
 
-*Built with Claude. UK-first by design; the conventions layer swaps for other markets.*
+*Built with Claude. UK and Canada ship today; the conventions layer is designed for the next market to drop in.*

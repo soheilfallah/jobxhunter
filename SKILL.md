@@ -1,7 +1,7 @@
 ---
 name: jobsmith
 description: >-
-  UK-first job-hunting skill. Core is CV tailoring: read a master profile plus a job description
+  Job-hunting skill for the UK and Canada (more markets coming). Core is CV tailoring: read a master profile plus a job description
   and produce an ATS-friendly, slop-free CV that survives both the ATS parser and the
   six-second recruiter scan. Also finds and deep-crawls roles (Indeed/Reed/Adzuna/Dice connectors,
   with a Firecrawl/WebSearch crawl fallback), discovers target companies and cold-emails the right
@@ -14,10 +14,10 @@ description: >-
   for a role, or track job applications.
 ---
 
-# jobsmith — the UK-first job-hunting skill (CV tailoring at its core)
+# jobsmith — the job-hunting skill for the UK and Canada (CV tailoring at its core)
 
 CV tailoring at the core; cover letters, a recruiter loop, an alternative-world mode, and
-application tracking around it. UK-first, with Canada built in (market-driven — see below). Works in
+application tracking around it. UK and Canada both ship (market-driven — see below). Works in
 chat and in Claude Code.
 
 ## The one rule everything hangs on
@@ -59,7 +59,7 @@ confirm with the user):
 - **Job boards & sourcing lanes:** see `references/job-search-guide.md` (UK boards vs Canada boards).
 - **Connectors:** `uk` → Reed + Adzuna(`gb`) + Indeed; `ca` → **Adzuna(`ca`) + Indeed(`CA`)** (Reed is
   UK-only, skip it for `ca`) + Firecrawl for everything else. All optional; missing ones fall back.
-The skill is UK-first only in its defaults — the logic is market-driven, so adding a market = add a
+The UK is only the default, not a limit — the logic is market-driven, so adding a market = add a
 conventions doc + a board list + a connector map, nothing in the engine changes.
 
 ## Reference map (progressive disclosure — load only what the step needs)

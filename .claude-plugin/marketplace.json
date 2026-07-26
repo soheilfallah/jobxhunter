@@ -5,7 +5,7 @@
     "name": "Soheil",
     "url": "https://github.com/soheilfallah"
   },
-  "description": "UK-first job-hunting tooling: profile intake, ATS-safe CV tailoring, sourcing, cover letters, and application tracking.",
+  "description": "Job-hunting tooling for the UK and Canada: profile intake, ATS-safe CV tailoring, sourcing, cover letters, and application tracking.",
   "plugins": [
     {
       "name": "jobsmith",
