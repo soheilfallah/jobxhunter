@@ -29,6 +29,15 @@ cd ..
 claude --plugin-dir ./jobsmith
 ```
 
+> [!NOTE]
+> **Windows: `Filename too long` on clone.** The eval fixtures nest to 117 characters, which fits Windows' 260-character limit with about 142 to spare. That is plenty for a normal location, but a deep or cloud-synced folder can exhaust it, and git then reports `unable to checkout working tree` with **zero files** checked out. Either clone somewhere shallower, or enable long paths once:
+>
+> ```bash
+> git config --global core.longpaths true
+> ```
+>
+> Those eval directory names are the tracker's row keys in `evals/2026-07-06-run/tracker.csv`, so they are deliberately not shortened.
+
 ## Before you open a PR
 
 ```bash

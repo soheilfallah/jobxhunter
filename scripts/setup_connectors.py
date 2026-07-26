@@ -69,6 +69,29 @@ OAUTH_CONNECTORS = {
 }
 
 
+def _report_runtimes():
+    """Check the runtimes the bundled connectors need before blaming the keys.
+
+    Reed and Adzuna launch via `uv run --script`, and Firecrawl via `npx`. When
+    either is missing the server dies at startup with nothing useful in the log,
+    which looks identical to a bad API key. Say so up front.
+    """
+    import shutil
+
+    uv, npx = shutil.which("uv"), shutil.which("npx")
+    if uv and npx:
+        return
+    print("RUNTIME CHECK:")
+    if not uv:
+        print("  [!] `uv` not found on PATH — the bundled Reed and Adzuna connectors cannot start.")
+        print("      They launch via `uv run --script`, which resolves their dependencies for you.")
+        print("      Install: https://docs.astral.sh/uv/getting-started/installation/")
+    if not npx:
+        print("  [!] `npx` not found on PATH — the Firecrawl connector cannot start.")
+        print("      It ships with Node.js: https://nodejs.org")
+    print("      Sourcing still works without these; it falls back to web search.\n")
+
+
 def _config_paths():
     """Best-effort Claude config locations across surfaces."""
     home = os.path.expanduser("~")
@@ -89,7 +112,12 @@ def _config_paths():
 
 
 def _registered_servers():
-    """Set of mcpServers names found across all config files."""
+    """Set of mcpServers names found across all config files.
+
+    Only sees hand-registered, top-level entries. Plugin-provided servers are
+    namespaced (`plugin:jobsmith:reed`) and never appear here, which is why
+    `_installed_as_plugin()` exists.
+    """
     found = set()
     for path, _ in _config_paths():
         try:
@@ -99,6 +127,31 @@ def _registered_servers():
         except (OSError, json.JSONDecodeError):
             continue
     return found
+
+
+def _installed_as_plugin():
+    """Return the plugin id if jobsmith is installed as a plugin, else None.
+
+    When installed as a plugin the connectors ship with it: they are registered
+    as `plugin:jobsmith:<name>` and their keys come from the plugin's own
+    user-config, not from a hand-edited `mcpServers` block. Without this check
+    the doctor reports all three as MISSING and walks a plugin user through a
+    manual merge they must not do, which is the opposite of what SETUP says.
+
+    The API keys themselves are declared `sensitive`, so they live in the OS
+    keychain rather than settings.json. We can therefore tell that the plugin is
+    installed, but not whether a given key has been entered.
+    """
+    settings = os.path.join(os.path.expanduser("~"), ".claude", "settings.json")
+    try:
+        with open(settings, encoding="utf-8") as f:
+            enabled = json.load(f).get("enabledPlugins") or {}
+    except (OSError, json.JSONDecodeError):
+        return None
+    for pid, on in enabled.items():
+        if on and pid.split("@")[0] == "jobsmith":
+            return pid
+    return None
 
 
 def _snippet(name):
@@ -119,17 +172,40 @@ def main():
 
     registered = _registered_servers()
     status = {n: (n in registered) for n in CONNECTORS}
+    plugin_id = _installed_as_plugin()
 
     if args.json:
         print(json.dumps({
             "config_files": [p for p, _ in _config_paths()],
-            "registered": sorted(registered),
+            # only our own connectors: the user's unrelated MCP servers are none
+            # of this tool's business
+            "registered": sorted(n for n in registered if n in CONNECTORS),
             "connectors": status,
+            "installed_as_plugin": plugin_id,
+            "note": ("Installed as a plugin: connectors ship with it and keys come from plugin "
+                     "user-config, so `connectors` false here does not mean missing."
+                     if plugin_id else
+                     "Standalone: connectors are hand-registered in mcpServers."),
         }, indent=2))
         return
 
+    if plugin_id:
+        print(f"Jobsmith is installed as a plugin ({plugin_id}).\n")
+        print("Its connectors ship with the plugin and are already registered as")
+        print("  plugin:jobsmith:reed / :adzuna / :firecrawl")
+        print("You do NOT hand-edit mcpServers for these. Set the keys with:\n")
+        print(f"  /plugin configure {plugin_id}            (in Claude Code)")
+        print(f"  claude plugin install {plugin_id} --config KEY=VALUE   (from a terminal)\n")
+        _report_runtimes()
+        print("Keys are stored in your OS keychain because they are marked sensitive, so this")
+        print("script cannot read back which ones you have set. Check the configure screen.")
+        print("\nThe hand-registration report below applies only to a standalone (non-plugin)")
+        print("install. Ignore it unless you are running jobsmith from a cloned skill folder.\n")
+        print("-" * 70 + "\n")
+
     cfgs = _config_paths()
     print("Jobsmith connector setup — you bring your own API keys; none ship with the skill.\n")
+    _report_runtimes()
     print("Config files found:" if cfgs else "No Claude config found yet.")
     for p, label in cfgs:
         print(f"  - {label}: {p}")
@@ -139,7 +215,7 @@ def main():
     missing = [n for n, ok in status.items() if not ok]
 
     if have:
-        print("CONFIGURED:")
+        print("REGISTERED (an entry exists; the key itself is not validated here):")
         for n in have:
             print(f"  [OK] {n} — {CONNECTORS[n]['what']}")
         print()
@@ -155,15 +231,18 @@ def main():
                 print(f"         {line}")
             if c.get("note"):
                 print(f"      note: {c['note']}")
-    print("\nClaude.ai OAuth connectors (no local config needed):")
+    print("\nClaude.ai OAuth connectors — CANNOT be detected from here:")
+    print("  This script only reads local JSON config. Claude.ai OAuth connectors live in your")
+    print("  account, so these may well be active already. '?' means unknown, not missing.")
     for n, how in OAUTH_CONNECTORS.items():
-        mark = "OK" if n in registered else "  "
+        mark = "OK" if n in registered else "? "
         print(f"  [{mark}] {n} — {how}")
 
     print("\nHow to add one: sign up for the connector (Firecrawl needs a free account too), copy "
           "YOUR OWN key, then paste it to the agent in chat — it registers the MCP for you (backs up "
           "your config, merges the entry, tells you to restart). You never edit JSON by hand. "
-          "Full guide: references/connector-setup.md")
+          "Full guide: references/connector-setup.md inside the jobsmith plugin/skill folder, "
+          "or https://github.com/soheilfallah/jobsmith/blob/main/references/connector-setup.md")
 
 
 if __name__ == "__main__":
