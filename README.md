@@ -1,12 +1,79 @@
+<img src="assets/brand/job-hunt-icon.svg" width="84" align="left" alt="" hspace="18" vspace="4">
+
 # job-hunt
 
 **Your real experience in → tailored, ATS-safe applications out — without a single invented fact.**
 
+<br clear="left">
+
+![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-6E56CF) ![Market](https://img.shields.io/badge/market-UK%20%2B%20Canada%20built--in-1f6feb) ![Truth rule](https://img.shields.io/badge/truth%20rule-never%20invents%20facts-2ea043) ![License](https://img.shields.io/badge/license-MIT-blue)
+
 A UK-first Claude Code **plugin** (and skill) — **with Canada built in** — that builds a master profile from your own files, tailors a CV and cover letter to each job, sources live roles across job boards, and tracks every application. The profile is a decoupled data feed — point it at anyone.
 
-![Claude Code](https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-6E56CF) ![Market](https://img.shields.io/badge/market-UK%20%2B%20Canada%20built--in-1f6feb) ![Truth rule](https://img.shields.io/badge/truth%20rule-never%20invents%20facts-2ea043)
-
 <!-- Add a short demo GIF here (a /job-hunt:tailor run) — it's the single biggest README upgrade. -->
+
+---
+
+## Quick start
+
+```
+/plugin marketplace add soheilfallah/job-hunt
+/plugin install job-hunt@soheil-job-hunt
+/job-hunt:setup
+```
+
+Then drop your old CVs and notes into the `dump/` folder it creates, run `/job-hunt:intake`, and you have a master profile. Everything else tailors from there.
+
+---
+
+## Install
+
+### Plugin (recommended)
+
+In Claude Code:
+
+```
+/plugin marketplace add soheilfallah/job-hunt
+/plugin install job-hunt@soheil-job-hunt
+/reload-plugins
+```
+
+Or from a terminal, for scripted or non-interactive setups:
+
+```bash
+claude plugin marketplace add soheilfallah/job-hunt
+claude plugin install job-hunt@soheil-job-hunt
+```
+
+Keys (Reed / Adzuna / Firecrawl) are prompted on install and all optional — leave them blank and sourcing falls back to web search. Nothing is committed.
+
+### Try it without installing
+
+```bash
+git clone https://github.com/soheilfallah/job-hunt
+claude --plugin-dir ./job-hunt
+```
+
+Loads for that session only. The cleanest way to kick the tyres.
+
+### As a plain skill
+
+Also works in Claude Desktop / cowork, which have no plugin system:
+
+```bash
+git clone https://github.com/soheilfallah/job-hunt ~/.claude/skills/job-hunt
+pip install python-docx openpyxl
+```
+
+In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set — read it as the clone directory wherever a command mentions it.
+
+### Requirements
+
+| Requirement | Needed for |
+|---|---|
+| **Claude Code** | everything — or any `SKILL.md`-compatible host |
+| **[`uv`](https://docs.astral.sh/uv/getting-started/installation/)** | the Reed / Adzuna connectors only. They self-resolve on first launch — nothing to `pip install` |
+| **Python 3** | CV rendering and the tracker, via `python-docx` + `openpyxl`. The scripts preflight and print the exact fix if missing |
 
 ---
 
@@ -22,35 +89,6 @@ A UK-first Claude Code **plugin** (and skill) — **with Canada built in** — t
 | `/job-hunt:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
 
 You can also just talk to it in plain language — the commands are shortcuts.
-
----
-
-## Install
-
-**As a plugin (recommended):**
-
-```
-/plugin marketplace add soheilfallah/job-hunt
-/plugin install job-hunt@soheil-job-hunt
-/reload-plugins
-```
-
-Keys (Reed / Adzuna / Firecrawl) are prompted on install and optional — leave blank to fall back to web search. Nothing is committed.
-
-**Prerequisites:**
-
-- [`uv`](https://docs.astral.sh/uv/getting-started/installation/) — the Reed and Adzuna connectors run as `uv run --script`, which resolves their dependencies into an isolated environment on first launch. Nothing to `pip install`. Firecrawl needs nothing.
-  Resolution is pinned to the committed `server.py.lock` (hash-verified) and to the real package registries, so a stray `uv.toml` or `.npmrc` in your working directory can't redirect a connector's install. If you add a dependency, re-run `uv lock --script connectors/<name>-mcp/server.py` — the connector fails closed on a stale lock rather than silently resolving something else.
-- Python with `python-docx` and `openpyxl` for the bundled scripts (CV rendering and the tracker). They preflight and tell you the exact `pip install` if missing.
-
-**As a plain skill (also works in Claude Desktop / cowork):**
-
-```
-git clone https://github.com/soheilfallah/job-hunt ~/.claude/skills/job-hunt
-pip install python-docx openpyxl
-```
-
-Note: in this mode `${CLAUDE_PLUGIN_ROOT}` is not set, so read it as the clone directory when you see it in a command.
 
 ---
 
@@ -98,7 +136,7 @@ No keys ship in this repo. Each job board is an optional MCP connector you regis
 | **Firecrawl** (job-description crawling) | [firecrawl.dev](https://www.firecrawl.dev) | free tier + paid |
 | **Indeed / Dice** | claude.ai connectors (OAuth) | per host |
 
-As a plugin, these keys are the plugin's user-config — no manual JSON editing. Full map: `references/tools-and-connectors.md`.
+As a plugin, these keys are the plugin's user-config — no manual JSON editing. Full map: [`references/tools-and-connectors.md`](references/tools-and-connectors.md).
 
 ---
 
@@ -116,10 +154,17 @@ Scores discriminate honestly: a true match scored 4.0; genuine stretches scored 
 
 ---
 
-## Notes
+## Privacy & supply chain
 
-- **Privacy:** the skill is the publishable artifact; your real profiles and filed applications live in a private workspace and are gitignored — never committed.
-- **Requirements:** Claude Code (or a `SKILL.md`-compatible host) + Python 3 with `python-docx` and `openpyxl` (the scripts preflight these and fail with the exact fix).
-- **Status:** built and validated across several job families; plugging in a real profile is a one-path, non-code step.
+- **Your data stays yours.** The skill is the publishable artifact; your real profiles and filed applications live in a private workspace and are gitignored — never committed. No keys ship in this repo.
+- **Connector installs can't be hijacked.** `uv` and `npx` read config from the *working directory*, so a stray `uv.toml` or `.npmrc` in whatever folder you opened could otherwise redirect a connector's install to someone else's package index. All three connectors pin resolution to the real registries and to committed hash-verified lockfiles. If you add a dependency, re-run `uv lock --script connectors/<name>-mcp/server.py` — a stale lock fails the connector closed rather than silently resolving something else.
+
+---
+
+## Contributing & license
+
+Issues and PRs welcome — see [`CHANGELOG.md`](CHANGELOG.md) for what's landed. Run `claude plugin validate . --strict` before opening a PR; it's the same check the marketplace review pipeline runs.
+
+MIT © Soheil Fallah — see [`LICENSE`](LICENSE).
 
 *Built with Claude. UK-first by design; the conventions layer swaps for other markets.*
