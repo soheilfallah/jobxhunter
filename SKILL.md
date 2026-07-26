@@ -160,7 +160,8 @@ When no workspace resolves (no path, no `JOBSMITH_DIR`, discovery finds nothing)
 python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]
 ```
 This builds the workspace contract (`profiles/` + `profiles/_intake/`, `dump/` with its `_manifest.csv`,
-`applications/`, `daily-hunt/`, `scripts/`), drops a rich **profile template** (a warehouse, not a CV) +
+`applications/`, `daily-hunt/`, `scripts/`), drops a rich **profile template** (hold everything true
+about the user, far more than one CV shows — tailoring selects from it) +
 a starter `_RUN-PLAYBOOK.md` + empty dedupe ledger, generates a **`WORKSPACE-MAP.md`** documenting every
 folder/tracker + the Word/PDF output contract, copies the scripts in, runs `tracker.py init`, then stops
 for the user to fill the profile (or run INTAKE against `dump/`). It runs a dependency **preflight**

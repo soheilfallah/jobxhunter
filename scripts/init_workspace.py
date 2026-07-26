@@ -7,7 +7,8 @@ resolver. Idempotent and SAFE: refuses to clobber an already-populated workspace
 (that is discover-and-reuse territory, not setup) unless --force.
 
 Creates:
-  <root>/profiles/<name>.md              # rich profile template (warehouse, not a CV)
+  <root>/profiles/<name>.md              # rich profile template: everything true about you,
+                                         # far more than one CV shows. Tailoring selects from it.
   <root>/applications/                   # tracker lives here
   <root>/applications/daily-hunt/
         _RUN-PLAYBOOK.md                 # hard rules + live-connector board list
@@ -194,6 +195,9 @@ This directory is your jobsmith **workspace**: the single home for your profile,
 built from, and every application. It's path-agnostic and private (keep it gitignored). This map is
 generated at setup so the structure is always self-explaining and trustworthy.
 
+Entries marked **[later]** do not exist yet. They are created by a command as you use it, so
+an empty slot is expected rather than something you need to fix.
+
 ```
 <this folder>/
   WORKSPACE-MAP.md            ← you are here
@@ -201,14 +205,14 @@ generated at setup so the structure is always self-explaining and trustworthy.
     README.md                 ← what to put in dump/
     _manifest.csv             ← INTAKE's book-keeping: one row per file, with a status
   profiles/
-    {name}.md                 ← THE MASTER PROFILE — a warehouse of everything true about you
+    {profile_line}← THE MASTER PROFILE (see below)
     _intake/                  ← intake internals (private)
       placeholders/           ← a stub for each dump file that couldn't be read as text here
       CHANGELOG.md            ← what each intake run added to the profile
   applications/
     tracker.xlsx | .csv       ← the system of record (owned ONLY by scripts/tracker.py)
-    tracker-priority.xlsx     ← generated day-to-day worklist (Drafted-first, soonest-closing)
-    <category>/<YYYY-MM-DD>_<company>_<role>/
+    tracker-priority.xlsx     ← [later] worklist from `tracker.py priority-view`
+    <category>/<YYYY-MM-DD>_<company>_<role>/   ← [later] one per job you tailor for
       job-description.md      ← the captured full JD
       notes.md                ← coverage matrix, brain-dump, recruiter scorecard, L2 delta
       CV.md  CV.docx  CV.txt  ← the tailored CV (markdown source + rendered outputs)
@@ -216,9 +220,15 @@ generated at setup so the structure is always self-explaining and trustworthy.
     daily-hunt/
       _RUN-PLAYBOOK.md        ← hard rules + lessons — read FIRST every hunt
       seen-jobs.csv           ← dedupe ledger (canonical job key -> status)
-      <YYYY-MM-DD>-summary.md ← one dated summary per hunt run
+      <YYYY-MM-DD>-summary.md ← [later] one dated summary per hunt run
   scripts/                    ← a portable copy of the skill's deterministic scripts
 ```
+
+## About the master profile
+`profiles/{name}.md` is the one file everything else reads. Keep it **richer than any single CV
+needs**: every role, every skill, every number, every output, including things you would never put
+on a CV. Tailoring *selects* from it rather than inventing, so the more real evidence it holds, the
+better each tailored CV gets. The profile itself is never sent to an employer.
 
 ## How the profile stays current
 Drop files into `dump/`, then run INTAKE. It runs `scripts/dump_manifest.py scan`, which records each
@@ -313,7 +323,12 @@ def main():
     _write_if_absent(os.path.join(dump, "_manifest.csv"), MANIFEST_HEADER, root, args.force)
     _write_if_absent(os.path.join(intake, "CHANGELOG.md"), CHANGELOG_TEMPLATE, root, args.force)
     _write_if_absent(os.path.join(root, "WORKSPACE-MAP.md"),
-                     WORKSPACE_MAP_TEMPLATE.format(name=args.name), root, args.force)
+                     WORKSPACE_MAP_TEMPLATE.format(
+                         name=args.name,
+                         # every other row puts the arrow at the same column; pad to match
+                         # so a long name does not knock this one out of line
+                         profile_line=f"{args.name}.md".ljust(26)),
+                     root, args.force)
 
     # Initialise the tracker (idempotent).
     init = subprocess.run([sys.executable, os.path.join(HERE, "tracker.py"),
@@ -327,7 +342,8 @@ def main():
     print("\nSETUP COMPLETE — build your profile one of two ways:")
     print("  EASY (recommended): drop your CVs / LinkedIn export / certificates / notes into")
     print(f"    dump/  (see dump/README.md), then run INTAKE — the skill builds profiles/{args.name}.md for you.")
-    print(f"  MANUAL: fill in profiles/{args.name}.md by hand (it's a warehouse, not a CV).")
+    print(f"  MANUAL: fill in profiles/{args.name}.md by hand. Put in everything true about you,")
+    print("          not just what one CV would show — tailoring selects from it.")
     print("Then run the daily hunt. Stopping here so nothing runs against an empty profile.")
 
 

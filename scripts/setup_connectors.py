@@ -34,7 +34,7 @@ CONNECTORS = {
                 "cannot redirect the install.",
     },
     "reed": {
-        "what": "UK job search — Reed.co.uk (security/data/admin/agency roles)",
+        "what": "UK-only job search — Reed.co.uk (skip it if you are hunting in Canada)",
         "key_url": "https://www.reed.co.uk/developers  (free Jobseeker API key)",
         "public": True,
         "config": {"command": "uv",
@@ -48,7 +48,7 @@ CONNECTORS = {
                 "redirecting that resolution.",
     },
     "adzuna": {
-        "what": "UK job search + salary/labour-market data — Adzuna",
+        "what": "UK AND CANADA job search + salary data — the only connector covering both markets",
         "key_url": "https://developer.adzuna.com  (free app_id + app_key)",
         "public": True,
         "config": {"command": "uv",
