@@ -61,18 +61,19 @@ claude plugin install jobsmith@soheil-jobsmith
 >
 > ⭐ = the two that matter most. All are free to start; leave any blank to skip it.
 
-### Try it without installing
+<details>
+<summary><strong>Other ways to install</strong></summary>
+
+<br>
+
+**Try it without installing.** Loads for that session only.
 
 ```bash
 git clone https://github.com/soheilfallah/jobsmith
 claude --plugin-dir ./jobsmith
 ```
 
-Loads for that session only.
-
-### As a plain skill
-
-Also works in Claude Desktop / cowork, which have no plugin system:
+**As a plain skill.** Also works in Claude Desktop / cowork, which have no plugin system:
 
 ```bash
 git clone https://github.com/soheilfallah/jobsmith ~/.claude/skills/jobsmith
@@ -80,6 +81,8 @@ pip install python-docx openpyxl
 ```
 
 In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set. Read it as the clone directory wherever a command mentions it.
+
+</details>
 
 ### Requirements
 
