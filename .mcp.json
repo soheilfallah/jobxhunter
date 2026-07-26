@@ -2,21 +2,21 @@
   "mcpServers": {
     "firecrawl": {
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"],
+      "args": ["-y", "--registry=https://registry.npmjs.org/", "firecrawl-mcp"],
       "env": {
         "FIRECRAWL_API_KEY": "${user_config.firecrawl_api_key}"
       }
     },
     "reed": {
       "command": "uv",
-      "args": ["run", "--script", "${CLAUDE_PLUGIN_ROOT}/connectors/reed-mcp/server.py"],
+      "args": ["run", "--no-config", "--locked", "--script", "${CLAUDE_PLUGIN_ROOT}/connectors/reed-mcp/server.py"],
       "env": {
         "REED_API_KEY": "${user_config.reed_api_key}"
       }
     },
     "adzuna": {
       "command": "uv",
-      "args": ["run", "--script", "${CLAUDE_PLUGIN_ROOT}/connectors/adzuna-mcp/server.py"],
+      "args": ["run", "--no-config", "--locked", "--script", "${CLAUDE_PLUGIN_ROOT}/connectors/adzuna-mcp/server.py"],
       "env": {
         "ADZUNA_APP_ID": "${user_config.adzuna_app_id}",
         "ADZUNA_APP_KEY": "${user_config.adzuna_app_key}"

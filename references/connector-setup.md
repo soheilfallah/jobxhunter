@@ -47,7 +47,15 @@ The agent then:
 2. Merges the connector under `mcpServers` with the user's real key,
 3. Tells the user to **restart** Claude Code / relaunch Desktop so the server loads.
 
-**Windows note:** `npx` can't be spawned directly — wrap it: `"command":"cmd","args":["/c","npx","-y","firecrawl-mcp"]`.
+**Windows note:** `npx` can't be spawned directly — wrap it:
+`"command":"cmd","args":["/c","npx","-y","--registry=https://registry.npmjs.org/","firecrawl-mcp"]`.
+
+**Keep the pinning flags.** The emitted snippets carry `--registry=` (firecrawl) and
+`--no-config --locked` (reed/adzuna) on purpose. Package managers read config from the *working
+directory* — an `.npmrc` or `uv.toml` sitting in whatever folder the session was opened in can
+otherwise redirect the install to an attacker's index, and the fetched package executes on import.
+These flags pin resolution to the real registry and to the committed `server.py.lock`. Don't drop
+them when merging a snippet into a user's config.
 
 ## Step 4 — verify
 After restart, re-run `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py"` (should show `[OK]`) or ask the skill to run

@@ -25,6 +25,29 @@ Marketplace-readiness pass. No change to skill behaviour or output quality.
 - **`pydantic` is now declared** in both connector `pyproject.toml` files. It is
   imported directly by both servers and was previously satisfied only
   transitively via `mcp`.
+- **`setup_connectors.py` emitted stale config snippets.** The doctor still
+  handed manual registrants the old `python <path>/server.py` form, so anyone
+  registering a connector by hand got the launcher this release replaced. It
+  now emits the same hardened `uv` and `npx` invocations as `.mcp.json`.
+
+### Security
+
+- **Connector dependency resolution is pinned against working-directory
+  hijacking.** `uv` and `npx` both read configuration from the current working
+  directory and its parents, not from the script's own location. A `uv.toml` or
+  `.npmrc` planted in whatever folder a session happens to open in could
+  redirect a connector's install to an attacker-controlled index, and the
+  fetched package executes on import. Verified reproducible: with no lockfile,
+  a hostile `uv.toml` sent resolution to `http://127.0.0.1:9/simple/pydantic/`,
+  and `npx -y firecrawl-mcp` followed a hostile `.npmrc` the same way.
+  Mitigated on all three servers — `--no-config --locked` for Reed and Adzuna,
+  an explicit `--registry=https://registry.npmjs.org/` for Firecrawl. Verified
+  against a hostile config with a cold cache: all three now resolve from the
+  real registries and start cleanly.
+- **Added hash-verified lockfiles** (`connectors/*/server.py.lock`, 555 hashes
+  each) via `uv lock --script`. Resolution is deterministic rather than "newest
+  release satisfying a lower bound." Adding a dependency requires re-running
+  `uv lock --script`; a stale lock fails the connector closed.
 
 ### Added
 
