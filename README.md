@@ -1,5 +1,7 @@
 <img src="assets/brand/jobsmith-icon.svg" width="84" align="left" alt="" hspace="18" vspace="4">
 
+
+
 # jobsmith
 
 **Your real experience in → tailored, ATS-safe applications out — without a single invented fact.**
