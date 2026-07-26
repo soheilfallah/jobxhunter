@@ -17,6 +17,10 @@ This check makes that failure loud instead of silent. It verifies:
   4. plugin.json and marketplace.json agree on the plugin `name`.
   5. Nothing still references the pre-1.2.0 `job-hunt` name outside the
      private-workspace paths that are deliberately kept.
+  6. Every `<owner>/<repo>` reference agrees, and matches the git remote. A
+     transfer or rename that misses one ships an install command resolving to
+     nothing, which is the most expensive typo here: it is the first line a
+     new user copies.
 
 Run it before opening a PR, and in CI:
 
@@ -25,6 +29,7 @@ Run it before opening a PR, and in CI:
 Exits 0 when clean, 1 with a list of problems otherwise.
 """
 
+import collections
 import json
 import pathlib
 import re
@@ -111,7 +116,61 @@ def check():
             )
 
     problems.extend(_check_stale_name())
+    problems.extend(_check_owner_consistency())
     return problems
+
+
+def _check_owner_consistency():
+    """Every `<owner>/<repo>` reference must agree, and match the git remote.
+
+    A repository transfer or rename changes the owner in the URL. Miss one and
+    the README ships an install command that resolves to nothing, which is the
+    single most expensive typo in the repo: it is the first thing a new user
+    copies.
+    """
+    slug = re.compile(r"github\.com[:/]([A-Za-z0-9-]+)/([A-Za-z0-9._-]+?)(?:\.git)?(?=[/\s\)\"'`]|$)")
+    found = collections.defaultdict(set)
+
+    try:
+        out = subprocess.run(["git", "grep", "-I", "-h", "-E", r"github\.com[:/][A-Za-z0-9-]+/"],
+                             cwd=ROOT, capture_output=True, text=True).stdout
+    except (OSError, subprocess.SubprocessError):
+        return []
+    for owner, repo in slug.findall(out):
+        if repo.lower() in ("sponsors", "orgs"):
+            continue
+        found[f"{owner}/{repo}"].add(owner)
+
+    # bare `<owner>/<repo>` in the /plugin marketplace add line has no github.com prefix
+    try:
+        bare = subprocess.run(["git", "grep", "-I", "-h", "-oE", r"marketplace add [A-Za-z0-9-]+/[A-Za-z0-9._-]+"],
+                              cwd=ROOT, capture_output=True, text=True).stdout
+    except (OSError, subprocess.SubprocessError):
+        bare = ""
+    for line in bare.splitlines():
+        found[line.split()[-1]].add(line.split()[-1].split("/")[0])
+
+    owners = {o for slugs in found.values() for o in slugs}
+    if len(owners) > 1:
+        return [f"conflicting repo owners referenced: {sorted(owners)}. "
+                "A transfer or rename left some URLs behind."]
+
+    # cross-check against the actual remote, when there is one
+    try:
+        remote = subprocess.run(["git", "remote", "get-url", "origin"],
+                                cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        return []
+    m = slug.search(remote)
+    if not m or not owners:
+        return []
+    actual = f"{m.group(1)}/{m.group(2)}"
+    referenced = {s for s in found if "/" in s}
+    wrong = {s for s in referenced if s.lower() != actual.lower()}
+    if wrong:
+        return [f"docs reference {sorted(wrong)} but origin is {actual}. "
+                "Update every owner/repo reference after a transfer or rename."]
+    return []
 
 
 def _check_stale_name():
