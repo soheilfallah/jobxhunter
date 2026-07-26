@@ -16,8 +16,10 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   actually does: raw material in, something made well out.
   - Commands are now `/jobsmith:tailor`, `/jobsmith:hunt`, and so on.
   - Marketplace id is `jobsmith@soheil-jobsmith`.
-  - The repository moved to `soheilfallah/jobsmith`; GitHub redirects the old
-    URL, so existing clones and links keep resolving.
+  - The repository moved to `soheilfallah/jobsmith`. Existing git remotes and
+    API references still resolve through GitHub's rename redirect (verified by
+    cloning via the old URL), but the old **web** URL returns 404 — update any
+    bookmarks or links you have shared.
   - **`JOBHUNT_DIR` still works.** The workspace env var is now
     `JOBSMITH_DIR`, but the old name is still read as a fallback, so an
     existing workspace needs no change. New name wins if both are set.
