@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "mcp>=1.2.0",
+#     "httpx>=0.27.0",
+#     "pydantic>=2.0.0",
+#     "python-dotenv>=1.0.0",
+# ]
+# ///
 """Adzuna MCP server.
 
 Exposes Adzuna's job-search and labour-market-intelligence endpoints as MCP tools.

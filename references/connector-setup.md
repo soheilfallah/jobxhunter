@@ -21,8 +21,8 @@ placeholder — wait for the user's real key, then register.
 
 ## Step 1 — check what's already there
 ```
-python scripts/setup_connectors.py          # human report (configured vs missing + how to add)
-python scripts/setup_connectors.py --json    # machine-readable (for the agent to branch on)
+python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py"          # human report (configured vs missing + how to add)
+python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" --json    # machine-readable (for the agent to branch on)
 ```
 It reads the user's Claude config(s) (`~/.claude.json` for Claude Code; the Desktop config too) and
 lists which of `firecrawl` / `reed` / `adzuna` are registered, plus the claude.ai OAuth connectors
@@ -40,7 +40,7 @@ lists which of `firecrawl` / `reed` / `adzuna` are registered, plus the claude.a
 When the user provides a key, the **agent** merges the snippet into their Claude config — never paste
 a key into a skill file or a commit. Get the exact snippet:
 ```
-python scripts/setup_connectors.py --emit firecrawl   # or reed / adzuna
+python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" --emit firecrawl   # or reed / adzuna
 ```
 The agent then:
 1. Reads the config (`~/.claude.json`, or the Desktop config), **backs it up**,
@@ -50,7 +50,7 @@ The agent then:
 **Windows note:** `npx` can't be spawned directly — wrap it: `"command":"cmd","args":["/c","npx","-y","firecrawl-mcp"]`.
 
 ## Step 4 — verify
-After restart, re-run `python scripts/setup_connectors.py` (should show `[OK]`) or ask the skill to run
+After restart, re-run `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py"` (should show `[OK]`) or ask the skill to run
 a quick `reed_search_jobs` / `firecrawl_scrape`. If a tool name doesn't resolve, the server didn't
 load — check the config path and the key.
 

@@ -39,7 +39,7 @@ line in every command below.
   `references/tailoring-levels.md`.
 - **Workspace** (the unit of state — path-agnostic, never hard-coded): a directory holding
   `profiles/` + `applications/`. Resolve it once per run: **explicit path → `JOBHUNT_DIR` env →
-  discovery → none ⇒ Setup mode** (`python scripts/_lib.py resolve`). All paths derive from it. Full
+  discovery → none ⇒ Setup mode** (`python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve`). All paths derive from it. Full
   contract + Setup/Daily-run: `references/daily-hunt.md`.
 
 ## Two ways to run
@@ -125,7 +125,7 @@ liked — and the skill reads it all and **builds the master profile** for them.
 market and hands off. Full method: `references/profile-intake.md`.
 
 1. Ensure the workspace + `dump/` exist (SETUP/`init_workspace.py` creates `dump/` with a README).
-2. **Scan the dump first — `python scripts/dump_manifest.py scan --workspace <root>`.** This writes
+2. **Scan the dump first — `python "${CLAUDE_PLUGIN_ROOT}/scripts/dump_manifest.py" scan --workspace <root>`.** This writes
    `dump/_manifest.csv` and tells you exactly what to read: **new/updated** text files to ingest,
    **unreadable** files (Word/PDF/image/binary) for which it auto-creates an empty **placeholder stub**
    under `profiles/_intake/placeholders/` so nothing is lost, and **ingested** files to skip. This is
@@ -157,7 +157,7 @@ actually support.
 When no workspace resolves (no path, no `JOBHUNT_DIR`, discovery finds nothing), the user is new.
 **Scaffold and stop** — do not hunt against an empty profile:
 ```
-python scripts/init_workspace.py --workspace <dir> [--name <who>]
+python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]
 ```
 This builds the workspace contract (`profiles/` + `profiles/_intake/`, `dump/` with its `_manifest.csv`,
 `applications/`, `daily-hunt/`, `scripts/`), drops a rich **profile template** (a warehouse, not a CV) +
@@ -169,7 +169,7 @@ first (openpyxl + python-docx) so the tracker can never half-commit. Full detail
 **Then onboard the connectors (bring-your-own-keys).** A new user has the skill but not the MCP
 connectors. Run the doctor and guide them — never assume the connectors exist:
 ```
-python scripts/setup_connectors.py          # what's configured vs missing + how to add each
+python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py"          # what's configured vs missing + how to add each
 ```
 For each connector the user wants, point them to the free key (Firecrawl / Reed / Adzuna), then — once
 they hand over a key — **offer to register it for them**: read their Claude config, back it up, merge
@@ -314,7 +314,7 @@ Given profile + JD + level, produce a tailored CV. Six steps:
    `assets/cv-markdown-template.md` convention, then render per surface (see "Tools & external
    skills"). In Claude Code — **pass `--page` by market** (`a4` default for `uk`; `letter` for `ca`/US):
    ```
-   python scripts/render_docx.py --in <cv.md> --outdir <job-folder> --page <a4|letter>
+   python "${CLAUDE_PLUGIN_ROOT}/scripts/render_docx.py" --in <cv.md> --outdir <job-folder> --page <a4|letter>
    ```
    produces ATS-safe `CV.docx` (no tables/columns/text-boxes/graphics) **and** `CV.txt`; in cowork use
    the native `docx` skill for the same ATS-safe output. **The `.docx` is the ATS submission.** If the
@@ -379,7 +379,7 @@ Every job — including ones considered and skipped — is filed and logged. Not
 **Create the job folder + tracker row** (status defaults to `Drafted`; use `Skipped` for
 considered-but-passed):
 ```
-python scripts/new_application.py --root <apps> --category <cat> --company "<Co>" \
+python "${CLAUDE_PLUGIN_ROOT}/scripts/new_application.py" --root <apps> --category <cat> --company "<Co>" \
     --role "<Role>" --date <YYYY-MM-DD> --jd-file <jd.txt> \
     --location "<loc>" --link "<url>" --source <Indeed|LinkedIn|…> --ats <platform> \
     --pay "<band>" --level <L0|L1> [--status Skipped]
@@ -393,7 +393,7 @@ ledger key resolves.
 
 **When the user says "I applied to this one":**
 ```
-python scripts/tracker.py update --root <apps> --key "<folder_path>" --data '{"status":"Applied"}'
+python "${CLAUDE_PLUGIN_ROOT}/scripts/tracker.py" update --root <apps> --key "<folder_path>" --data '{"status":"Applied"}'
 ```
 This stamps `date_applied`, turns the row **green**, and **locks** it (sheet protection) so the
 record can't be lost. Later updates (`Interview`/`Rejected`/`Offer`) stamp the matching date and

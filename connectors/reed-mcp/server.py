@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "mcp>=1.2.0",
+#     "httpx>=0.27.0",
+#     "pydantic>=2.0.0",
+#     "python-dotenv>=1.0.0",
+# ]
+# ///
 """Reed.co.uk MCP server.
 
 Exposes the Reed Jobseeker API as MCP tools. Reed is one of the UK's largest job

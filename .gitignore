@@ -38,3 +38,7 @@ PROJECT-STATUS.local.md
 Thumbs.db
 desktop.ini
 dist/
+
+# Local agent/session state — never published
+.claude/
+.claude-flow/

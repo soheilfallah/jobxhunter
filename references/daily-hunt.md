@@ -35,14 +35,14 @@ tailorer *selects from* it and never invents facts.
 Order: **explicit path the user gives → `JOBHUNT_DIR` env → discovery** (a dir with `profiles/` +
 `applications/`, from cwd upward) **→ none → Setup mode**. Use `scripts/_lib.py`:
 ```
-python scripts/_lib.py resolve [--workspace <dir>]     # prints root, or NONE (exit 1)
-python scripts/_lib.py preflight                        # openpyxl + python-docx or exact fix
+python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve [--workspace <dir>]     # prints root, or NONE (exit 1)
+python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" preflight                        # openpyxl + python-docx or exact fix
 ```
 All sub-paths derive from the root; never write an absolute machine path into the skill.
 
 ## Command: SETUP (first run / new user — no workspace resolves)
 ```
-python scripts/init_workspace.py --workspace <dir> [--name <who>]
+python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]
 ```
 Scaffolds the contract tree, drops the **profile template** (sections the tailorer expects) + a starter
 `_RUN-PLAYBOOK.md` + empty ledger, copies `scripts/`, runs `tracker.py init`, then **STOPS** for the

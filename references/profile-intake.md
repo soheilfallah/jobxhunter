@@ -24,7 +24,7 @@ Anything and everything, in any format:
 1. **Scan the dump — manifest first, so nothing is lost and re-runs are incremental.**
    Run the book-keeper before reading anything:
    ```
-   python scripts/dump_manifest.py scan --workspace <root>
+   python "${CLAUDE_PLUGIN_ROOT}/scripts/dump_manifest.py" scan --workspace <root>
    ```
    It writes/updates `dump/_manifest.csv` (one row per file: `status ∈ new / updated / unreadable /
    ingested / missing`) and prints exactly what to act on:
@@ -48,7 +48,7 @@ Anything and everything, in any format:
 
 4. **Mark each file done as you go** so the manifest stays honest:
    ```
-   python scripts/dump_manifest.py mark --workspace <root> --path "<rel_path>" --status ingested
+   python "${CLAUDE_PLUGIN_ROOT}/scripts/dump_manifest.py" mark --workspace <root> --path "<rel_path>" --status ingested
    ```
    Then delete that file's placeholder stub if one was created. Append a one-line entry to
    `profiles/_intake/CHANGELOG.md` describing what this run added (the audit trail).

@@ -94,7 +94,7 @@ Cold outreach is company-centric, but reuse the same tracker and folder machiner
 
 - Create a folder per target (or per company) under an outreach category:
   ```
-  python scripts/new_application.py --root <apps> --category cold-outreach \
+  python "${CLAUDE_PLUGIN_ROOT}/scripts/new_application.py" --root <apps> --category cold-outreach \
       --company "<Co>" --role "Speculative — <team/area>" --date <YYYY-MM-DD> \
       --link "<company/contact url>" --source "cold-outreach" --status "Cold-emailed"
   ```
