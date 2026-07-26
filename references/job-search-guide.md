@@ -200,7 +200,7 @@ Once a role passes triage:
    **Firecrawl** (`firecrawl_scrape`/`firecrawl_extract`) for any other board, ATS or PDF.
 2. Create the job folder + tracker row:
    ```
-   python scripts/new_application.py --root <apps> --category <family> --company "<Co>" \
+   python "${CLAUDE_PLUGIN_ROOT}/scripts/new_application.py" --root <apps> --category <family> --company "<Co>" \
        --role "<Role>" --date <YYYY-MM-DD> --jd-file <captured-jd.txt> \
        --link "<apply-url>" --source <Indeed|LinkedIn|jobs.ac.uk|…> --pay "<band>" \
        [--status Skipped]   # if triaged out but worth recording

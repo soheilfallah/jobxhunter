@@ -21,8 +21,8 @@ placeholder — wait for the user's real key, then register.
 
 ## Step 1 — check what's already there
 ```
-python scripts/setup_connectors.py          # human report (configured vs missing + how to add)
-python scripts/setup_connectors.py --json    # machine-readable (for the agent to branch on)
+python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py"          # human report (configured vs missing + how to add)
+python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" --json    # machine-readable (for the agent to branch on)
 ```
 It reads the user's Claude config(s) (`~/.claude.json` for Claude Code; the Desktop config too) and
 lists which of `firecrawl` / `reed` / `adzuna` are registered, plus the claude.ai OAuth connectors
@@ -40,17 +40,25 @@ lists which of `firecrawl` / `reed` / `adzuna` are registered, plus the claude.a
 When the user provides a key, the **agent** merges the snippet into their Claude config — never paste
 a key into a skill file or a commit. Get the exact snippet:
 ```
-python scripts/setup_connectors.py --emit firecrawl   # or reed / adzuna
+python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" --emit firecrawl   # or reed / adzuna
 ```
 The agent then:
 1. Reads the config (`~/.claude.json`, or the Desktop config), **backs it up**,
 2. Merges the connector under `mcpServers` with the user's real key,
 3. Tells the user to **restart** Claude Code / relaunch Desktop so the server loads.
 
-**Windows note:** `npx` can't be spawned directly — wrap it: `"command":"cmd","args":["/c","npx","-y","firecrawl-mcp"]`.
+**Windows note:** `npx` can't be spawned directly — wrap it:
+`"command":"cmd","args":["/c","npx","-y","--registry=https://registry.npmjs.org/","firecrawl-mcp"]`.
+
+**Keep the pinning flags.** The emitted snippets carry `--registry=` (firecrawl) and
+`--no-config --locked` (reed/adzuna) on purpose. Package managers read config from the *working
+directory* — an `.npmrc` or `uv.toml` sitting in whatever folder the session was opened in can
+otherwise redirect the install to an attacker's index, and the fetched package executes on import.
+These flags pin resolution to the real registry and to the committed `server.py.lock`. Don't drop
+them when merging a snippet into a user's config.
 
 ## Step 4 — verify
-After restart, re-run `python scripts/setup_connectors.py` (should show `[OK]`) or ask the skill to run
+After restart, re-run `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py"` (should show `[OK]`) or ask the skill to run
 a quick `reed_search_jobs` / `firecrawl_scrape`. If a tool name doesn't resolve, the server didn't
 load — check the config path and the key.
 

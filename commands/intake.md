@@ -5,7 +5,7 @@ description: Build or update your master profile from the files in your workspac
 Use the **job-hunt** skill's **INTAKE** routine to build/enrich the master profile from the user's
 `<workspace>/dump/` folder.
 
-- Scan first: `python scripts/dump_manifest.py scan --workspace <root>` — read the `new`/`updated` files,
+- Scan first: `python "${CLAUDE_PLUGIN_ROOT}/scripts/dump_manifest.py" scan --workspace <root>` — read the `new`/`updated` files,
   handle `unreadable` ones (placeholders already created), skip `ingested`.
 - Extract only real facts; synthesise or merge into `profiles/<name>.md` per
   `references/master-profile-schema.md`; mark each file `ingested` and log to `profiles/_intake/CHANGELOG.md`.

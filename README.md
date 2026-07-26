@@ -35,7 +35,13 @@ You can also just talk to it in plain language — the commands are shortcuts.
 /reload-plugins
 ```
 
-Keys (Reed / Adzuna / Firecrawl) are prompted on install and optional — leave blank to fall back to web search. Nothing is committed. Reed/Adzuna are Python servers, so run `pip install mcp httpx python-dotenv` once; Firecrawl needs nothing.
+Keys (Reed / Adzuna / Firecrawl) are prompted on install and optional — leave blank to fall back to web search. Nothing is committed.
+
+**Prerequisites:**
+
+- [`uv`](https://docs.astral.sh/uv/getting-started/installation/) — the Reed and Adzuna connectors run as `uv run --script`, which resolves their dependencies into an isolated environment on first launch. Nothing to `pip install`. Firecrawl needs nothing.
+  Resolution is pinned to the committed `server.py.lock` (hash-verified) and to the real package registries, so a stray `uv.toml` or `.npmrc` in your working directory can't redirect a connector's install. If you add a dependency, re-run `uv lock --script connectors/<name>-mcp/server.py` — the connector fails closed on a stale lock rather than silently resolving something else.
+- Python with `python-docx` and `openpyxl` for the bundled scripts (CV rendering and the tracker). They preflight and tell you the exact `pip install` if missing.
 
 **As a plain skill (also works in Claude Desktop / cowork):**
 
@@ -43,6 +49,8 @@ Keys (Reed / Adzuna / Firecrawl) are prompted on install and optional — leave 
 git clone https://github.com/soheilfallah/job-hunt ~/.claude/skills/job-hunt
 pip install python-docx openpyxl
 ```
+
+Note: in this mode `${CLAUDE_PLUGIN_ROOT}` is not set, so read it as the clone directory when you see it in a command.
 
 ---
 

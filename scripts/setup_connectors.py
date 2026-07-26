@@ -25,27 +25,41 @@ CONNECTORS = {
         "what": "JD crawling — external ATS (Workday/Greenhouse/Lever), PDFs, careers pages",
         "key_url": "https://www.firecrawl.dev  (free tier)",
         "public": True,
-        "config": {"command": "npx", "args": ["-y", "firecrawl-mcp"],
+        "config": {"command": "npx",
+                   "args": ["-y", "--registry=https://registry.npmjs.org/", "firecrawl-mcp"],
                    "env": {"FIRECRAWL_API_KEY": "<YOUR_FIRECRAWL_KEY>"}},
-        "note": "Windows: wrap as \"command\":\"cmd\",\"args\":[\"/c\",\"npx\",\"-y\",\"firecrawl-mcp\"].",
+        "note": "Windows: wrap as \"command\":\"cmd\",\"args\":[\"/c\",\"npx\",\"-y\","
+                "\"--registry=https://registry.npmjs.org/\",\"firecrawl-mcp\"]. The explicit "
+                "--registry pins resolution to npmjs so an .npmrc in the working directory "
+                "cannot redirect the install.",
     },
     "reed": {
         "what": "UK job search — Reed.co.uk (security/data/admin/agency roles)",
         "key_url": "https://www.reed.co.uk/developers  (free Jobseeker API key)",
         "public": True,
-        "config": {"command": "python", "args": ["<job-hunt>/connectors/reed-mcp/server.py"],
+        "config": {"command": "uv",
+                   "args": ["run", "--no-config", "--locked", "--script",
+                            "<job-hunt>/connectors/reed-mcp/server.py"],
                    "env": {"REED_API_KEY": "<YOUR_REED_KEY>"}},
-        "note": "Server is BUNDLED in this repo at connectors/reed-mcp/. `pip install -e connectors/reed-mcp`, "
-                "then set args to that server.py. (PyPI one-command install: roadmap.)",
+        "note": "Server is BUNDLED in this repo at connectors/reed-mcp/. Requires `uv` "
+                "(https://docs.astral.sh/uv/) — no pip install needed: the script's PEP 723 header "
+                "plus server.py.lock resolve a hash-verified environment on first launch. "
+                "--no-config and --locked keep a uv.toml in the working directory from "
+                "redirecting that resolution.",
     },
     "adzuna": {
         "what": "UK job search + salary/labour-market data — Adzuna",
         "key_url": "https://developer.adzuna.com  (free app_id + app_key)",
         "public": True,
-        "config": {"command": "python", "args": ["<job-hunt>/connectors/adzuna-mcp/server.py"],
+        "config": {"command": "uv",
+                   "args": ["run", "--no-config", "--locked", "--script",
+                            "<job-hunt>/connectors/adzuna-mcp/server.py"],
                    "env": {"ADZUNA_APP_ID": "<YOUR_APP_ID>", "ADZUNA_APP_KEY": "<YOUR_APP_KEY>"}},
-        "note": "Server is BUNDLED in this repo at connectors/adzuna-mcp/. `pip install -e connectors/adzuna-mcp`, "
-                "then set args to that server.py. (PyPI one-command install: roadmap.)",
+        "note": "Server is BUNDLED in this repo at connectors/adzuna-mcp/. Requires `uv` "
+                "(https://docs.astral.sh/uv/) — no pip install needed: the script's PEP 723 header "
+                "plus server.py.lock resolve a hash-verified environment on first launch. "
+                "--no-config and --locked keep a uv.toml in the working directory from "
+                "redirecting that resolution.",
     },
 }
 # Connectors you enable in claude.ai (OAuth) — no local config / key here.

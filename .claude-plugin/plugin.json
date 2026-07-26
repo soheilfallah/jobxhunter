@@ -1,14 +1,15 @@
 {
   "name": "job-hunt",
   "displayName": "Job Hunt",
-  "version": "1.0.0",
-  "description": "UK-first job-hunt skill: build a master profile from a dump folder, tailor ATS-safe CVs to a job description, source live roles across connectors, write cover letters, and track every application. The profile is a decoupled data feed — swap the path for anyone.",
+  "version": "1.1.0",
+  "description": "Build a master profile from your own files, tailor ATS-safe CVs to any job description, source live UK and Canada roles, write cover letters, and track every application.",
   "author": {
-    "name": "Soheil",
+    "name": "Soheil Fallah",
     "url": "https://github.com/soheilfallah"
   },
   "homepage": "https://github.com/soheilfallah/job-hunt",
   "repository": "https://github.com/soheilfallah/job-hunt",
+  "license": "MIT",
   "keywords": ["jobs", "job-search", "cv", "resume", "cover-letter", "ats", "uk", "recruitment", "tailoring"],
   "mcpServers": "./.mcp.json",
   "userConfig": {
