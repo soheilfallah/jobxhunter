@@ -6,6 +6,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [1.3.0] - 2026-07-28
 
+### Added
+
+- **Interview-prep stage** (`/jobxhunter:interview`, `references/interview-prep.md`). Turns the
+  filed application into an honest prep pack in the job folder: predicted questions grouped by the
+  JD's must-have competencies with STAR answers built only from real profile evidence, plus
+  **gap-defence** for every hard-gap/partial the coverage matrix surfaced. Carries the candidate past
+  "filed", where the pipeline used to stop.
+- **Real, independent recruiter critic** (`agents/recruiter-critic.md`). The recruiter loop can now
+  run its scoring in a subagent that sees only the JD + rendered CV — never the tailorer's notes — so
+  the "independent recruiter" is actually independent instead of self-scoring.
+- **Per-role tailoring fan-out** (`agents/role-tailorer.md`). The daily hunt can spawn one subagent
+  per surviving role so every CV is built in a clean context and quality doesn't decay across a long
+  no-cap batch.
+- **Deterministic keyword-coverage diagnostic** (`scripts/keyword_coverage.py`). Checks which of the
+  JD's must-have/nice-to-have terms actually made it onto `CV.txt` ("N/M present, X%", plus acronyms
+  missing an expansion). Explicitly a parse diagnostic, not a Jobscan-style auto-reject score; `--min`
+  turns it into a pass/fail gate. Copied into new workspaces by SETUP.
+- **Application-form answer pack** (`references/application-answers.md`). Drafts truthful,
+  profile-grounded answers to Workday/Greenhouse screening questions into `notes.md` — salary anchored
+  to the fetched Adzuna band, profile-only answers flagged, review-and-paste (never auto-submitted).
+
 ### Changed
 
 - **Renamed from `jobsmith` to `jobxhunter`.** Clearer intent — this is a hunter's

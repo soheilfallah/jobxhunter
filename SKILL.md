@@ -101,6 +101,8 @@ conventions doc + a board list + a connector map, nothing in the engine changes.
 | running the autonomous daily hunt / scaffolding a workspace | `references/daily-hunt.md` |
 | which tool/connector/skill to use (the manifest) | `references/tools-and-connectors.md` |
 | onboarding a new user's connectors + API keys | `references/connector-setup.md` |
+| prepping for the interview after applying | `references/interview-prep.md` |
+| answering application-form / screening questions | `references/application-answers.md` |
 
 Keyword families: `plant-science-research`, `research-assistant-lead`, `ai-technician-junior-ai`,
 `data-research-analysis`, `security-frontline`. Pick the closest; if none fit, decompose the JD
@@ -204,6 +206,13 @@ cover-letter scaffolds and flag braindumps → **track & file** every job (Draft
 link) → rebuild ledger + regenerate the priority view → write a dated `daily-hunt/<DATE>-summary.md`
 (same-day re-run ⇒ `-run-b`). Never touch `Applied` rows; never claim a profile "never-claim" gap;
 dedupe on the canonical link key, not folder slugs.
+
+**Keep quality flat across a long batch (Claude Code).** A no-cap hunt can tailor a dozen-plus roles
+in one context, where later CVs quietly get less care. Where subagents are available, fan out **one
+`role-tailorer` agent per surviving live role** (parallel), each tailoring + filing its role in a clean
+context and returning a one-line result; the orchestrator only sources, dedupes, and synthesises the
+summary — and scores each result with the independent `recruiter-critic` agent. Serial in-context
+tailoring remains the fallback where subagents aren't exposed.
 
 ## Command: SOURCE (find jobs)
 
@@ -338,6 +347,12 @@ Given profile + JD + level, produce a tailored CV. Six steps:
    the native `docx` skill for the same ATS-safe output. **The `.docx` is the ATS submission.** If the
    user also wants a polished human-facing copy, additionally route the CV markdown through `/make-pdf`
    — label it the human/portfolio PDF, not the ATS file. Then run the recruiter loop and file it (below).
+   - **Coverage read (deterministic).** After rendering, confirm the JD's must-have terms actually
+     landed on the page: `python "${CLAUDE_PLUGIN_ROOT}/scripts/keyword_coverage.py" --cv <folder>/CV.txt
+     --must "<must-haves from step 1>" [--nice "<nice-to-haves>"]`. It reports "N/M present (X%)" plus any
+     acronym missing its expansion. This is a **parse diagnostic, not a match score** — fill a real miss
+     only if the profile genuinely supports it (never mirror a term with nothing behind it). Drop the
+     summary into `notes.md`.
    - **Before the CV is treated as final, run the pending-confirmation batch** if any provisional
      items were added (step 4). Present the whole list as ONE neutral yes/no memory-jog — *not* an
      accusation; the premise is the person likely did this and forgot to write it, or names it
@@ -357,10 +372,29 @@ on the five dimensions (ATS/keyword coverage, six-second scan, requirement cover
 slop, red flags). Return the structured scorecard: per-dimension score + justification, overall
 score, PASS/REVISE verdict, and a short list of **specific, actionable fixes ranked by impact**.
 
+**Make the critic genuinely independent.** Where the surface supports subagents (Claude Code), run
+the scoring in the bundled **`recruiter-critic`** agent and hand it **only** the JD + the rendered
+`CV.txt` — never the tailorer's notes or coverage matrix — so the grade can't be biased by the
+writer's own rationale (self-scoring is how slop survives). Fall back to an in-context persona only
+where subagents aren't available.
+
 Loop: score → fixes → tailorer revises → re-score. Stop at **PASS** (default threshold: overall ≥
 4.0/5 AND no dimension < 3, AND the "would I forward this?" test passes) or after **3 passes**.
 Never "fix" a low score by inventing evidence — if the gap is real, surface it (and optionally offer
 the L2 delta). The same rubric scores eval batches in `evals/`.
+
+## Command: INTERVIEW PREP (carry the candidate past "filed")
+
+Once a role is filed — and especially once it reaches `Interview` — turn the material already
+on hand into an honest prep pack. See `references/interview-prep.md`. Read the job folder
+(`job-description.md` + the `notes.md` coverage matrix) and the master profile, adopt the JD's
+interviewer persona, and write `interview-prep.md` into that folder: a 30-second opener from the
+CV headline, predicted questions grouped by the JD's must-have competencies with **STAR answers
+built only from real profile evidence**, honest **gap-defence** answers for every hard-gap/partial
+the matrix surfaced (the questions they *will* probe), sharp questions to ask them, and the likely
+curveballs (salary anchored to the fetched Adzuna band, notice period, any timeline gap). Truth rule
+holds — never invent experience; prepare a confident, honest way to handle a gap. Ties to the tracker:
+`tracker.py update … {"status":"Interview"}` stamps the date and keeps the pack in the folder.
 
 ## Command: L2 — THE ALTERNATIVE WORLD
 
@@ -407,7 +441,10 @@ one tracker row (it **auto-inits** the tracker on first use and **preflights** d
 is never silently dropped). Categories are dynamic — create whatever fits (ai, research-assistant,
 plant-science, data, security, …). Render the CV into that folder; put the brain-dump, coverage
 matrix, recruiter scorecard, and any L2 delta into `notes.md`. Pass `--link` always so the dedupe
-ledger key resolves.
+ledger key resolves. **If the application has screening/knockout questions** (Workday/Greenhouse
+supplementals), also draft the truthful, profile-grounded **application answer pack** into `notes.md`
+per `references/application-answers.md` — a review-and-paste draft (never auto-submitted), with salary
+anchored to the fetched Adzuna band and any profile-only answer flagged.
 
 **When the user says "I applied to this one":**
 ```
@@ -441,6 +478,17 @@ stays the system of record. Clean duplicate rows with `tracker.py dedupe` (dry-r
   incremental and format-safe. Import or CLI.
 - `scripts/build_seen_ledger.py` — rebuild `daily-hunt/seen-jobs.csv` (canonical job key → status)
   from the tracker; run at the start and end of every daily hunt.
+- `scripts/keyword_coverage.py` — deterministic must-have/nice-to-have term check against the rendered
+  `CV.txt`: "N/M present (X%)", missing terms, and acronyms lacking an expansion. A parse diagnostic,
+  **not** a match score; `--min` makes it a pass/fail gate. Import or CLI.
+
+All CLIs force UTF-8 stdout so non-Latin-1 job data prints cleanly on a default Windows console, and
+`tracker.py` saves atomically (never truncates; a clear message if the file is open in Excel).
+
+**Agents (Claude Code).** `agents/recruiter-critic.md` scores a CV against a JD independently (give it
+only the JD + `CV.txt`), and `agents/role-tailorer.md` tailors one role end-to-end in a clean context
+for the daily-hunt fan-out. Both are optional — the routines fall back to in-context work where
+subagents aren't exposed.
 
 Requires Python with `python-docx` and `openpyxl`. The scripts **preflight** these and fail with the
 exact `pip install` if missing — they never proceed into a half-commit.

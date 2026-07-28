@@ -107,6 +107,7 @@ In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set. Read it as the clone directory w
 | `/jobxhunter:tailor` | Tailor an ATS-safe CV to one job description, with a recruiter-persona scoring loop |
 | `/jobxhunter:cover-letter` | Draft a cover letter in your own voice, to your market's conventions |
 | `/jobxhunter:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
+| `/jobxhunter:interview` | Prep for the interview from a filed role: predicted questions, STAR answers from real evidence, honest gap-defence |
 
 You can also just talk to it in plain language. The commands are shortcuts.
 
@@ -125,7 +126,8 @@ You can also just talk to it in plain language. The commands are shortcuts.
 
 - **It never invents facts.** The master profile is the only source of truth. The skill selects, reframes, and reorders; gaps are surfaced, not faked. No fabricated titles, numbers, or skills.
 - **Survives both readers.** Every CV is built for the **ATS parser** *and* the **six-second recruiter scan**, not one at the cost of the other.
-- **A recruiter loop.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. In testing it caught the tailorer drifting into unsupported buzzwords, and removed them.
+- **A recruiter loop that's actually independent.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. In Claude Code the scoring runs in a separate `recruiter-critic` agent that sees only the JD and the rendered CV — never the writer's own notes — so it can't rubber-stamp itself. In testing it caught the tailorer drifting into unsupported buzzwords, and removed them.
+- **It doesn't stop at "applied".** After a role is filed, `/jobxhunter:interview` builds a prep pack from the same coverage matrix — predicted questions, STAR answers from real evidence, and honest defence for the exact gaps the CV surfaced. A deterministic keyword-coverage check confirms the JD's must-have terms actually landed on the page (a parse diagnostic, never a fake "match score").
 - **Intake before tailoring.** Intake reads every file in your dump folder (with placeholders for formats it can't parse), runs incrementally, and asks targeted questions to fill thin spots.
 - **No slop.** A researched ban-list blocks phrasing like "results-driven team player, passionate about synergy".
 - **Everything filed.** Per-job folders and a locked tracker. Submit the `.docx` to the ATS, keep a PDF for humans.
@@ -136,10 +138,20 @@ You can also just talk to it in plain language. The commands are shortcuts.
 ## How it works
 
 ```
-intake → source → tailor (ATS + recruiter loop) → cover letter → track & file
+intake → source → tailor (ATS + independent recruiter loop) → cover letter → track & file → interview prep
 ```
 
 The engine is `SKILL.md` (a lean workflow map); the deep knowledge lives in `references/` and loads only when a step needs it. Deterministic Python (`scripts/`) owns rendering and tracking so results are reproducible, not improvised. Full detail: [`SKILL.md`](SKILL.md).
+
+---
+
+## Roadmap
+
+Deliberately not shipped yet — tracked here rather than half-built:
+
+- **Enforcement hooks** — a `PostToolUse` gate that runs the ATS-safety + de-slop checks automatically after each render, and a `SessionStart` note surfacing the latest daily-hunt summary. Deferred until they can be made reliably cross-platform (Claude Code plugin hooks execute through the shell, which differs on Windows vs macOS/Linux); today those checks run inline in the routine instead.
+- **Eval regression harness** — a runner that tailors the golden JDs under `evals/`, scores them with the `recruiter-critic` agent and the keyword-coverage numbers, and fails on a regression. The fixtures and the scoring pieces exist; the runner is next.
+- **LinkedIn / recruiter-inbound optimization**, **scheduled watch-list monitoring** (auto-recheck expired-but-good roles), and an **offer / salary-negotiation** capstone (the tracker already carries `Offer` and the Adzuna band).
 
 The **tailoring dial:** `L0` true-and-reframed · `L1` aggressive-but-true (default) · `L2` an "alternative-world" ideal candidate + the gap-to-close (a roadmap, never submitted).
 

@@ -36,7 +36,7 @@ from dump_manifest import FIELDS as MANIFEST_FIELDS  # noqa: E402
 enable_utf8_io()
 
 SCRIPT_FILES = ["_lib.py", "tracker.py", "new_application.py", "render_docx.py",
-                "build_seen_ledger.py", "dump_manifest.py"]
+                "build_seen_ledger.py", "dump_manifest.py", "keyword_coverage.py"]
 
 SEEN_LEDGER_HEADER = "job_key,status,category,company,role,link,folder_path,last_seen\n"
 MANIFEST_HEADER = ",".join(MANIFEST_FIELDS) + "\n"
