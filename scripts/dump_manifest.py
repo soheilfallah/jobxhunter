@@ -33,7 +33,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from _lib import resolve_workspace_root, profiles_dir, safe_cell  # noqa: E402
+from _lib import resolve_workspace_root, profiles_dir, safe_cell, enable_utf8_io  # noqa: E402
+enable_utf8_io()
 
 MANIFEST_NAME = "_manifest.csv"
 FIELDS = ["rel_path", "ext", "size", "mtime", "status", "ingested_date", "notes"]
@@ -47,8 +48,11 @@ TEXT_EXTS = {
     ".html", ".htm", ".log", ".rst", ".text", ".org",
 }
 
-# Files that are book-keeping, not user content — never manifest these.
-SKIP_NAMES = {MANIFEST_NAME, "README.md", "readme.md", ".gitignore", ".ds_store"}
+# Files that are book-keeping or OS droppings, not user content — never manifest
+# these. Windows sprinkles Thumbs.db/desktop.ini; macOS drops .DS_Store (also caught
+# by the dot-prefix skip below). Matched case-insensitively.
+SKIP_NAMES = {MANIFEST_NAME, "README.md", "readme.md", ".gitignore", ".ds_store",
+              "thumbs.db", "desktop.ini"}
 
 
 def _dump_dir(root):
@@ -268,27 +272,34 @@ def cmd_mark(root, rel_path, status, notes):
 
 
 def main():
-    # --workspace is shared so it works before OR after the subcommand.
-    common = argparse.ArgumentParser(add_help=False)
-    common.add_argument("--workspace", help="workspace root (else JOBSMITH_DIR / discovery)")
+    # --workspace must work BEFORE or AFTER the subcommand. argparse's footgun: if a
+    # shared parent option is on both the top parser and the subparser with the same
+    # default, the subparser's default clobbers a value parsed at top level (so
+    # `--workspace X scan` silently became None). Fix: top-level owns the real default;
+    # the subparser copy uses SUPPRESS so it only sets the attr when actually passed.
+    sub_common = argparse.ArgumentParser(add_help=False)
+    sub_common.add_argument("--workspace", default=argparse.SUPPRESS,
+                            help="workspace root (else JOBXHUNTER_DIR / discovery)")
 
     ap = argparse.ArgumentParser(
-        description="Dump-folder manifest for incremental, format-safe intake.",
-        parents=[common])
+        description="Dump-folder manifest for incremental, format-safe intake.")
+    ap.add_argument("--workspace", default=None,
+                    help="workspace root (else JOBXHUNTER_DIR / discovery); "
+                         "may be given before or after the subcommand")
     sub = ap.add_subparsers(dest="cmd")
 
-    sub.add_parser("scan", parents=[common],
+    sub.add_parser("scan", parents=[sub_common],
                    help="enumerate dump/, update the manifest, create placeholders")
-    mp = sub.add_parser("mark", parents=[common], help="update one file's ingest status")
+    mp = sub.add_parser("mark", parents=[sub_common], help="update one file's ingest status")
     mp.add_argument("--path", required=True, help="file path relative to dump/ (as printed by scan)")
     mp.add_argument("--status", required=True,
                     choices=["new", "updated", "unreadable", "ingested", "missing"])
     mp.add_argument("--notes", default="")
     args = ap.parse_args()
 
-    root = resolve_workspace_root(args.workspace)
+    root = resolve_workspace_root(getattr(args, "workspace", None))
     if not root:
-        sys.exit("No workspace resolved. Pass --workspace <dir>, set JOBSMITH_DIR, or run SETUP first.")
+        sys.exit("No workspace resolved. Pass --workspace <dir>, set JOBXHUNTER_DIR, or run SETUP first.")
     root = os.path.abspath(root)
 
     if args.cmd == "mark":

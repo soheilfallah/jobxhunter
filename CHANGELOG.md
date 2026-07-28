@@ -4,6 +4,55 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-07-28
+
+### Changed
+
+- **Renamed from `jobsmith` to `jobxhunter`.** Clearer intent — this is a hunter's
+  toolkit — and a distinct name in the marketplace.
+  - Commands are now `/jobxhunter:tailor`, `/jobxhunter:hunt`, and so on.
+  - Marketplace id is `jobxhunter@soheil-jobxhunter`; the repository is
+    `soheilfallah/jobxhunter`.
+  - **Breaking (re-install):** the live MCP tool namespace changes from
+    `mcp__plugin_jobsmith_*` to `mcp__plugin_jobxhunter_*`. Re-install as
+    `jobxhunter@soheil-jobxhunter`, re-enter your connector keys, and re-allow the
+    new tool names.
+  - **`JOBSMITH_DIR` still works.** The workspace env var is now `JOBXHUNTER_DIR`,
+    but `JOBSMITH_DIR` (and the older `JOBHUNT_DIR`) are still read as fallbacks, so
+    a pinned workspace keeps resolving. New name wins if more than one is set.
+  - Paths under `career/job-hunt/` are deliberately untouched — a private data
+    workspace, not the plugin.
+
+### Fixed
+
+- **tracker.py never truncates or dies on a locked file.** Saves are now atomic
+  (temp file + `os.replace`) and a workbook open in Excel (or a read-only file)
+  produces a clear "close it and re-run" message instead of a raw `PermissionError`
+  traceback — and never a half-written/zeroed tracker. Both the `.xlsx` and its
+  `.csv` mirror are written under one guard so they can't diverge.
+- **Applied records can no longer be silently altered.** The "committed" set
+  (Applied/Interview/Interviewed/Offer/Rejected) is now truly final: status may only
+  move within it and identity/applied-date fields are immutable, unless `--data`
+  carries `"_force": true`. Previously a non-status edit (e.g. rewriting `pay`)
+  slipped past the guard.
+- **Non-Latin-1 job data no longer crashes the scripts on Windows.** Every CLI now
+  forces UTF-8 stdout/stderr, so an accented employer/role name (Łódź, Señor, £,
+  em-dashes) prints fine on a default cp1252 console; `new_application`'s subprocess
+  pipes decode as UTF-8 to match.
+- **Adzuna salary histogram is ordered correctly.** Bands were sorted as strings, so
+  `100000` sorted before `20000` and scrambled the distribution; numeric keys now
+  sort numerically (ISO-month keys stay chronological). Covered by a unit test.
+- **Adzuna renders a withheld salary as "Not disclosed"** (parity with Reed), not the
+  ambiguous `? - ?`.
+- **`dump_manifest.py --workspace` works before *or* after the subcommand** (an
+  argparse shared-parent default was silently discarding a value given before it), and
+  Windows `Thumbs.db` / `desktop.ini` droppings are skipped instead of becoming junk
+  intake placeholders.
+- **Connector `.env` files load when launched as a plugin** (anchored to the connector
+  directory, not the current working directory).
+- **Eval fixtures ship again.** An unanchored `tracker.csv` / `tracker.xlsx` ignore was
+  sweeping up the committed `evals/**` fixtures that `CONTRIBUTING.md` references.
+
 ## [1.2.0] - 2026-07-26
 
 ### Changed

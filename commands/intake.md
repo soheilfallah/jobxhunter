@@ -1,8 +1,9 @@
 ---
 description: Build or update your master profile from the files in your workspace dump/ folder.
+argument-hint: "[optional: workspace path; else resolved or scaffolded]"
 ---
 
-Use the **jobsmith** skill's **INTAKE** routine to build/enrich the master profile from the user's
+Use the **jobxhunter** skill's **INTAKE** routine to build/enrich the master profile from the user's
 `<workspace>/dump/` folder.
 
 - Scan first: `python "${CLAUDE_PLUGIN_ROOT}/scripts/dump_manifest.py" scan --workspace <root>` — read the `new`/`updated` files,

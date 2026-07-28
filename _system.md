@@ -1,12 +1,12 @@
 ---
-title: jobsmith — job-hunting skill for the UK and Canada
+title: jobxhunter — job-hunting skill for the UK and Canada
 type: project
 updated: 2026-07-06
 tags: [project, skill, career, cv, job-search, ats, claude-code]
 status: built
 ---
 
-# jobsmith — the job-hunting skill for the UK and Canada
+# jobxhunter — the job-hunting skill for the UK and Canada
 
 **What it is:** A general-purpose **job-hunting skill** covering the UK and Canada (a Claude Code / chat `SKILL.md` skill).
 CV tailoring at its core — read a master profile plus a job description and produce an ATS-friendly,
@@ -25,7 +25,7 @@ this project, under `career/job-hunt/`, precisely to keep the tool and the perso
 
 ## Layout
 ```
-projects/jobsmith/
+projects/jobxhunter/
 ├── SKILL.md              # the skill: workflow map + commands (tailor, recruiter loop, L2, cover letter, track)
 ├── references/           # the distilled knowledge base (progressive disclosure)
 │   ├── cv-craft.md, career-narrative.md, cover-letter.md

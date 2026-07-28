@@ -1,6 +1,6 @@
 # Tools & connectors this skill uses (the manifest)
 
-One place that names every external tool/skill `/jobsmith` orchestrates, what it's for, and its
+One place that names every external tool/skill `/jobxhunter` orchestrates, what it's for, and its
 fallback. **Detect what the surface exposes** (list your tools/skills if unsure) and route
 accordingly — every route has a self-sufficient fallback, so the skill never hard-depends on an
 optional tool.

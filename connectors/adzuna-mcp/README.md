@@ -109,7 +109,7 @@ queries over many narrow ones; `adzuna_salary_histogram` answers "what does this
 call where a paginated search would take several.
 
 Trial-tier data also can't be republished or aggregated into ongoing work beyond the 14-day
-evaluation without a licence — fine for personal jobsmith research, worth knowing before you
+evaluation without a licence — fine for personal jobxhunter research, worth knowing before you
 build anything public on it.
 
 ## Notes

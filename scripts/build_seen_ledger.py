@@ -24,7 +24,8 @@ from urllib.parse import urlsplit
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from _lib import resolve_workspace_root, applications_dir, daily_dir, safe_cell  # noqa: E402
+from _lib import resolve_workspace_root, applications_dir, daily_dir, safe_cell, enable_utf8_io  # noqa: E402
+enable_utf8_io()
 
 LEDGER_COLUMNS = ["job_key", "status", "category", "company", "role", "link",
                   "folder_path", "last_seen"]
@@ -47,7 +48,7 @@ def canonical_key(link, folder_path=""):
 
 def main():
     ap = argparse.ArgumentParser(description="Build the daily-hunt dedupe ledger.")
-    ap.add_argument("--workspace", help="workspace root (else JOBSMITH_DIR / discovery)")
+    ap.add_argument("--workspace", help="workspace root (else JOBXHUNTER_DIR / discovery)")
     ap.add_argument("--applications", help="explicit applications dir (overrides workspace)")
     ap.add_argument("--today", help="date stamp for last_seen (YYYY-MM-DD); default today")
     args = ap.parse_args()

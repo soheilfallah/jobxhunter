@@ -1,5 +1,5 @@
 ---
-name: jobsmith
+name: jobxhunter
 description: >-
   Job-hunting skill for the UK and Canada (more markets coming). Core is CV tailoring: read a master profile plus a job description
   and produce an ATS-friendly, slop-free CV that survives both the ATS parser and the
@@ -14,7 +14,7 @@ description: >-
   for a role, or track job applications.
 ---
 
-# jobsmith — the job-hunting skill for the UK and Canada (CV tailoring at its core)
+# jobxhunter — the job-hunting skill for the UK and Canada (CV tailoring at its core)
 
 CV tailoring at the core; cover letters, a recruiter loop, an alternative-world mode, and
 application tracking around it. UK and Canada both ship (market-driven — see below). Works in
@@ -38,7 +38,7 @@ line in every command below.
 - **Level** (CV only): `L0` / `L1` (default) / `L2`, with an optional `%` knob within L1. See
   `references/tailoring-levels.md`.
 - **Workspace** (the unit of state — path-agnostic, never hard-coded): a directory holding
-  `profiles/` + `applications/`. Resolve it once per run: **explicit path → `JOBSMITH_DIR` env →
+  `profiles/` + `applications/`. Resolve it once per run: **explicit path → `JOBXHUNTER_DIR` env →
   discovery → none ⇒ Setup mode** (`python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve`). All paths derive from it. Full
   contract + Setup/Daily-run: `references/daily-hunt.md`.
 
@@ -48,6 +48,23 @@ line in every command below.
 - **Autonomous daily hunt:** point the skill at a workspace → it sources, triages, tailors every new
   live match, files everything, and writes a dated summary. If no workspace resolves, it **scaffolds**
   one and stops for the user to fill their profile. See `references/daily-hunt.md` (SETUP + DAILY RUN).
+
+## Running the bundled scripts (shell note — read before the first `python …`)
+
+The commands below write the plugin root as `${CLAUDE_PLUGIN_ROOT}` (the folder holding
+this `SKILL.md`, `scripts/`, `references/`). **That token is not always exported to your
+shell:** in the Claude Code Bash tool it can expand to empty, and PowerShell reads it as
+`$env:CLAUDE_PLUGIN_ROOT`, not `${CLAUDE_PLUGIN_ROOT}`. Don't paste it blind — resolve it once:
+
+- **Capture the root, then use it.** Find the directory this skill loaded from (it contains
+  `scripts/`). POSIX/bash: `root="${CLAUDE_PLUGIN_ROOT:-<real path>}"`; PowerShell:
+  `$root = $env:CLAUDE_PLUGIN_ROOT`. Then call `python "$root/scripts/tracker.py" …`.
+- **Or `cd` into the plugin root** and run scripts by relative path: `python scripts/tracker.py …`.
+  SETUP also copies the scripts into `<workspace>/scripts/`, so you can run them from the
+  workspace too.
+
+If a `python "${CLAUDE_PLUGIN_ROOT}/…"` line ever errors with `can't open file '/scripts/…'`,
+the token expanded empty — resolve the root as above and re-run.
 
 ## Market (which country's path) — read from the profile, not hard-coded
 
@@ -154,7 +171,7 @@ actually support.
 
 ## Command: SETUP (scaffold a workspace — first run / new user)
 
-When no workspace resolves (no path, no `JOBSMITH_DIR`, discovery finds nothing), the user is new.
+When no workspace resolves (no path, no `JOBXHUNTER_DIR`, discovery finds nothing), the user is new.
 **Scaffold and stop** — do not hunt against an empty profile:
 ```
 python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]

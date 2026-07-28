@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Shared helpers for the jobsmith skill scripts.
+"""Shared helpers for the jobxhunter skill scripts.
 
 Two jobs, both about making the skill portable and safe:
 
 1. **Workspace resolution** — never hard-code a machine path. Resolve the
-   workspace root once (explicit arg -> JOBSMITH_DIR env -> discovery -> None) and
+   workspace root once (explicit arg -> JOBXHUNTER_DIR env -> discovery -> None) and
    derive every sub-path (profiles/, applications/, daily-hunt/) from it.
 
 2. **Dependency preflight** — the tracker must never half-commit. `tracker.py`
@@ -52,6 +52,20 @@ def safe_cell(value):
     return value
 
 
+# ------------------------------------------------------------------ console io
+def enable_utf8_io():
+    """Force stdout/stderr to UTF-8 so printing non-Latin-1 job data (accented
+    employer/role names, £, em-dashes, non-ASCII dump filenames) never dies with a
+    UnicodeEncodeError on a default-code-page (cp1252) Windows console. No-op where
+    the streams are already UTF-8 or cannot be reconfigured (e.g. redirected pipes
+    on older Pythons)."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
+
 # ---------------------------------------------------------------- dependencies
 def check_deps(deps=REQUIRED_DEPS):
     """Return list of (import_name, pip_name, why) for each MISSING dependency."""
@@ -71,7 +85,7 @@ def preflight(deps=REQUIRED_DEPS, exit_on_missing=True):
     if not missing:
         return True
     pkgs = " ".join(pip for _, pip, _ in missing)
-    sys.stderr.write("Jobsmith preflight FAILED — missing Python dependencies:\n")
+    sys.stderr.write("JobXHunter preflight FAILED — missing Python dependencies:\n")
     for imp, pip_name, why in missing:
         sys.stderr.write(f"  - {pip_name}  (import '{imp}') — needed for {why}\n")
     sys.stderr.write(
@@ -86,7 +100,7 @@ def preflight(deps=REQUIRED_DEPS, exit_on_missing=True):
 
 # ------------------------------------------------------------------ workspace
 def is_workspace(path):
-    """A directory is a jobsmith workspace if it holds profiles/ AND applications/."""
+    """A directory is a jobxhunter workspace if it holds profiles/ AND applications/."""
     if not path or not os.path.isdir(path):
         return False
     return os.path.isdir(os.path.join(path, PROFILES_DIR)) and \
@@ -123,15 +137,19 @@ def _discover_upward(start):
 def resolve_workspace_root(explicit=None, start=None):
     """Resolve the workspace root, in order:
        1. `explicit` arg (a path passed by the user/agent),
-       2. JOBSMITH_DIR environment variable (JOBHUNT_DIR still honoured — the
-          skill was named job-hunt before 1.2.0, so an existing setup keeps working),
+       2. JOBXHUNTER_DIR environment variable. Older names are still honoured so a
+          pinned workspace never silently falls back to discovery after a rename:
+          JOBSMITH_DIR (the plugin was named jobsmith through 1.2.x) and JOBHUNT_DIR
+          (named job-hunt before that).
        3. discovery: an existing dir (from `start`/cwd upward) that has
           profiles/ + applications/.
     Returns an absolute path, or None if nothing resolves (caller -> Setup mode).
     An explicit/env path is returned even if not yet populated, so Setup can create it."""
     if explicit:
         return os.path.abspath(explicit)
-    env = os.environ.get("JOBSMITH_DIR") or os.environ.get("JOBHUNT_DIR")
+    env = (os.environ.get("JOBXHUNTER_DIR")
+           or os.environ.get("JOBSMITH_DIR")
+           or os.environ.get("JOBHUNT_DIR"))
     if env:
         return os.path.abspath(env)
     return _discover_upward(start or os.getcwd())
@@ -161,7 +179,7 @@ def scripts_dir(root):
 
 # ------------------------------------------------------------------------ CLI
 def main():
-    ap = argparse.ArgumentParser(description="Jobsmith shared helpers (preflight / resolve).")
+    ap = argparse.ArgumentParser(description="JobXHunter shared helpers (preflight / resolve).")
     sub_ap = ap.add_subparsers(dest="cmd", required=True)
     sub_ap.add_parser("preflight")
     rp = sub_ap.add_parser("resolve")
@@ -179,16 +197,16 @@ def main():
             # It is the normal first-run result; say so, because a bare non-zero exit
             # reads as an error to both humans and agents.
             print("NONE — no workspace yet. This is the expected first-run result, not an error.")
-            print("  Checked: --workspace arg, JOBSMITH_DIR env, then upward discovery from cwd.")
+            print("  Checked: --workspace arg, JOBXHUNTER_DIR env, then upward discovery from cwd.")
             print("  Next: init_workspace.py --workspace <dir> [--name <who>]   (Setup mode)")
             sys.exit(1)
         print(root)
         print(f"  is_workspace: {is_workspace(root)}")
-        # Discovery only walks upward from cwd, so running jobsmith from an
+        # Discovery only walks upward from cwd, so running jobxhunter from an
         # unrelated folder tomorrow resolves to NONE and can scaffold a second
         # workspace. Say how to pin it while the answer is in front of them.
-        if not os.environ.get("JOBSMITH_DIR"):
-            print("  tip: to reach this workspace from anywhere, set JOBSMITH_DIR="
+        if not any(os.environ.get(v) for v in ("JOBXHUNTER_DIR", "JOBSMITH_DIR", "JOBHUNT_DIR")):
+            print("  tip: to reach this workspace from anywhere, set JOBXHUNTER_DIR="
                   f"{root}")
 
 

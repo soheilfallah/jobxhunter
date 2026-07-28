@@ -1,10 +1,10 @@
-# Contributing to jobsmith
+# Contributing to jobxhunter
 
 Contributions are welcome. This is a maintained project. Every change lands through a pull request that the maintainer reviews and merges. Nothing is pushed straight to `main`.
 
 ## Before you write anything
 
-**Read the one rule.** jobsmith's entire value is that it never invents a fact about a candidate. The master profile is the only source of truth; the skill selects, reframes, reorders, and emphasises, but it never fabricates. If evidence for a job requirement isn't in the profile, that's a **gap to surface, not a blank to fill**.
+**Read the one rule.** jobxhunter's entire value is that it never invents a fact about a candidate. The master profile is the only source of truth; the skill selects, reframes, reorders, and emphasises, but it never fabricates. If evidence for a job requirement isn't in the profile, that's a **gap to surface, not a blank to fill**.
 
 A change that makes the tool more persuasive by loosening that rule will be declined, however well it's written. If you think a change might touch it, say so in the PR and explain why it holds.
 
@@ -13,8 +13,8 @@ The only exception is the `L2` "alternative-world" mode, which generates beyond 
 ## Setting up
 
 ```bash
-git clone https://github.com/soheilfallah/jobsmith
-cd jobsmith
+git clone https://github.com/soheilfallah/jobxhunter
+cd jobxhunter
 ```
 
 You'll want [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for the connectors, and Python 3 with `python-docx` and `openpyxl` for the scripts.
@@ -26,7 +26,7 @@ You'll want [`uv`](https://docs.astral.sh/uv/getting-started/installation/) for 
 
 ```bash
 cd ..
-claude --plugin-dir ./jobsmith
+claude --plugin-dir ./jobxhunter
 ```
 
 > [!NOTE]
@@ -51,7 +51,7 @@ Both must pass. CI runs the first one plus lockfile and connector-drift checks o
 
 These aren't style preferences. Each one has been verified to cause real breakage.
 
-**Don't add a `skills/` directory.** `SKILL.md` lives at the plugin root, which Claude Code supports for a plugin shipping *exactly one* skill. Creating `skills/` makes the root file stop loading, **silently**. Measured: the current layout loads 7 skills; adding `skills/` drops it to 6 and the `jobsmith` engine disappears while all six commands still reference it. If you genuinely need multiple skill directories, `SKILL.md`, `references/`, and `assets/` all have to move together.
+**Don't add a `skills/` directory.** `SKILL.md` lives at the plugin root, which Claude Code supports for a plugin shipping *exactly one* skill. Creating `skills/` makes the root file stop loading, **silently**. Measured: the current layout loads 7 skills; adding `skills/` drops it to 6 and the `jobxhunter` engine disappears while all six commands still reference it. If you genuinely need multiple skill directories, `SKILL.md`, `references/`, and `assets/` all have to move together.
 
 **Use `${CLAUDE_PLUGIN_ROOT}` for every script path.** A bare relative path like `python scripts/_lib.py` resolves against the *user's* working directory, not the plugin, so it fails on a real install.
 

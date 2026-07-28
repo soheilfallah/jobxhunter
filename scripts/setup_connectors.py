@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Connector doctor — check which jobsmith MCP connectors are configured, and guide
+"""Connector doctor — check which jobxhunter MCP connectors are configured, and guide
 the user to set up the missing ones with THEIR OWN api keys.
 
 No keys ship with the skill. This reads the user's Claude config(s), reports which
@@ -18,6 +18,14 @@ import glob
 import json
 import os
 import sys
+
+# UTF-8 stdout/stderr so config paths/values with non-ASCII characters never die on a
+# default (cp1252) Windows console.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, ValueError):
+    pass
 
 # Connectors the skill can use. `public` = installable by any user today.
 CONNECTORS = {
@@ -39,7 +47,7 @@ CONNECTORS = {
         "public": True,
         "config": {"command": "uv",
                    "args": ["run", "--no-config", "--locked", "--script",
-                            "<jobsmith>/connectors/reed-mcp/server.py"],
+                            "<jobxhunter>/connectors/reed-mcp/server.py"],
                    "env": {"REED_API_KEY": "<YOUR_REED_KEY>"}},
         "note": "Server is BUNDLED in this repo at connectors/reed-mcp/. Requires `uv` "
                 "(https://docs.astral.sh/uv/) — no pip install needed: the script's PEP 723 header "
@@ -53,7 +61,7 @@ CONNECTORS = {
         "public": True,
         "config": {"command": "uv",
                    "args": ["run", "--no-config", "--locked", "--script",
-                            "<jobsmith>/connectors/adzuna-mcp/server.py"],
+                            "<jobxhunter>/connectors/adzuna-mcp/server.py"],
                    "env": {"ADZUNA_APP_ID": "<YOUR_APP_ID>", "ADZUNA_APP_KEY": "<YOUR_APP_KEY>"}},
         "note": "Server is BUNDLED in this repo at connectors/adzuna-mcp/. Requires `uv` "
                 "(https://docs.astral.sh/uv/) — no pip install needed: the script's PEP 723 header "
@@ -115,7 +123,7 @@ def _registered_servers():
     """Set of mcpServers names found across all config files.
 
     Only sees hand-registered, top-level entries. Plugin-provided servers are
-    namespaced (`plugin:jobsmith:reed`) and never appear here, which is why
+    namespaced (`plugin:jobxhunter:reed`) and never appear here, which is why
     `_installed_as_plugin()` exists.
     """
     found = set()
@@ -130,10 +138,10 @@ def _registered_servers():
 
 
 def _installed_as_plugin():
-    """Return the plugin id if jobsmith is installed as a plugin, else None.
+    """Return the plugin id if jobxhunter is installed as a plugin, else None.
 
     When installed as a plugin the connectors ship with it: they are registered
-    as `plugin:jobsmith:<name>` and their keys come from the plugin's own
+    as `plugin:jobxhunter:<name>` and their keys come from the plugin's own
     user-config, not from a hand-edited `mcpServers` block. Without this check
     the doctor reports all three as MISSING and walks a plugin user through a
     manual merge they must not do, which is the opposite of what SETUP says.
@@ -149,7 +157,9 @@ def _installed_as_plugin():
     except (OSError, json.JSONDecodeError):
         return None
     for pid, on in enabled.items():
-        if on and pid.split("@")[0] == "jobsmith":
+        # accept the old id too, so a user still on the previous plugin id isn't
+        # told the plugin is missing during migration.
+        if on and pid.split("@")[0] in ("jobxhunter", "jobsmith"):
             return pid
     return None
 
@@ -159,7 +169,7 @@ def _snippet(name):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Jobsmith connector doctor.")
+    ap = argparse.ArgumentParser(description="JobXHunter connector doctor.")
     ap.add_argument("--json", action="store_true", help="machine-readable status")
     ap.add_argument("--emit", help="print one connector's config snippet and exit")
     args = ap.parse_args()
@@ -190,9 +200,9 @@ def main():
         return
 
     if plugin_id:
-        print(f"Jobsmith is installed as a plugin ({plugin_id}).\n")
+        print(f"JobXHunter is installed as a plugin ({plugin_id}).\n")
         print("Its connectors ship with the plugin and are already registered as")
-        print("  plugin:jobsmith:reed / :adzuna / :firecrawl")
+        print("  plugin:jobxhunter:reed / :adzuna / :firecrawl")
         print("You do NOT hand-edit mcpServers for these. Set the keys with:\n")
         print(f"  /plugin configure {plugin_id}            (in Claude Code)")
         print(f"  claude plugin install {plugin_id} --config KEY=VALUE   (from a terminal)\n")
@@ -200,11 +210,11 @@ def main():
         print("Keys are stored in your OS keychain because they are marked sensitive, so this")
         print("script cannot read back which ones you have set. Check the configure screen.")
         print("\nThe hand-registration report below applies only to a standalone (non-plugin)")
-        print("install. Ignore it unless you are running jobsmith from a cloned skill folder.\n")
+        print("install. Ignore it unless you are running jobxhunter from a cloned skill folder.\n")
         print("-" * 70 + "\n")
 
     cfgs = _config_paths()
-    print("Jobsmith connector setup — you bring your own API keys; none ship with the skill.\n")
+    print("JobXHunter connector setup — you bring your own API keys; none ship with the skill.\n")
     _report_runtimes()
     print("Config files found:" if cfgs else "No Claude config found yet.")
     for p, label in cfgs:
@@ -241,8 +251,8 @@ def main():
     print("\nHow to add one: sign up for the connector (Firecrawl needs a free account too), copy "
           "YOUR OWN key, then paste it to the agent in chat — it registers the MCP for you (backs up "
           "your config, merges the entry, tells you to restart). You never edit JSON by hand. "
-          "Full guide: references/connector-setup.md inside the jobsmith plugin/skill folder, "
-          "or https://github.com/soheilfallah/jobsmith/blob/main/references/connector-setup.md")
+          "Full guide: references/connector-setup.md inside the jobxhunter plugin/skill folder, "
+          "or https://github.com/soheilfallah/jobxhunter/blob/main/references/connector-setup.md")
 
 
 if __name__ == "__main__":

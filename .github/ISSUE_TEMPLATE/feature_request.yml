@@ -43,7 +43,7 @@ body:
     id: truth-rule
     attributes:
       label: The truth rule
-      description: jobsmith never invents a fact about a candidate — it selects and reframes real evidence, and surfaces gaps rather than filling them.
+      description: jobxhunter never invents a fact about a candidate — it selects and reframes real evidence, and surfaces gaps rather than filling them.
       options:
         - label: This request is compatible with that rule
           required: true

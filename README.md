@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/brand/jobsmith-icon.svg" width="96" alt="">
+  <img src="assets/brand/jobxhunter-icon.svg" width="96" alt="">
 </p>
 
-<h1 align="center">jobsmith</h1>
+<h1 align="center">jobxhunter</h1>
 
 <p align="center"><strong>Your real experience in → tailored, ATS-safe applications out, without a single invented fact.</strong></p>
 
@@ -15,19 +15,19 @@
 
 A Claude Code **plugin** (and skill) for the **UK and Canada**, with more markets coming. It builds a master profile from your own files, tailors a CV and cover letter to each job, sources live roles across job boards, and tracks every application. The profile is a decoupled data feed, so you can point it at anyone.
 
-<!-- Add a short demo GIF here (a /jobsmith:tailor run). It's the single biggest README upgrade. -->
+<!-- Add a short demo GIF here (a /jobxhunter:tailor run). It's the single biggest README upgrade. -->
 
 ---
 
 ## Quick start
 
 ```
-/plugin marketplace add soheilfallah/jobsmith
-/plugin install jobsmith@soheil-jobsmith
-/jobsmith:setup
+/plugin marketplace add soheilfallah/jobxhunter
+/plugin install jobxhunter@soheil-jobxhunter
+/jobxhunter:setup
 ```
 
-Then drop your old CVs and notes into the `dump/` folder it creates and run `/jobsmith:intake` to build your master profile.
+Then drop your old CVs and notes into the `dump/` folder it creates and run `/jobxhunter:intake` to build your master profile.
 
 ---
 
@@ -38,20 +38,20 @@ Then drop your old CVs and notes into the `dump/` folder it creates and run `/jo
 In Claude Code:
 
 ```
-/plugin marketplace add soheilfallah/jobsmith
-/plugin install jobsmith@soheil-jobsmith
+/plugin marketplace add soheilfallah/jobxhunter
+/plugin install jobxhunter@soheil-jobxhunter
 /reload-plugins
 ```
 
 Or from a terminal, for scripted or non-interactive setups:
 
 ```bash
-claude plugin marketplace add soheilfallah/jobsmith
-claude plugin install jobsmith@soheil-jobsmith
+claude plugin marketplace add soheilfallah/jobxhunter
+claude plugin install jobxhunter@soheil-jobxhunter
 ```
 
 > [!IMPORTANT]
-> **You'll want free API keys for the job connectors.** Claude Code prompts for them during install, and nothing is committed. jobsmith *runs* without them, because sourcing falls back to web search, but you get noticeably fewer roles and job descriptions aren't deep-crawled.
+> **You'll want free API keys for the job connectors.** Claude Code prompts for them during install, and nothing is committed. jobxhunter *runs* without them, because sourcing falls back to web search, but you get noticeably fewer roles and job descriptions aren't deep-crawled.
 >
 > | Connector | Get a free key | What you lose without it |
 > |---|---|---|
@@ -61,7 +61,7 @@ claude plugin install jobsmith@soheil-jobsmith
 >
 > ⭐ = the two that matter most. All are free to start; leave any blank to skip it.
 >
-> Installed from a terminal rather than in-session? Set them afterwards with `/plugin configure jobsmith@soheil-jobsmith`, or pass `--config KEY=VALUE` to `claude plugin install`.
+> Installed from a terminal rather than in-session? Set them afterwards with `/plugin configure jobxhunter@soheil-jobxhunter`, or pass `--config KEY=VALUE` to `claude plugin install`.
 
 <details>
 <summary><strong>Other ways to install</strong></summary>
@@ -71,14 +71,14 @@ claude plugin install jobsmith@soheil-jobsmith
 **Try it without installing.** Loads for that session only.
 
 ```bash
-git clone https://github.com/soheilfallah/jobsmith
-claude --plugin-dir ./jobsmith
+git clone https://github.com/soheilfallah/jobxhunter
+claude --plugin-dir ./jobxhunter
 ```
 
 **As a plain skill.** Also works in Claude Desktop / cowork, which have no plugin system:
 
 ```bash
-git clone https://github.com/soheilfallah/jobsmith ~/.claude/skills/jobsmith
+git clone https://github.com/soheilfallah/jobxhunter ~/.claude/skills/jobxhunter
 pip install python-docx openpyxl
 ```
 
@@ -91,7 +91,8 @@ In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set. Read it as the clone directory w
 | Requirement | Needed for |
 |---|---|
 | **Claude Code** | everything, or any `SKILL.md`-compatible host |
-| **[`uv`](https://docs.astral.sh/uv/getting-started/installation/)** | the Reed / Adzuna connectors only. They self-resolve on first launch, so there's nothing to `pip install` |
+| **[`uv`](https://docs.astral.sh/uv/getting-started/installation/)** (≥ 0.4) | the Reed / Adzuna connectors only. They self-resolve deps on first launch from a committed lockfile, so there's nothing to `pip install` |
+| **Node.js / `npx`** | the ⭐ Firecrawl connector only (`npx firecrawl-mcp`). Skip it if you don't use Firecrawl — JD crawling falls back to WebSearch / WebFetch |
 | **Python 3** | CV rendering and the tracker, via `python-docx` + `openpyxl`. The scripts preflight and print the exact fix if missing |
 
 ---
@@ -100,12 +101,12 @@ In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set. Read it as the clone directory w
 
 | Command | What it does |
 |---|---|
-| `/jobsmith:setup` | Scaffold your private workspace and connect job boards (bring your own keys) |
-| `/jobsmith:intake` | Build your master profile from a folder of raw files: old CVs, LinkedIn export, notes, certificates |
-| `/jobsmith:hunt` | Autonomous daily hunt. Sources, triages, and tailors every new live role, then files it |
-| `/jobsmith:tailor` | Tailor an ATS-safe CV to one job description, with a recruiter-persona scoring loop |
-| `/jobsmith:cover-letter` | Draft a cover letter in your own voice, to your market's conventions |
-| `/jobsmith:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
+| `/jobxhunter:setup` | Scaffold your private workspace and connect job boards (bring your own keys) |
+| `/jobxhunter:intake` | Build your master profile from a folder of raw files: old CVs, LinkedIn export, notes, certificates |
+| `/jobxhunter:hunt` | Autonomous daily hunt. Sources, triages, and tailors every new live role, then files it |
+| `/jobxhunter:tailor` | Tailor an ATS-safe CV to one job description, with a recruiter-persona scoring loop |
+| `/jobxhunter:cover-letter` | Draft a cover letter in your own voice, to your market's conventions |
+| `/jobxhunter:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
 
 You can also just talk to it in plain language. The commands are shortcuts.
 
@@ -113,10 +114,10 @@ You can also just talk to it in plain language. The commands are shortcuts.
 
 ## First run
 
-1. **`/jobsmith:setup`** scaffolds a private workspace (`profiles/`, `dump/`, `applications/`, a tracker, and a `WORKSPACE-MAP.md`), then stops.
+1. **`/jobxhunter:setup`** scaffolds a private workspace (`profiles/`, `dump/`, `applications/`, a tracker, and a `WORKSPACE-MAP.md`), then stops.
 2. **Drop your files** into `dump/`: old CVs, LinkedIn PDF, certificates, notes.
-3. **`/jobsmith:intake`** reads them, builds your master profile, and interviews you to fill the thin spots.
-4. **`/jobsmith:tailor`** (one role) or **`/jobsmith:hunt`** (find + tailor many). Say *"I applied to this one"* to lock the tracker row.
+3. **`/jobxhunter:intake`** reads them, builds your master profile, and interviews you to fill the thin spots.
+4. **`/jobxhunter:tailor`** (one role) or **`/jobxhunter:hunt`** (find + tailor many). Say *"I applied to this one"* to lock the tracker row.
 
 ---
 

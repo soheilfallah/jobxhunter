@@ -20,6 +20,6 @@
 
 <!-- Delete if not applicable. -->
 
-- [ ] This change does **not** loosen the rule that jobsmith never invents a fact about a candidate
+- [ ] This change does **not** loosen the rule that jobxhunter never invents a fact about a candidate
 
 <!-- If it touches that rule at all, explain here why the line still holds. -->

@@ -27,7 +27,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from _lib import preflight  # noqa: E402
+from _lib import preflight, enable_utf8_io  # noqa: E402
+enable_utf8_io()
 
 
 def slug(text, maxlen=40):
@@ -113,7 +114,7 @@ def main():
         if not os.path.exists(os.path.join(args.root, "tracker.xlsx")):
             init = subprocess.run(
                 [sys.executable, os.path.join(HERE, "tracker.py"), "init", "--root", args.root],
-                capture_output=True, text=True)
+                capture_output=True, text=True, encoding="utf-8", errors="replace")
             sys.stdout.write(init.stdout)
             if init.returncode != 0:
                 sys.stderr.write(init.stderr)
@@ -121,7 +122,7 @@ def main():
         r = subprocess.run(
             [sys.executable, os.path.join(HERE, "tracker.py"), "add",
              "--root", args.root, "--data", json.dumps(data)],
-            capture_output=True, text=True)
+            capture_output=True, text=True, encoding="utf-8", errors="replace")
         sys.stdout.write(r.stdout)
         if r.returncode != 0:
             sys.stderr.write(r.stderr)

@@ -47,6 +47,14 @@ import os
 import re
 import sys
 
+# UTF-8 stdout/stderr so printing a CV path or heading with accents/£/em-dashes never
+# dies with a UnicodeEncodeError on a default (cp1252) Windows console.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, ValueError):
+    pass
+
 try:
     from docx import Document
     from docx.shared import Pt, RGBColor, Mm, Inches

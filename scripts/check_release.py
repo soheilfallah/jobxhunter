@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Release consistency check for the jobsmith plugin.
+"""Release consistency check for the jobxhunter plugin.
 
 The plugin pins an explicit `version`, which means users receive changes ONLY
 when that field is bumped — pushing commits alone does nothing. That is the
@@ -36,20 +36,35 @@ import re
 import subprocess
 import sys
 
+# UTF-8 stdout/stderr so non-ASCII diff output never dies on a default (cp1252)
+# Windows console (this also runs in CI).
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, ValueError):
+    pass
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 
 # Only patterns that actually break something. Deliberately NOT flagged:
-#   "job-hunting"      — the activity, correct English, used throughout the copy
-#   JOBHUNT_DIR        — the documented backward-compatible env var
-#   career/job-hunt/   — the user's private data workspace, not the plugin
-#   references/*.md    — "(UK-first)" doc titles describe real content
+#   "job-hunting"        — the activity, correct English, used throughout the copy
+#   JOBSMITH_DIR / JOBHUNT_DIR — documented backward-compatible env vars (old names)
+#   career/job-hunt/     — the user's private data workspace, not the plugin
+#   references/*.md      — "(UK-first)" doc titles describe real content
+# The plugin was named job-hunt (pre-1.2), then jobsmith (1.2.x), then jobxhunter
+# (1.3+). Flag any dead reference to EITHER old name so an install command never 404s.
 STALE_PATTERNS = [
     (r"soheilfallah/job-hunt\b",  "dead repo URL — the web URL 404s after the rename"),
     (r"soheil-job-hunt\b",        "dead marketplace id"),
     (r"/job-hunt:",               "dead command namespace"),
     (r"skills/job-hunt\b",        "dead install path"),
     (r"job-hunt@",                "dead install target"),
+    (r"soheilfallah/jobsmith\b",  "dead repo URL — 404s after the jobsmith->jobxhunter rename"),
+    (r"soheil-jobsmith\b",        "dead marketplace id (was jobsmith)"),
+    (r"/jobsmith:",               "dead command namespace (was jobsmith)"),
+    (r"skills/jobsmith\b",        "dead install path (was jobsmith)"),
+    (r"jobsmith@",                "dead install target (was jobsmith)"),
 ]
 STALE_ALLOWED_FILES = ("CHANGELOG.md", "scripts/check_release.py")
 

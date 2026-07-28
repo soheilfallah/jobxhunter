@@ -19,10 +19,15 @@ venv/
 /profiles/
 /applications/
 /dump/
-tracker.xlsx
-tracker.csv
+# A live tracker at the repo ROOT only. Anchored with a leading slash so the
+# committed eval fixtures (evals/**/tracker.csv|xlsx) are NOT swept up — an
+# unanchored `tracker.csv` matched them, leaving contributors without the
+# fixtures CONTRIBUTING.md references.
+/tracker.xlsx
+/tracker.csv
 
-# Rendered documents (regenerated from markdown by scripts/render_docx.py)
+# Rendered documents (regenerated from markdown by scripts/render_docx.py).
+# Eval fixtures deliberately store CV.txt (text), never .docx, so this is safe.
 *.docx
 
 # Optional: exclude eval runs if they contain anything you don't want public.

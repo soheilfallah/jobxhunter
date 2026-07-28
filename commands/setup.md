@@ -1,8 +1,9 @@
 ---
-description: Scaffold a jobsmith workspace and help register the job connectors (bring-your-own-keys).
+description: Scaffold a jobxhunter workspace and help register the job connectors (bring-your-own-keys).
+argument-hint: "[optional: workspace directory to scaffold]"
 ---
 
-Use the **jobsmith** skill's **SETUP** routine.
+Use the **jobxhunter** skill's **SETUP** routine.
 
 1. Resolve or create the workspace (`python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve`; if none, scaffold with
    `python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]`). This drops the profile template,

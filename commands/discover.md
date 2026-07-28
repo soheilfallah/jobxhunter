@@ -1,8 +1,9 @@
 ---
 description: Find target companies in the hidden job market and draft a cold email to the right contact.
+argument-hint: "[target family + location, e.g. plant science in Cambridge]"
 ---
 
-Use the **jobsmith** skill's **DISCOVER + COLD MAIL** routine for the hidden job market (no advert).
+Use the **jobxhunter** skill's **DISCOVER + COLD MAIL** routine for the hidden job market (no advert).
 
 Build a ranked target-company list (WebSearch + Clay + Ahrefs "related companies" + Indeed vetting) → find
 the *named* hiring contact and a verified email (Clay, or RocketReach — a paid lookup credit, used frugally)

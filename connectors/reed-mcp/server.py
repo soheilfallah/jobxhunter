@@ -38,7 +38,10 @@ from pydantic import BaseModel, ConfigDict, Field
 try:
     from dotenv import load_dotenv
 
-    load_dotenv(override=False)
+    # Anchor to THIS file's directory so the connector's own .env is found even when
+    # launched as a plugin (cwd is wherever Claude Code runs, not the connector dir).
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"),
+                override=False)
 except ModuleNotFoundError:
     pass
 

@@ -20,12 +20,19 @@ Transport: stdio.
 import json
 import os
 import re
+import sys
 from enum import Enum
 from typing import Any, Optional
 
 import httpx
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, ConfigDict, Field
+
+# Pure, dependency-free rendering + redaction helpers (unit-tested in test_rendering.py).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from render import (  # noqa: E402
+    _money, _numeric, _pairs_to_markdown, format_salary, redact_credentials, _CRED_RE,
+)
 
 # Load a local .env if present so `python server.py` (and the mcp-inspector verify
 # step) pick up credentials without exporting them by hand. override=False keeps
@@ -34,7 +41,10 @@ from pydantic import BaseModel, ConfigDict, Field
 try:
     from dotenv import load_dotenv
 
-    load_dotenv(override=False)
+    # Anchor to THIS file's directory so the connector's own .env is found even when
+    # launched as a plugin (cwd is wherever Claude Code runs, not the connector dir).
+    load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"),
+                override=False)
 except ModuleNotFoundError:
     pass
 
@@ -158,15 +168,10 @@ def _clean(params: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-# Adzuna auth travels in the URL query string (app_id/app_key). An exception or an
-# upstream error body can echo that credential-bearing URL back — scrub it so keys
-# never reach the agent transcript or logs.
-_CRED_RE = re.compile(r"(app_id|app_key)=[^&\s]+", re.IGNORECASE)
-
-
 def _handle_api_error(exc: Exception) -> str:
-    """Build the actionable message, then redact any leaked credentials."""
-    return _CRED_RE.sub(r"\1=REDACTED", _api_error_message(exc))
+    """Build the actionable message, then redact any leaked credentials (app_id/app_key
+    travel in the query string, so an echoed error URL could otherwise leak them)."""
+    return redact_credentials(_api_error_message(exc))
 
 
 def _api_error_message(exc: Exception) -> str:
@@ -227,26 +232,6 @@ def _strip(obj: Any) -> Any:
 
 def _as_json(data: Any) -> str:
     return json.dumps(_strip(data), indent=2, ensure_ascii=False)
-
-
-def _money(value: Any) -> str:
-    """Format a salary figure, or '?' when absent."""
-    if value in (None, ""):
-        return "?"
-    try:
-        return f"{float(value):,.0f}"
-    except (TypeError, ValueError):
-        return str(value)
-
-
-def _pairs_to_markdown(mapping: dict[str, Any], key_header: str, value_header: str, title: str) -> str:
-    """Render a flat {key: value} object as a sorted markdown table."""
-    if not mapping:
-        return f"# {title}\n\nNo data returned for this query."
-    rows = sorted(mapping.items(), key=lambda kv: kv[0])
-    lines = [f"# {title}", "", f"| {key_header} | {value_header} |", "|---|---|"]
-    lines += [f"| {k} | {_money(v)} |" for k, v in rows]
-    return "\n".join(lines)
 
 
 def _render(data: Any, fmt: ResponseFormat, markdown_fn) -> str:
@@ -360,9 +345,8 @@ def _search_markdown(data: dict[str, Any]) -> str:
         loc = (job.get("location") or {}).get("display_name", "?")
         company = (job.get("company") or {}).get("display_name", "?")
         cat = (job.get("category") or {}).get("label", "?")
-        salary = f"{_money(job.get('salary_min'))} - {_money(job.get('salary_max'))}"
-        if job.get("salary_is_predicted") in (1, "1"):
-            salary += " (predicted, not stated in ad)"
+        salary = format_salary(job.get("salary_min"), job.get("salary_max"),
+                               predicted=job.get("salary_is_predicted") in (1, "1"))
         contract = " / ".join(
             v for v in (job.get("contract_time"), job.get("contract_type")) if v
         )

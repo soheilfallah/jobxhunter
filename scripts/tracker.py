@@ -18,6 +18,14 @@ automatically if absent and defaults status to "Drafted". `update` sets fields o
 the matching row; setting status to "Applied" stamps date_applied (if absent),
 turns the row green, and locks it. Other status values stamp their matching date
 column and recolour the row.
+
+Rows in the committed set (Applied/Interview/Interviewed/Offer/Rejected) are final:
+their identity (company/role/link/folder/category) and the applied date are immutable,
+and status may only move WITHIN that set. Any edit outside that — a status regression
+out of the set, or touching an immutable field — is refused unless `--data` carries
+`"_force": true`, so an applied record can never be silently lost or altered. All
+writes are atomic (temp file + os.replace) and fail with a clear message, never a
+truncated file, when the tracker is open in Excel or read-only.
 """
 import argparse
 import csv
@@ -25,11 +33,13 @@ import datetime
 import json
 import os
 import sys
+import tempfile
 
 # Preflight before importing openpyxl so a missing dep fails LOUDLY with the exact
 # fix, instead of a bare sys.exit that let callers half-commit (folder but no row).
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _lib import preflight, safe_cell  # noqa: E402
+from _lib import preflight, safe_cell, enable_utf8_io  # noqa: E402
+enable_utf8_io()
 preflight([("openpyxl", "openpyxl", "tracker.xlsx read/write (tracker.py)")])
 
 from openpyxl import Workbook, load_workbook  # noqa: E402
@@ -53,6 +63,16 @@ STATUS_DATE = {
     "Rejected": "date_rejected",
     "Offer": "date_offer",
 }
+
+# "Committed" statuses: a row here represents a real submitted application and is
+# treated as final. Status may move freely AMONG these (Applied->Interview->Offer,
+# a Rejected outcome, ...); leaving the set (a regression to Drafted/Skipped/etc.)
+# needs an explicit _force. Same set the dedupe pass protects (PROTECTED below).
+_COMMITTED_STATUSES = {"Applied", "Interview", "Interviewed", "Offer", "Rejected"}
+# Columns that must never change on a committed row without _force (identity + the
+# applied date). Progress fields (notes, follow_up, the date columns) stay editable.
+_COMMITTED_IMMUTABLE = {"company", "role", "link", "folder_path", "category",
+                        "logged_date", "date_applied", "cv_path"}
 
 STATUS_FILL = {
     "Applied":     "C6EFCE",  # green  — locked, final
@@ -156,17 +176,60 @@ def _reprotect(ws):
     ws.protection.autoFilter = False
 
 
+def _rm(path):
+    if path and os.path.exists(path):
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+
+def _locked_exit(path, err):
+    # Windows takes an exclusive lock on a workbook open in Excel; a read-only file
+    # or a sharing violation (WinError 32) lands here too. Exit clean, not a traceback.
+    sys.exit(f"Cannot write {path}: it's open in Excel/another program or read-only "
+             f"({err}). Close it and re-run.")
+
+
+def _atomic_save_workbook(wb, path):
+    """Save a workbook atomically: write to a temp file in the same directory, then
+    os.replace() onto the target. A locked/failed save never truncates the existing
+    file. Exits with a clear message (not a traceback) if the target can't be written."""
+    tmp = None
+    try:
+        fd, tmp = tempfile.mkstemp(prefix=".tracker-", suffix=".xlsx.tmp",
+                                   dir=os.path.dirname(os.path.abspath(path)))
+        os.close(fd)
+        wb.save(tmp)
+        os.replace(tmp, path)
+    except (PermissionError, OSError) as e:
+        _rm(tmp)
+        _locked_exit(path, e)
+
+
 def _write_csv(ws, root):
-    with open(csv_path(root), "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(COLUMNS)
-        for d in _rows_as_dicts(ws):
-            w.writerow([safe_cell(d[c]) for c in COLUMNS])
+    """Atomic CSV mirror write (same temp-file + os.replace discipline as the xlsx)."""
+    path = csv_path(root)
+    tmp = None
+    try:
+        fd, tmp = tempfile.mkstemp(prefix=".tracker-", suffix=".csv.tmp",
+                                   dir=os.path.dirname(os.path.abspath(path)))
+        with os.fdopen(fd, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(COLUMNS)
+            for d in _rows_as_dicts(ws):
+                w.writerow([safe_cell(d[c]) for c in COLUMNS])
+        os.replace(tmp, path)
+    except (PermissionError, OSError) as e:
+        _rm(tmp)
+        _locked_exit(path, e)
 
 
 def _save(wb, ws, root):
     _reprotect(ws)
-    wb.save(xlsx_path(root))
+    # xlsx first: if it's locked we exit BEFORE touching the csv, so the two mirrors
+    # never diverge on the common "workbook open in Excel" failure.
+    _atomic_save_workbook(wb, xlsx_path(root))
     _write_csv(ws, root)
 
 
@@ -211,10 +274,23 @@ def cmd_update(root, key, data):
     if not target:
         sys.exit(f"No row with folder_path={key}")
     r = target["_row"]
-    # guard: applied rows are final. Refuse silent overwrite unless --force via data.
-    if str(target.get("status")) == "Applied" and data.get("status") not in (None, "Applied"):
-        if not data.get("_force"):
-            sys.exit(f"Row {r} is Applied (locked/final). Pass \"_force\": true in --data to override.")
+    # Guard: an Applied row is final. Allow only a FORWARD status move and edits to
+    # progress fields; refuse a status regression or any change to an immutable
+    # identity/applied-date field unless --data carries "_force": true. (The old guard
+    # only checked the status field, so a non-status edit — e.g. rewriting pay or
+    # company — silently altered a "locked" row.)
+    if str(target.get("status")) in _COMMITTED_STATUSES and not data.get("_force"):
+        new_status = data.get("status")
+        status_ok = new_status is None or str(new_status) in _COMMITTED_STATUSES
+        touched = sorted(k for k in data
+                         if k in _COMMITTED_IMMUTABLE
+                         and str(data[k]) != str(target.get(k, "")))
+        if not status_ok or touched:
+            why = (f"status '{new_status}' would drop it out of the applied set"
+                   if not status_ok
+                   else f"immutable field(s) {touched} cannot change on a committed row")
+            sys.exit(f"Row {r} is {target.get('status')} (committed/final) — {why}. "
+                     "Pass \"_force\": true in --data to override deliberately.")
     data = {k: v for k, v in data.items() if k != "_force"}
     for k, v in data.items():
         if k in COLUMNS:
@@ -241,8 +317,9 @@ def cmd_show(root):
 STATUS_RANK = {"Offer": 6, "Interviewed": 5, "Interview": 5, "Rejected": 4,
                "Applied": 4, "Replied": 3, "Cold-emailed": 2, "Drafted": 1,
                "Skipped": 0}
-# post-application states are NEVER auto-deleted as a duplicate
-PROTECTED = {"Applied", "Interview", "Interviewed", "Offer", "Rejected"}
+# post-application states are NEVER auto-deleted as a duplicate (same committed set
+# the update guard treats as final).
+PROTECTED = _COMMITTED_STATUSES
 
 
 def _dedupe_key(d):
@@ -387,7 +464,7 @@ def cmd_priority_view(root):
                 out.cell(row=r, column=close_col).fill = amber
 
     path = os.path.join(root, "tracker-priority.xlsx")
-    wb.save(path)
+    _atomic_save_workbook(wb, path)
     print(f"Prioritised worklist: {path} ({len(rows)} rows; Drafted first, "
           f"soonest-closing next, closing≤7d in red). Full tracker stays the system of record.")
 
