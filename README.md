@@ -4,33 +4,33 @@
 
 <h1 align="center">jobxhunter</h1>
 
-<p align="center"><strong>The AI job-hunter that can't lie about you.</strong></p>
+<p align="center"><strong>Fills the gap to the job. Recommends the gaps to close.</strong></p>
 
 <p align="center">
-  Tailored, ATS-safe applications built from your real experience — and not one invented fact.
+  It searches live UK and Canada jobs, tailors an ATS-safe CV that fits each role from your real experience, and names the exact gaps worth closing.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-6E56CF" alt="Claude Code">
-  <img src="https://img.shields.io/badge/markets-UK%20%2B%20Canada-1f6feb" alt="Markets">
-  <img src="https://img.shields.io/badge/truth%20rule-0%20fabrications-2ea043" alt="Truth rule">
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
+  <img src="https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-590000" alt="Claude Code">
+  <img src="https://img.shields.io/badge/markets-UK%20%2B%20Canada-6b4a45" alt="Markets">
+  <img src="https://img.shields.io/badge/recruiter--scored-4.0%2F5-590000" alt="Recruiter score">
+  <img src="https://img.shields.io/badge/license-MIT-6b4a45" alt="License">
 </p>
 
 <p align="center">
-  <img src="assets/brand/demo-tailor.svg" width="760" alt="A jobxhunter tailor run: a coverage matrix, an independent recruiter score of 4.0/5 with zero fabrications, and four real gaps surfaced rather than invented.">
+  <img src="assets/brand/demo-tailor.svg" width="760" alt="A jobxhunter tailor run: it sources a role, fits the CV to it, marks each requirement filled, flags the one gap to close, and scores 4.0 out of 5 from the independent recruiter.">
 </p>
 
 ---
 
-Every other AI résumé tool will happily invent a metric to paper over a gap. jobxhunter won't. Your master profile is the **only** source of truth for anything submittable; the skill selects, reframes, and reorders your real experience, and where the evidence isn't there, it **tells you** instead of making something up. One fabricated line is enough to lose the offer, or worse, get caught in the interview. This tool is built so that never happens.
+jobxhunter searches live UK and Canada job boards, tailors an ATS-safe CV that fits each role from your real experience, then names the exact gaps worth closing. It sources through real API connectors with a web-search fallback, scores every draft with an independent recruiter agent, tracks the whole pipeline, and preps you for the interview. It drafts. You review and send.
 
-It reads your old CVs and notes into one master profile, tailors an ATS-safe CV and cover letter to each role, sources live jobs across UK and Canadian boards, scores every draft with an independent recruiter agent, and tracks the whole pipeline.
+It works from one master profile of your real history, so nothing on the page is invented. Where your experience falls short of a role, it shows you the gap and how to close it, rather than faking a match.
 
 **On one real UK role, blind-scored by the independent recruiter agent:**
 
 <p align="center">
-  <strong>4.0 / 5</strong> &nbsp;·&nbsp; <strong>0 fabrications</strong> &nbsp;·&nbsp; <strong>4 real gaps surfaced, not faked</strong>
+  <strong>4.0 / 5</strong> &nbsp;·&nbsp; <strong>0 fabrications</strong> &nbsp;·&nbsp; <strong>4 real gaps flagged to close</strong>
 </p>
 
 ---
@@ -39,13 +39,13 @@ It reads your old CVs and notes into one master profile, tailors an ATS-safe CV 
 
 I was hunting for a job in the UK, and I built this to take the grunt work off my plate: re-cutting the CV for every role, mapping it to the job description, keeping it honest and ATS-readable, filing it, tracking it.
 
-It worked — I found a job. Then a friend in Canada asked me to run their search too, so I made Canada work out of the box. Then a friend in Italy asked. So instead of hard-coding one country, I made the market a setting, and more are on the way.
+It worked. I found a job. Then a friend in Canada asked me to run their search too, so I made Canada work out of the box. Then a friend in Italy asked. So instead of hard-coding one country, I made the market a setting, and more are on the way.
 
-The one rule I gave it: never invent anything. It works from your real history and surfaces the gaps instead of filling them, because a single made-up line is what ends an interview.
+It works from your real history and shows you the gaps to close, rather than filling them, because a single made-up line is what ends an interview.
 
 It's the tool I used for my own hunt, and my friends used for theirs. It's yours now too.
 
-— [Soheil](https://github.com/soheilfallah)
+[Soheil](https://github.com/soheilfallah)
 
 ---
 
@@ -65,9 +65,10 @@ It's the tool I used for my own hunt, and my friends used for theirs. It's yours
 
 ## What makes it different
 
-- **It can't invent facts.** The master profile is the only source of truth for a submittable document. Missing evidence for a requirement is a **gap it surfaces**, not a blank it fills. No fabricated titles, numbers, or skills.
-- **It survives both readers.** Every CV is built for the ATS parser *and* the six-second recruiter scan, not one at the expense of the other.
-- **The recruiter loop is genuinely independent.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. In Claude Code the scoring runs in a separate `recruiter-critic` agent that sees only the JD and the finished CV, never the writer's own notes, so it can't rubber-stamp itself. In testing it caught the tailorer drifting into unsupported buzzwords and stripped them.
+- **The search does the digging.** It pulls live roles from Reed, Adzuna and Firecrawl with a web-search fallback, reads the full job description behind Workday, Greenhouse and Lever links, and the autonomous daily hunt sources, triages, tailors and files every new match on its own.
+- **It fits you from your real experience.** The master profile is the only source of truth for a submittable document, and every CV is shaped for both the ATS parser and the six-second recruiter scan. No fabricated titles, numbers, or skills.
+- **Then it recommends the gap to close.** Where a role needs something you cannot evidence, jobxhunter shows you the gap instead of papering over it. In its alternative-world mode it sketches the ideal candidate and the shortest path from you to them, a roadmap you can act on and never something it submits.
+- **The recruiter loop is genuinely independent.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. In Claude Code the scoring runs in a separate `recruiter-critic` agent that sees only the JD and the finished CV, never the writer's own notes, so it cannot rubber-stamp itself. In testing it caught the tailorer drifting into unsupported buzzwords and stripped them.
 - **It doesn't stop at "applied".** Once a role is filed, `/jobxhunter:interview` builds a prep pack from the same coverage matrix: predicted questions, STAR answers from real evidence, and an honest defence for the exact gaps the CV surfaced. A deterministic keyword check confirms the must-have terms actually landed on the page (a parse diagnostic, never a fake "match score").
 - **No slop.** A researched ban-list blocks phrasing like *"results-driven team player, passionate about synergy."*
 - **Two markets, more coming.** UK and Canada both work out of the box (A4 vs US-Letter, British vs Canadian spelling, Reed/Adzuna vs Job Bank / Indeed.ca). Market is read from your profile, not hard-coded.
@@ -81,8 +82,8 @@ Run end-to-end on live UK job descriptions, each CV blind-scored by the independ
 | Case | Level | Recruiter score |
 |---|---|---|
 | Strong-match research placement | L1 | **4.0 / 5** |
-| Research assistant (partial fit) | L1 | 2.9 / 5 — real gap surfaced, not faked |
-| Junior ML engineer (genuine stretch) | L1 + letter | 2.9 / 5 — missing stack disclosed |
+| Research assistant (partial fit) | L1 | 2.9 / 5, real gap surfaced not faked |
+| Junior ML engineer (genuine stretch) | L1 + letter | 2.9 / 5, missing stack disclosed |
 
 A true match scored 4.0; genuine stretches scored lower, with the reasons stated on the page. ATS-safety was verified in the document XML. The fixtures live in [`evals/`](evals/).
 
@@ -99,7 +100,7 @@ A true match scored 4.0; genuine stretches scored lower, with the reasons stated
 | `/jobxhunter:cover-letter` | Draft a cover letter in your own voice, to your market's conventions |
 | `/jobxhunter:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
 | `/jobxhunter:interview` | Prep from a filed role: predicted questions, STAR answers from real evidence, honest gap-defence |
-| `/jobxhunter:dashboard` | Build a shareable HTML dashboard of your hunt — funnel, status, scores — from the tracker |
+| `/jobxhunter:dashboard` | Build a shareable HTML dashboard of your hunt (funnel, status, scores) from the tracker |
 
 You can also just talk to it in plain language. The commands are shortcuts.
 
@@ -171,7 +172,7 @@ In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set. Read it as the clone directory w
 
 ### Other agent CLIs
 
-Not on Claude Code? The tailoring core runs anywhere. Clone the repo and point Codex, Gemini CLI / Antigravity, Copilot, OpenCode, Qwen, or Kimi at [`AGENTS.md`](AGENTS.md) — it drives the whole pipeline from `SKILL.md`. Live-board sourcing uses the MCP connectors on Claude Code and falls back to your agent's own web search elsewhere; everything else is identical.
+Not on Claude Code? The tailoring core runs anywhere. Clone the repo and point Codex, Gemini CLI / Antigravity, Copilot, OpenCode, Qwen, or Kimi at [`AGENTS.md`](AGENTS.md), which drives the whole pipeline from `SKILL.md`. Live-board sourcing uses the MCP connectors on Claude Code and falls back to your agent's own web search elsewhere. Everything else is identical.
 
 ---
 
@@ -189,13 +190,13 @@ The **tailoring dial:** `L0` true-and-reframed · `L1` aggressive-but-true (defa
 
 ## Dashboard
 
-`/jobxhunter:dashboard` turns your tracker into one self-contained HTML page — headline tiles, the apply→interview→offer funnel with conversion, status and category breakdowns, and your recruiter-score spread. It opens offline and makes **no network requests**, so your private workspace never leaks.
+`/jobxhunter:dashboard` turns your tracker into one self-contained HTML page: headline tiles, the apply → interview → offer funnel with conversion, status and category breakdowns, and your recruiter-score spread. It opens offline and makes **no network requests**, so your private workspace never leaks.
 
 <p align="center">
   <img src="assets/brand/dashboard-preview.jpg" width="820" alt="The jobxhunter hunt dashboard: headline tiles, an apply-to-offer funnel with conversion rates, status and category breakdowns, and the recruiter-score distribution.">
 </p>
 
-<p align="center"><em>Example on sample data — your real numbers stay on your machine.</em></p>
+<p align="center"><em>Example on sample data. Your real numbers stay on your machine.</em></p>
 
 ---
 
@@ -218,9 +219,9 @@ As a plugin, these keys are the plugin's user-config, so there's no manual JSON 
 
 Tracked here rather than half-built:
 
-- **ATS text-layer readback** — render the CV to PDF, extract what the parser actually sees, and confirm the must-have terms survived the round-trip.
+- **ATS text-layer readback:** render the CV to PDF, extract what the parser actually sees, and confirm the must-have terms survived the round-trip.
 - **Ghost-job & legitimacy checks** in triage, so you don't tailor for a scam or a re-posted ghost role.
-- **Enforcement hooks** — a `PostToolUse` gate that runs the ATS-safety and de-slop checks automatically after each render. Deferred until reliably cross-platform; today those checks run inline.
+- **Enforcement hooks:** a `PostToolUse` gate that runs the ATS-safety and de-slop checks automatically after each render. Deferred until reliably cross-platform; today those checks run inline.
 - **Eval regression harness**, **Gmail status sync**, **scheduled watch-list monitoring**, and an **offer / salary-negotiation** capstone.
 
 ---
@@ -228,13 +229,13 @@ Tracked here rather than half-built:
 ## Privacy & supply chain
 
 - **Your data stays yours.** Your real profiles and filed applications live in a private workspace, gitignored and never committed. No keys ship in this repo.
-- **Connector installs can't be hijacked.** `uv` and `npx` read config from the working directory, so a stray `uv.toml` or `.npmrc` could otherwise redirect a connector's install to someone else's package index. All three connectors pin resolution to the real registries and to committed hash-verified lockfiles. A stale lock fails the connector closed rather than silently resolving something else.
+- **Connector installs stay pinned.** `uv` and `npx` read config from the working directory, so a stray `uv.toml` or `.npmrc` could otherwise redirect a connector's install to someone else's package index. All three connectors pin resolution to the real registries and to committed hash-verified lockfiles. A stale lock fails the connector closed rather than silently resolving something else.
 
 ---
 
 ## Contributing
 
-Issues and PRs welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md): the truth rule every change has to hold, how to test a real install, and the three things that silently break the plugin.
+Issues and PRs welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md): the one rule every change has to hold (it works only from the master profile, never invents), how to test a real install, and the three things that silently break the plugin.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
 
