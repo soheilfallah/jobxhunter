@@ -2,28 +2,26 @@
   <title>jobxhunter</title>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#8a1512"/>
-      <stop offset="1" stop-color="#4a0000"/>
+      <stop offset="0" stop-color="#93221f"/>
+      <stop offset="1" stop-color="#4e0808"/>
     </linearGradient>
   </defs>
 
-  <!-- devil-red tile: carries its own background so the mark reads on light and dark READMEs -->
+  <!-- rounded tile: carries its own background so the mark reads on light and dark READMEs -->
   <rect x="0" y="0" width="128" height="128" rx="28" fill="url(#bg)"/>
 
-  <!-- content group, optically centred on the tile -->
-  <g transform="translate(-4 2)">
-    <!-- the profile: a document with a folded corner -->
-    <path d="M34 30 a6 6 0 0 1 6-6 h26 l18 18 v52 a6 6 0 0 1-6 6 H40 a6 6 0 0 1-6-6 Z" fill="#FFFFFF"/>
-    <path d="M66 24 l18 18 H72 a6 6 0 0 1-6-6 Z" fill="#F1D9D2"/>
+  <!-- the profile: a document with a folded corner -->
+  <path d="M34 30 a6 6 0 0 1 6-6 h26 l18 18 v52 a6 6 0 0 1-6 6 H40 a6 6 0 0 1-6-6 Z"
+        fill="#FFFFFF"/>
+  <path d="M66 24 l18 18 H72 a6 6 0 0 1-6-6 Z" fill="#F1D9D2"/>
 
-    <!-- evidence lines -->
-    <rect x="44" y="50" width="30" height="5" rx="2.5" fill="#CDA99F"/>
-    <rect x="44" y="62" width="22" height="5" rx="2.5" fill="#CDA99F"/>
+  <!-- evidence lines -->
+  <rect x="44" y="50" width="30" height="5" rx="2.5" fill="#CDA3A0"/>
+  <rect x="44" y="62" width="22" height="5" rx="2.5" fill="#CDA3A0"/>
 
-    <!-- the outcome: real experience in, tailored applications out. A green growth line
-         with a subtly spaded, devil-tail arrow tip. -->
-    <path d="M40 92 C54 96 62 82 74 74 C83 69 90 61 97 51"
-          fill="none" stroke="#34D399" stroke-width="7" stroke-linecap="round"/>
-    <path d="M103 44 L87 46 Q97 53 93 61 Z" fill="#34D399"/>
-  </g>
+  <!-- the outcome: real experience in, tailored applications out -->
+  <polyline points="44,92 58,78 68,86 92,54"
+            fill="none" stroke="#34D399" stroke-width="7"
+            stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M99 46 L82 49 L94 61 Z" fill="#34D399"/>
 </svg>
