@@ -17,16 +17,16 @@
   <g opacity="0"><text x="24" y="116" font-size="15" fill="#9a7d7a">&gt; sourced live roles &#183; Reed / Adzuna / Firecrawl</text>
     <animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.086;0.106;1" values="0;0;1;1"/></g>
 
-  <g opacity="0"><text x="24" y="146" font-size="15" fill="#9a7d7a">&gt; Research Assistant, Dyson Farming</text>
+  <g opacity="0"><text x="24" y="146" font-size="15" fill="#9a7d7a">&gt; Backend Engineer, Northwind</text>
     <animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.136;0.156;1" values="0;0;1;1"/></g>
 
-  <g opacity="0"><text x="48" y="176" font-size="15" fill="#f1efef">Degree in plant science <tspan fill="#6a4a44">.......</tspan> <tspan font-weight="bold">FILLED</tspan></text>
+  <g opacity="0"><text x="48" y="176" font-size="15" fill="#f1efef">Core stack (Python, Go) <tspan fill="#6a4a44">.......</tspan> <tspan font-weight="bold">FILLED</tspan></text>
     <animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.179;0.199;1" values="0;0;1;1"/></g>
 
-  <g opacity="0"><text x="48" y="204" font-size="15" fill="#f1efef">Data collection &amp; records <tspan fill="#6a4a44">....</tspan> <tspan font-weight="bold">FILLED</tspan></text>
+  <g opacity="0"><text x="48" y="204" font-size="15" fill="#f1efef">REST API design <tspan fill="#6a4a44">...........</tspan> <tspan font-weight="bold">FILLED</tspan></text>
     <animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.214;0.234;1" values="0;0;1;1"/></g>
 
-  <g opacity="0"><text x="48" y="232" font-size="15" fill="#f1efef">Full UK driving licence <tspan fill="#6a4a44">....</tspan> <tspan fill="#e2564e" font-weight="bold">GAP</tspan> <tspan fill="#9a7d7a">(recommend closing)</tspan></text>
+  <g opacity="0"><text x="48" y="232" font-size="15" fill="#f1efef">Kubernetes in production <tspan fill="#6a4a44">.</tspan> <tspan fill="#e2564e" font-weight="bold">GAP</tspan> <tspan fill="#9a7d7a">(recommend closing)</tspan></text>
     <animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.257;0.277;1" values="0;0;1;1"/></g>
 
   <g opacity="0"><text x="24" y="270" font-size="15" fill="#9a7d7a">&gt; recruiter score <tspan fill="#e2564e" font-weight="bold" font-size="16">4.0 / 5</tspan> &#183; <tspan fill="#f1efef">0 fabrications</tspan></text>
@@ -39,5 +39,5 @@
     <animate attributeName="opacity" dur="14s" repeatCount="indefinite" keyTimes="0;0.414;0.434;1" values="0;0;1;1"/></g>
 
   <line x1="24" y1="366" x2="816" y2="366" stroke="#3a1512" stroke-width="1"/>
-  <text x="24" y="392" font-size="13" fill="#9a7d7a">Real output from the repo's own eval &#183; <tspan fill="#c9b2af">evals/2026-07-06-run/&#8230;/dyson-farming</tspan></text>
+  <text x="24" y="392" font-size="13" fill="#9a7d7a">How a jobxhunter run reads, <tspan fill="#c9b2af">start to finish</tspan>.</text>
 </svg>
