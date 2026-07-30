@@ -4,6 +4,19 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-07-31
+
+### Changed
+
+- **Cowork (Claude Desktop) support made explicit and correct.** Cowork runs in an isolated VM that
+  cannot reach local stdio MCP servers, so the bundled Reed / Adzuna / Firecrawl connectors do not
+  connect there. SOURCE now routes Cowork sourcing to the remote Indeed / Dice connectors plus
+  WebSearch / WebFetch (and `/scrape` for JD capture), and a new "Running in Cowork" section in
+  `SKILL.md` spells out exactly what works. Tailoring, the recruiter loop, tracking, interview prep,
+  and native docx/xlsx rendering are unchanged. Also fixes a stale note that implied the bundled
+  stdio connectors worked in Cowork under a different naming convention, and corrects the README's
+  claim that Cowork has no plugin system.
+
 ## [1.4.0] - 2026-07-30
 
 ### Added

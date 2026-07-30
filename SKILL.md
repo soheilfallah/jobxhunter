@@ -49,6 +49,28 @@ line in every command below.
   live match, files everything, and writes a dated summary. If no workspace resolves, it **scaffolds**
   one and stops for the user to fill their profile. See `references/daily-hunt.md` (SETUP + DAILY RUN).
 
+## Running in Cowork (Claude Desktop) — read if the surface isn't Claude Code
+
+jobxhunter runs in **Cowork**, not only Claude Code. The whole pipeline works; one piece routes
+differently:
+
+- **Fully supported:** the skill and every `/jobxhunter:*` command, the subagents (`recruiter-critic`,
+  `role-tailorer`), tailoring, the recruiter loop, cover letters, discovery, L2, interview prep, and
+  tracking. **Rendering** uses Cowork's native `docx` / `pdf` / `xlsx` file skills (see surface-aware
+  routing below), so no local `render_docx.py` is needed.
+- **Sourcing routes differently.** The bundled **Reed / Adzuna / Firecrawl** connectors are local
+  **stdio** servers and **do not connect in Cowork** (it executes in an isolated VM that cannot reach a
+  stdio process on your machine). In Cowork, SOURCE uses the **remote claude.ai connectors** (`Indeed`,
+  `Dice`) plus **WebSearch** / **WebFetch**, and captures JDs with `WebFetch` or the **`/scrape`** skill.
+- **Scripts:** `${CLAUDE_PLUGIN_ROOT}` resolves inside the Cowork VM, and the stdlib-only scripts
+  (`dashboard.py`, `keyword_coverage.py`) run there as-is. `tracker.py` needs `openpyxl`; if it isn't
+  present, the script prints the one-line fix, or use the native `xlsx` skill for the tracker.
+- **Nothing silently breaks:** no `hooks/` or `monitors/` ship (both are Cowork-incompatible), so
+  there's nothing to gray out.
+
+**Do this in Cowork:** treat the bundled connectors as absent, prefer `Indeed`/`Dice` + WebSearch for
+SOURCE, and let the native file skills render. Everything else is identical.
+
 ## Running the bundled scripts (shell note — read before the first `python …`)
 
 The commands below write the plugin root as `${CLAUDE_PLUGIN_ROOT}` (the folder holding
@@ -220,16 +242,20 @@ The discovery front-end that precedes tailoring — see `references/job-search-g
 target family (and the candidate's location / right-to-work constraints), find live UK roles:
 
 > **Tool names are written bare here** (`search_jobs`, `reed_search_jobs`, `firecrawl_scrape`) because
-> the prefix depends on your surface. Your environment exposes the same tools under one of two
-> conventions — resolve each name to whichever your surface uses:
-> - **Claude Code / this CLI:** `mcp__<server>__<tool>` — e.g. `mcp__reed__reed_search_jobs`,
->   `mcp__adzuna__adzuna_search_jobs`, `mcp__firecrawl__firecrawl_scrape`.
-> - **Claude Desktop / cowork:** `<server>:<tool>` — e.g. `reed:reed_search_jobs`,
->   `adzuna:adzuna_search_jobs`, `firecrawl:firecrawl_scrape`. The Indeed/Dice connectors surface as
->   `Indeed:*` / `Dice:*` here (vs `mcp__claude_ai_Indeed__*` in Code).
+> both the prefix *and which connectors exist* depend on your surface. Resolve each name against the
+> tools your surface actually exposes — never assume a connector is present:
+> - **Claude Code / this CLI:** the bundled connectors load as `mcp__<server>__<tool>` — e.g.
+>   `mcp__reed__reed_search_jobs`, `mcp__adzuna__adzuna_search_jobs`, `mcp__firecrawl__firecrawl_scrape`.
+>   The claude.ai connectors are `mcp__claude_ai_Indeed__*` / `mcp__claude_ai_Dice__*`.
+> - **Cowork / Claude Desktop:** the bundled **Reed / Adzuna / Firecrawl** connectors are local stdio
+>   servers and **do NOT connect here** — Cowork runs in an isolated VM that can't reach a stdio server
+>   on your machine. Source instead with the **remote claude.ai connectors** (`Indeed`, `Dice`, if you
+>   have them connected) plus **WebSearch** / **WebFetch**, and capture full JDs with `WebFetch` or the
+>   **`/scrape`** skill. Tailoring, tracking, and interview prep are identical to Claude Code.
 >
-> If a name doesn't resolve, list your available tools and match by the `<server>` + `<tool>` pair —
-> the connector server names are `Indeed`, `reed`, `adzuna`, `Dice`, `firecrawl`.
+> If a name doesn't resolve, list your available tools and match by the `<server>` + `<tool>` pair. The
+> bundled (stdio, Claude-Code-only) server names are `reed`, `adzuna`, `firecrawl`; the always-remote
+> ones are `Indeed`, `Dice`.
 
 **Source-effort dial (user's choice — see `references/job-search-guide.md`).** Default is **`full`**:
 fan out across all connectors, then the web-crawl net — maximum coverage. Switch to **`budget`** when the

@@ -150,7 +150,9 @@ git clone https://github.com/soheilfallah/jobxhunter
 claude --plugin-dir ./jobxhunter
 ```
 
-**As a plain skill.** Also works in Claude Desktop / cowork, which have no plugin system:
+**In Cowork (Claude Desktop).** jobxhunter installs as a plugin in Cowork too (same marketplace flow), and the whole pipeline runs. One difference: the bundled Reed / Adzuna / Firecrawl connectors are local stdio servers that don't run in Cowork's sandbox, so **sourcing** uses the remote Indeed / Dice connectors plus web search instead. Everything else (tailoring, the recruiter loop, tracking, interview prep, native `docx` / `xlsx` rendering) is identical. Full detail in [`SKILL.md`](SKILL.md) ("Running in Cowork").
+
+**As a plain skill** (for hosts with no plugin system):
 
 ```bash
 git clone https://github.com/soheilfallah/jobxhunter ~/.claude/skills/jobxhunter
