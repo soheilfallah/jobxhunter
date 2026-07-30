@@ -99,6 +99,7 @@ A true match scored 4.0; genuine stretches scored lower, with the reasons stated
 | `/jobxhunter:cover-letter` | Draft a cover letter in your own voice, to your market's conventions |
 | `/jobxhunter:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
 | `/jobxhunter:interview` | Prep from a filed role: predicted questions, STAR answers from real evidence, honest gap-defence |
+| `/jobxhunter:dashboard` | Build a shareable HTML dashboard of your hunt — funnel, status, scores — from the tracker |
 
 You can also just talk to it in plain language. The commands are shortcuts.
 
@@ -186,6 +187,18 @@ The **tailoring dial:** `L0` true-and-reframed · `L1` aggressive-but-true (defa
 
 ---
 
+## Dashboard
+
+`/jobxhunter:dashboard` turns your tracker into one self-contained HTML page — headline tiles, the apply→interview→offer funnel with conversion, status and category breakdowns, and your recruiter-score spread. It opens offline and makes **no network requests**, so your private workspace never leaks.
+
+<p align="center">
+  <img src="assets/brand/dashboard-preview.jpg" width="820" alt="The jobxhunter hunt dashboard: headline tiles, an apply-to-offer funnel with conversion rates, status and category breakdowns, and the recruiter-score distribution.">
+</p>
+
+<p align="center"><em>Example on sample data — your real numbers stay on your machine.</em></p>
+
+---
+
 ## Connectors: bring your own keys
 
 No keys ship in this repo. Each job board is an optional MCP connector you register with your own free key; missing ones fall back to web search.
@@ -205,7 +218,6 @@ As a plugin, these keys are the plugin's user-config, so there's no manual JSON 
 
 Tracked here rather than half-built:
 
-- **A shareable dashboard** from the tracker: application funnel, recruiter scores, status at a glance.
 - **ATS text-layer readback** — render the CV to PDF, extract what the parser actually sees, and confirm the must-have terms survived the round-trip.
 - **Ghost-job & legitimacy checks** in triage, so you don't tailor for a scam or a re-posted ghost role.
 - **Enforcement hooks** — a `PostToolUse` gate that runs the ATS-safety and de-slop checks automatically after each render. Deferred until reliably cross-platform; today those checks run inline.

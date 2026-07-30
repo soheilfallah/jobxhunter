@@ -1,0 +1,29 @@
+logged_date,category,company,role,location,link,source,ats_platform,pay,level_used,status,date_applied,date_interviewed,date_rejected,date_offer,follow_up,cv_path,cover_letter_path,folder_path,notes,closing_date,fit_score
+2026-06-09,plant-science,GreenFields Agri,Research Assistant,Lincoln,,Indeed,,,L1,Offer,2026-06-12,2026-06-28,,2026-07-08,,,,sample/plant/greenfields-research-assistant,strong field match,,4.5
+2026-06-11,plant-science,Dyson Farming,Research Assistant Placement,Nocton,,Indeed,,,L1,Interviewed,2026-06-14,2026-07-02,,,,,,sample/plant/dyson-research-assistant,recruiter loop passed,,4.0
+2026-06-18,plant-science,NIAB,Crop Trials Assistant,Cambridge,,Adzuna,,,L1,Applied,2026-06-20,,,,,,,sample/plant/niab-crop-trials,,,3.8
+2026-06-16,plant-science,University of Warwick,Plant Genome Engineer,Coventry,,Indeed,,,L2,Skipped,,,,,,,,sample/plant/warwick-genome-engineer,L2 learning only; hard gaps,,
+2026-06-08,plant-science,RSK ADAS,Field Research Technician,Boxworth,,Reed,,,L1,Rejected,2026-06-10,,2026-06-25,,,,,sample/plant/adas-field-technician,,,3.2
+2026-06-20,ai,Information Tech Consultants,Junior ML Engineer,London,,Indeed,,,L1,Applied,2026-06-22,,,,,,,sample/ai/itc-junior-ml,genuine stretch; letter drafted,,2.9
+2026-06-13,ai,Longshot Systems,ML Engineer,London,,Adzuna,,,L1,Rejected,2026-06-15,,2026-07-01,,,,,sample/ai/longshot-ml-engineer,senior; MLOps gap,,2.6
+2026-06-22,ai,DataSpark,Junior Data Scientist,Manchester,,Reed,,,L1,Interview,2026-06-24,2026-07-10,,,,,,sample/ai/dataspark-junior-ds,,,3.6
+2026-06-25,ai,Peak AI,Associate ML Engineer,Manchester,,Adzuna,,,L1,Applied,2026-06-27,,,,,,,sample/ai/peak-associate-ml,,,3.1
+2026-06-24,ai,Faculty,AI Fellow,London,,Indeed,,,L2,Drafted,,,,,,,,sample/ai/faculty-ai-fellow,stretch; drafting,,2.4
+2026-06-06,research-assistant,Lloyds Register Foundation,Research Assistant,London,,Indeed,,,L1,Rejected,2026-06-08,,2026-06-22,,,,,sample/ra/lrf-research-assistant,qualitative gap,,2.9
+2026-06-24,research-assistant,Imperial College,Research Assistant Plant Sci,London,,Adzuna,,,L1,Applied,2026-06-26,,,,,,,sample/ra/imperial-research-assistant,,,3.9
+2026-06-27,research-assistant,University of Leeds,Research Technician,Leeds,,Reed,,,L1,Applied,2026-06-29,,,,,,,sample/ra/leeds-research-technician,,,3.7
+2026-06-16,research-assistant,John Innes Centre,Research Assistant,Norwich,,Indeed,,,L1,Interviewed,2026-06-18,2026-07-05,,,,,,sample/ra/jic-research-assistant,strong on-thread,,4.2
+2026-06-30,research-assistant,Rothamsted,Data Technician,Harpenden,,Adzuna,,,L1,Drafted,,,,,,,,sample/ra/rothamsted-data-technician,,,3.5
+2026-06-28,data-analysis,BBC,Data Analyst Audience,London,,Reed,,,L1,Applied,2026-06-30,,,,,,,sample/data/bbc-data-analyst,,,3.4
+2026-06-14,data-analysis,Sky,Insight Analyst,Osterley,,Adzuna,,,L1,Rejected,2026-06-16,,2026-07-03,,,,,sample/data/sky-insight-analyst,,,3.0
+2026-06-29,data-analysis,Ocado,Data Analyst,Hatfield,,Indeed,,,L1,Applied,2026-07-01,,,,,,,sample/data/ocado-data-analyst,,,3.3
+2026-07-01,data-analysis,Trainline,Junior Analyst,London,,Reed,,,L1,Drafted,,,,,,,,sample/data/trainline-junior-analyst,,,3.2
+2026-06-26,data-analysis,Deliveroo,Analytics Associate,London,,Adzuna,,,L1,Skipped,,,,,,,,sample/data/deliveroo-analytics,location too far,,
+2026-06-19,security-frontline,G4S,Security Officer SIA,Leeds,,Indeed,,,L0,Applied,2026-06-21,,,,,,,sample/sec/g4s-security-officer,SIA licensed,,4.0
+2026-06-10,security-frontline,Mitie,Corporate Security Officer,Manchester,,Reed,,,L0,Rejected,2026-06-12,,2026-06-27,,,,,sample/sec/mitie-corporate-security,,,3.4
+2026-06-26,security-frontline,Securitas,Mobile Patrol Officer,Sheffield,,Adzuna,,,L0,Applied,2026-06-28,,,,,,,sample/sec/securitas-mobile-patrol,,,3.6
+2026-06-30,security-frontline,OCS,Event Security,Leeds,,Indeed,,,L0,Drafted,,,,,,,,sample/sec/ocs-event-security,,,3.1
+2026-06-23,ai,Peak AI,ML Engineer (hiring manager),Manchester,,Discover,,,L1,Cold-emailed,,,,,2026-07-07,,,sample/ai/peak-coldemail,cold email sent; awaiting reply,,
+2026-06-30,plant-science,Berry Gardens,Soft Fruit Technician,Kent,,Adzuna,,,L1,Applied,2026-07-02,,,,,,,sample/plant/berry-gardens-technician,,,3.5
+2026-07-01,research-assistant,Quadram Institute,Research Assistant,Norwich,,Indeed,,,L1,Applied,2026-07-03,,,,,,,sample/ra/quadram-research-assistant,,,3.8
+2026-06-23,data-analysis,Auto Trader,Data Analyst,Manchester,,Adzuna,,,L1,Interview,2026-06-25,2026-07-12,,,,,,sample/data/autotrader-data-analyst,,,3.7

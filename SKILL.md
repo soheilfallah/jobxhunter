@@ -462,6 +462,20 @@ day-to-day worklist, generate the prioritised view (`tracker.py priority-view` �
 stays the system of record. Clean duplicate rows with `tracker.py dedupe` (dry-run by default;
 `--apply` to rewrite; it dedupes on the canonical link key and never drops `Applied` rows).
 
+## Command: DASHBOARD (share the pipeline at a glance)
+
+Turn the tracker into one self-contained HTML page — headline tiles, the apply→interview→offer
+funnel with conversion, status and category breakdowns, and the recruiter-score spread:
+
+```
+python "${CLAUDE_PLUGIN_ROOT}/scripts/dashboard.py" --root <apps> --out <workspace>/dashboard.html
+```
+
+Reads the `tracker.csv` mirror (no openpyxl needed), writes inline-CSS HTML that opens offline and
+makes **no network requests** — safe to open or share without leaking the private workspace.
+**Read-only** over the tracker; it never edits a row. `--sample` stamps a "sample data" badge for
+demos (see `assets/sample-tracker.csv`).
+
 ## Scripts (bundled, deterministic)
 
 - `scripts/_lib.py` — workspace resolution (`resolve`) + dependency `preflight` (openpyxl +
@@ -481,6 +495,8 @@ stays the system of record. Clean duplicate rows with `tracker.py dedupe` (dry-r
 - `scripts/keyword_coverage.py` — deterministic must-have/nice-to-have term check against the rendered
   `CV.txt`: "N/M present (X%)", missing terms, and acronyms lacking an expansion. A parse diagnostic,
   **not** a match score; `--min` makes it a pass/fail gate. Import or CLI.
+- `scripts/dashboard.py` — tracker CSV → one self-contained HTML dashboard (funnel, status, category,
+  recruiter-score spread). Stdlib only (no openpyxl); offline; no network requests. Read-only.
 
 All CLIs force UTF-8 stdout so non-Latin-1 job data prints cleanly on a default Windows console, and
 `tracker.py` saves atomically (never truncates; a clear message if the file is open in Excel).
