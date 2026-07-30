@@ -4,6 +4,28 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-07-30
+
+### Added
+
+- **Hunt dashboard** (`/jobxhunter:dashboard`, `scripts/dashboard.py`). Renders the tracker CSV into
+  one self-contained, offline HTML page: headline tiles, the apply/interview/offer funnel with
+  conversion, status and category breakdowns, and the recruiter-score spread. Stdlib only, no network
+  requests, read-only over the tracker.
+- **`AGENTS.md`** so the tailoring core runs in any AGENTS.md-compatible CLI (Codex, Gemini and
+  Antigravity, Copilot, OpenCode, Qwen, Kimi), not only Claude Code. Live-board sourcing uses the MCP
+  connectors on Claude Code and falls back to the agent's own web search elsewhere.
+- **Landing page** under `docs/` (GitHub Pages), with an in-page light/dark toggle.
+
+### Changed
+
+- **Repositioned** around fit and gap-recommendation: it searches live jobs, fits an ATS-safe CV to
+  each role from your real experience, and recommends the gaps to close. The README now leads with the
+  search.
+- **Rewrote the README** story-first, with an animated demo and the validated recruiter score up front.
+- **Rebranded** the demo and dashboard to a devil-red palette, in both light and dark themes.
+- Removed em dashes across the README, `AGENTS.md`, and the shipped brand assets.
+
 ## [1.3.0] - 2026-07-28
 
 ### Added

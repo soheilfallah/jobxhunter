@@ -11,7 +11,7 @@
       "name": "jobxhunter",
       "source": ".",
       "displayName": "JobXHunter",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "description": "Build a master profile from a dump folder, tailor ATS-safe CVs to a JD, source live UK roles across connectors, write cover letters, and track every application.",
       "repository": "https://github.com/soheilfallah/jobxhunter",
       "license": "MIT",
