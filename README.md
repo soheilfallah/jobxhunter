@@ -232,6 +232,7 @@ Tracked here rather than half-built:
 
 - **Your data stays yours.** Your real profiles and filed applications live in a private workspace, gitignored and never committed. No keys ship in this repo.
 - **Connector installs stay pinned.** `uv` and `npx` read config from the working directory, so a stray `uv.toml` or `.npmrc` could otherwise redirect a connector's install to someone else's package index. All three connectors pin resolution to the real registries and to committed hash-verified lockfiles. A stale lock fails the connector closed rather than silently resolving something else.
+- **Responsibility sits with you.** jobxhunter is provided as-is, with no warranty (see the [licence](#licence)). You own the data you put in your own workspace, and each contributor owns what they submit. Contributions are reviewed for privacy and safety before anything is merged, but that review is diligence on my side, not a guarantee, and it does not shift responsibility for a contribution onto the maintainer.
 
 ---
 
