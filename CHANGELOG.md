@@ -8,6 +8,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **The local-path guard missed the very form that caused the leak.** The pattern first shipped
+  used a bare backslash escape with a quantifier, which `git grep -E` reduces to *one optional*
+  backslash. It matched the prose form (`C:\Users\me`) but sailed straight past the
+  backslash-escaped form used inside a JSON snippet (`C:\\Users\\me`) — which is exactly where
+  the original leak lived. Rewritten as a bracket expression, unambiguous under git grep's ERE.
+  Re-scanning with the corrected pattern found instances the first pass had reported as clean.
+- **The guard now proves itself before it is trusted.** `_selftest_local_paths()` runs both
+  patterns over known-bad and known-good fixtures through the same `git grep -E` engine on every
+  invocation. Verified it fails on the old pattern, naming the two JSON-form examples it could
+  not catch. A check that silently stops matching is worse than no check, because the passing
+  build reads as proof.
 - **Stripped absolute local paths from the connector READMEs.** The `reed-mcp` and `adzuna-mcp`
   setup sections hardcoded a maintainer machine's home and workspace directories inside
   otherwise copy-pasteable `.mcp.json` snippets. Two problems in one: this repo is public, so
