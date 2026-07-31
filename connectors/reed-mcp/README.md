@@ -59,8 +59,8 @@ config:
 {
   "mcpServers": {
     "reed": {
-      "command": "C:\\Users\\flhso\\...\\reed-mcp\\.venv\\Scripts\\python.exe",
-      "args": ["D:\\soh-workspace\\projects\\reed-mcp\\server.py"],
+      "command": "C:\\path\\to\\reed-mcp\\.venv\\Scripts\\python.exe",
+      "args": ["C:\\path\\to\\reed-mcp\\server.py"],
       "env": {
         "REED_API_KEY": "your_key"
       }
