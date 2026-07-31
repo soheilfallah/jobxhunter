@@ -1,7 +1,7 @@
 {
   "name": "jobxhunter",
   "displayName": "JobXHunter",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Build a master profile from your own files, tailor ATS-safe CVs to any job description, source live UK and Canada roles, write cover letters, and track every application.",
   "author": {
     "name": "Soheil Fallah",
@@ -9,7 +9,7 @@
   },
   "homepage": "https://github.com/soheilfallah/jobxhunter",
   "repository": "https://github.com/soheilfallah/jobxhunter",
-  "license": "MIT",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": ["jobs", "job-search", "cv", "resume", "cover-letter", "ats", "uk", "recruitment", "tailoring"],
   "mcpServers": "./.mcp.json",
   "userConfig": {

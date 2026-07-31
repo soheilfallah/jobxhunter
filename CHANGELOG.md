@@ -4,6 +4,18 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-07-31
+
+### Changed
+
+- **Relicensed from MIT to the PolyForm Noncommercial License 1.0.0.** jobxhunter is now
+  source-available: free to use, study, and adapt for any noncommercial purpose (running your
+  own job hunt included), but it may not be sold or put to commercial use. The `LICENSE` file,
+  both manifests (`license` field), the README badge and licence note, `CONTRIBUTING.md`, and
+  the landing page now carry the noncommercial terms. Copyright stays with Soheil Fallah, who
+  retains all commercial rights. Anything already released under MIT stays MIT for whoever has
+  it; the new terms apply going forward.
+
 ## [1.4.1] - 2026-07-31
 
 ### Changed
