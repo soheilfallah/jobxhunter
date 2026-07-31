@@ -19,6 +19,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   invocation. Verified it fails on the old pattern, naming the two JSON-form examples it could
   not catch. A check that silently stops matching is worse than no check, because the passing
   build reads as proof.
+- **The guard was still blind to forward-slash Windows paths, and too narrow besides.** A re-sweep
+  from fresh clones found `D:/soh-workspace/...` in `evals/2026-07-06-run/tracker.csv` — four
+  `folder_path` values in the public repo — which the backslash-only pattern could not see. The
+  patterns now cover both separators, and a third general drive-letter rule catches any absolute
+  Windows path rather than only the two workspace names that happened to be hardcoded. URLs are
+  excluded via a leading boundary (`https://x` ends in a letter, colon, slash-slash). Placeholders
+  are excused explicitly, so anything genuinely absolute has to be a deliberate entry.
+- **The eval tracker's `folder_path` values are now repo-relative.** They pointed at an absolute
+  path under a superseded project name, so they leaked the workspace layout and pointed nowhere a
+  contributor could follow.
 - **Stripped absolute local paths from the connector READMEs.** The `reed-mcp` and `adzuna-mcp`
   setup sections hardcoded a maintainer machine's home and workspace directories inside
   otherwise copy-pasteable `.mcp.json` snippets. Two problems in one: this repo is public, so

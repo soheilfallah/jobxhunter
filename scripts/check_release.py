@@ -86,9 +86,20 @@ STALE_ALLOWED_FILES = ("CHANGELOG.md", "scripts/check_release.py")
 # prose form. That exact bug shipped once and gave false assurance while the
 # JSON form went right past it. `[\\]+` is unambiguous under git grep's ERE.
 # _selftest_local_paths() proves this on every run; do not "simplify" it back.
+#
+# A Windows path also appears with FORWARD slashes (D:/soh-workspace/...) — git
+# and CSV exports both write them that way. Anchoring only on `Users` and
+# `soh-workspace` was too narrow as well: it recognises two magic words rather
+# than the actual rule, so any other machine or workspace name walked straight
+# through. The third pattern is therefore a general drive-letter rule, with
+# genuine placeholders excused via LOCAL_PATH_ALLOWED_SEGMENTS.
 LOCAL_PATH_PATTERNS = [
-    (r"[A-Za-z]:[\\]+(Users|soh-workspace)", "absolute Windows path from a real machine"),
+    (r"[A-Za-z]:[\\/]+(Users|soh-workspace)", "absolute Windows path from a real machine"),
     (r"/(Users|home)/[A-Za-z0-9._-]+/", "absolute POSIX home path from a real machine"),
+    # The drive letter must stand alone. Without the leading boundary this also
+    # matches every URL, because "https://x" ends in `s` + `:` + `//`.
+    (r"(^|[^A-Za-z0-9])[A-Za-z]:[\\/]+[A-Za-z0-9_.-]",
+     "absolute Windows path — use a relative path or a placeholder"),
 ]
 # Proof fixtures for the patterns above, checked through the same `git grep -E`
 # engine the real scan uses. A pattern that cannot match what it claims to match
@@ -98,6 +109,8 @@ LOCAL_PATH_MUST_MATCH = [
     r'      "args": ["D:\\soh-workspace\\projects\\thing\\server.py"],',
     r'      "command": "C:\\Users\\someone\\.venv\\Scripts\\python.exe",',
     r"script lives at /home/someone/projects/thing/server.py",
+    r"folder_path,D:/soh-workspace/projects/thing/evals/run,notes",
+    r"output went to E:/builds/nightly/artifact.zip",
 ]
 LOCAL_PATH_MUST_NOT_MATCH = [
     r'      "args": ["C:\path\to\thing\server.py"],',
@@ -105,12 +118,17 @@ LOCAL_PATH_MUST_NOT_MATCH = [
     r"$HOME/Claude",
     r"copy it to /home/you/projects/thing/",
     r"the runner home is /home/runner/work",
+    r"folder_path,evals/2026-07-06-run/ai/some-role,notes",
+    r"see C:/path/to/thing/server.py for the forward-slash form",
 ]
-# Generic stand-ins that read as placeholders, plus the GitHub Actions runner
-# home, which is a real and correct path to document in CI notes.
+# Genuine placeholders and paths that are correct to document verbatim. The
+# third pattern flags every drive-letter path, so anything legitimately absolute
+# has to be excused here by hand — which is the point: it should be a decision.
 LOCAL_PATH_ALLOWED_SEGMENTS = (
     "/Users/you/", "/home/you/", "/Users/user/", "/home/user/",
     "/Users/username/", "/home/username/", "/home/runner/",
+    r"C:\path\to", "C:/path/to", r"C:\\path\\to",
+    "<workspace>", "%USERPROFILE%", "$HOME",
 )
 # This file spells the patterns out; the CHANGELOG quotes fixes verbatim.
 LOCAL_PATH_ALLOWED_FILES = ("CHANGELOG.md", "scripts/check_release.py")
