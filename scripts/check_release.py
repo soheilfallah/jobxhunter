@@ -21,6 +21,10 @@ This check makes that failure loud instead of silent. It verifies:
      transfer or rename that misses one ships an install command resolving to
      nothing, which is the most expensive typo here: it is the first line a
      new user copies.
+  7. No absolute path from a real machine is committed. This repo is public
+     (GitHub Pages serves `docs/` from it), so a hardcoded home directory
+     publishes a username and workspace layout — and is wrong as documentation
+     anyway, since no reader shares that path.
 
 Run it before opening a PR, and in CI:
 
@@ -67,6 +71,27 @@ STALE_PATTERNS = [
     (r"jobsmith@",                "dead install target (was jobsmith)"),
 ]
 STALE_ALLOWED_FILES = ("CHANGELOG.md", "scripts/check_release.py")
+
+# Absolute paths from someone's actual machine. This repo is PUBLIC — GitHub
+# Pages serves docs/ from it — so a committed home directory publishes a
+# username and the maintainer's folder layout. It is also simply wrong as
+# documentation: no reader has that path, so a copied snippet cannot work.
+# Placeholders are the correct form and never match these:
+#   C:\path\to\...   %USERPROFILE%\...   ~/...   $HOME/...
+# Matches one OR two backslashes, so both prose (C:\Users\me) and the escaped
+# form inside a JSON snippet (C:\\Users\\me) are caught.
+LOCAL_PATH_PATTERNS = [
+    (r"[A-Za-z]:\\\\?(Users|soh-workspace)", "absolute Windows path from a real machine"),
+    (r"/(Users|home)/[A-Za-z0-9._-]+/", "absolute POSIX home path from a real machine"),
+]
+# Generic stand-ins that read as placeholders, plus the GitHub Actions runner
+# home, which is a real and correct path to document in CI notes.
+LOCAL_PATH_ALLOWED_SEGMENTS = (
+    "/Users/you/", "/home/you/", "/Users/user/", "/home/user/",
+    "/Users/username/", "/home/username/", "/home/runner/",
+)
+# This file spells the patterns out; the CHANGELOG quotes fixes verbatim.
+LOCAL_PATH_ALLOWED_FILES = ("CHANGELOG.md", "scripts/check_release.py")
 
 
 def _load(rel):
@@ -132,6 +157,41 @@ def check():
 
     problems.extend(_check_stale_name())
     problems.extend(_check_owner_consistency())
+    problems.extend(_check_local_paths())
+    return problems
+
+
+def _check_local_paths():
+    """Catch absolute paths from a real machine leaking into the public repo.
+
+    Found in the wild: connector READMEs shipped the maintainer's home and
+    workspace paths inside otherwise copy-pasteable `.mcp.json` snippets, so
+    the snippets published a username *and* could not work for anyone who
+    copied them. Both failure modes have the same fix — use a placeholder.
+    """
+    problems = []
+    for pattern, why in LOCAL_PATH_PATTERNS:
+        try:
+            out = subprocess.run(
+                ["git", "grep", "-n", "-I", "-E", pattern],
+                cwd=ROOT, capture_output=True, text=True,
+            ).stdout
+        except (OSError, subprocess.SubprocessError):
+            return []  # not a git checkout; skip rather than fail the build
+
+        hits = [
+            line for line in out.splitlines()
+            if line.strip()
+            and not any(line.startswith(f) for f in LOCAL_PATH_ALLOWED_FILES)
+            and not any(seg in line for seg in LOCAL_PATH_ALLOWED_SEGMENTS)
+        ]
+        if hits:
+            shown = "\n    ".join(hits[:5])
+            more = f"\n    ... and {len(hits) - 5} more" if len(hits) > 5 else ""
+            problems.append(
+                f"local path committed ({why}) — this repo is public; use a "
+                f"placeholder such as C:\\path\\to\\ or ~/ instead:\n    {shown}{more}"
+            )
     return problems
 
 

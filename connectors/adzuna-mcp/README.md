@@ -43,8 +43,9 @@ The intended loop when tailoring a CV to a target role:
 5. **Build an outreach list.** `adzuna_top_companies(what=...)` surfaces who is hiring at volume
    for the role — feed a `canonical_name` back into `adzuna_search_jobs` `company` to see their ads.
 
-Cowork/`​/cv-tailor` sessions read and write files under `C:\Users\flhso\Claude`
-(`coworkUserFilesPath`), so drop JDs and CV drafts there to keep them in view.
+Cowork/`​/cv-tailor` sessions read and write files under your Cowork user-files folder
+(`coworkUserFilesPath` — `%USERPROFILE%\Claude` on Windows, `~/Claude` on macOS), so drop
+JDs and CV drafts there to keep them in view.
 
 ## The one real limitation
 
@@ -76,7 +77,7 @@ Real env vars still win over `.env`, so the `.mcp.json` `env` block below keeps 
   "mcpServers": {
     "adzuna": {
       "command": "python",
-      "args": ["D:\\soh-workspace\\projects\\adzuna-mcp\\server.py"],
+      "args": ["C:\\path\\to\\adzuna-mcp\\server.py"],
       "env": {
         "ADZUNA_APP_ID": "your_app_id",
         "ADZUNA_APP_KEY": "your_app_key"

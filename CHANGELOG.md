@@ -4,6 +4,25 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Stripped absolute local paths from the connector READMEs.** The `reed-mcp` and `adzuna-mcp`
+  setup sections hardcoded a maintainer machine's home and workspace directories inside
+  otherwise copy-pasteable `.mcp.json` snippets. Two problems in one: this repo is public, so
+  the snippets published a username and folder layout; and they could not work for anyone who
+  copied them, since nobody else has those paths. They now use `C:\path\to\...` placeholders,
+  and the Cowork user-files note points at `%USERPROFILE%\Claude` / `~/Claude` instead.
+
+### Added
+
+- **`scripts/check_release.py` now fails on committed absolute paths** (check 7). It catches
+  Windows and POSIX home directories in both prose and the backslash-escaped form used inside
+  JSON snippets, while allowing obvious placeholders (`/Users/you/`, `/home/user/`) and the
+  GitHub Actions runner home. CI already runs this check on every PR, so the leak fixed above
+  cannot come back silently.
+
 ## [1.5.0] - 2026-07-31
 
 ### Changed
