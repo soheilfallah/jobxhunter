@@ -78,11 +78,33 @@ STALE_ALLOWED_FILES = ("CHANGELOG.md", "scripts/check_release.py")
 # documentation: no reader has that path, so a copied snippet cannot work.
 # Placeholders are the correct form and never match these:
 #   C:\path\to\...   %USERPROFILE%\...   ~/...   $HOME/...
-# Matches one OR two backslashes, so both prose (C:\Users\me) and the escaped
-# form inside a JSON snippet (C:\\Users\\me) are caught.
+#
+# The backslash run MUST be a bracket expression. A Windows path appears in two
+# forms — prose (C:\Users\me) and backslash-escaped inside a JSON snippet
+# (C:\\Users\\me) — and `git grep -E` does not apply a quantifier to a bare
+# `\\` escape the way you would expect, so `\\\\?` silently matches only the
+# prose form. That exact bug shipped once and gave false assurance while the
+# JSON form went right past it. `[\\]+` is unambiguous under git grep's ERE.
+# _selftest_local_paths() proves this on every run; do not "simplify" it back.
 LOCAL_PATH_PATTERNS = [
-    (r"[A-Za-z]:\\\\?(Users|soh-workspace)", "absolute Windows path from a real machine"),
+    (r"[A-Za-z]:[\\]+(Users|soh-workspace)", "absolute Windows path from a real machine"),
     (r"/(Users|home)/[A-Za-z0-9._-]+/", "absolute POSIX home path from a real machine"),
+]
+# Proof fixtures for the patterns above, checked through the same `git grep -E`
+# engine the real scan uses. A pattern that cannot match what it claims to match
+# is worse than no pattern, because the passing build reads as "clean".
+LOCAL_PATH_MUST_MATCH = [
+    r"sessions read and write files under `C:\Users\someone\Claude`",
+    r'      "args": ["D:\\soh-workspace\\projects\\thing\\server.py"],',
+    r'      "command": "C:\\Users\\someone\\.venv\\Scripts\\python.exe",',
+    r"script lives at /home/someone/projects/thing/server.py",
+]
+LOCAL_PATH_MUST_NOT_MATCH = [
+    r'      "args": ["C:\path\to\thing\server.py"],',
+    r"%USERPROFILE%\Claude on Windows, ~/Claude on macOS",
+    r"$HOME/Claude",
+    r"copy it to /home/you/projects/thing/",
+    r"the runner home is /home/runner/work",
 ]
 # Generic stand-ins that read as placeholders, plus the GitHub Actions runner
 # home, which is a real and correct path to document in CI notes.
@@ -157,7 +179,63 @@ def check():
 
     problems.extend(_check_stale_name())
     problems.extend(_check_owner_consistency())
+    problems.extend(_selftest_local_paths())
     problems.extend(_check_local_paths())
+    return problems
+
+
+def _selftest_local_paths():
+    """Prove LOCAL_PATH_PATTERNS still match what they claim, before trusting them.
+
+    Runs the patterns over known-bad and known-good fixtures through
+    `git grep --no-index -E` — the same engine and flags as the real scan, which
+    matters because git grep's ERE differs from Python's `re` on backslash
+    quantifiers. Without this, a subtly wrong pattern reports a clean tree and
+    the check becomes a rubber stamp.
+    """
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        bad = pathlib.Path(tmp, "bad.txt")
+        good = pathlib.Path(tmp, "good.txt")
+        bad.write_text("\n".join(LOCAL_PATH_MUST_MATCH) + "\n", encoding="utf-8")
+        good.write_text("\n".join(LOCAL_PATH_MUST_NOT_MATCH) + "\n", encoding="utf-8")
+
+        def scan(name):
+            hit = set()
+            for pattern, _ in LOCAL_PATH_PATTERNS:
+                try:
+                    out = subprocess.run(
+                        ["git", "grep", "--no-index", "-n", "-I", "-E", pattern, "--", name],
+                        cwd=tmp, capture_output=True, text=True,
+                    ).stdout
+                except (OSError, subprocess.SubprocessError):
+                    return None
+                hit.update(int(l.split(":")[1]) for l in out.splitlines() if ":" in l)
+            return hit
+
+        caught, false_pos = scan("bad.txt"), scan("good.txt")
+        if caught is None or false_pos is None:
+            return []  # no usable git; the real scan skips too
+
+    problems = []
+    missed = [LOCAL_PATH_MUST_MATCH[i - 1] for i in
+              sorted(set(range(1, len(LOCAL_PATH_MUST_MATCH) + 1)) - caught)]
+    if missed:
+        shown = "\n    ".join(missed)
+        problems.append(
+            "LOCAL_PATH_PATTERNS self-test failed — these leak examples are NOT "
+            f"caught, so the local-path check cannot be trusted:\n    {shown}"
+        )
+    # allowlisted segments are applied by the real scan, so discount them here
+    fp = [LOCAL_PATH_MUST_NOT_MATCH[i - 1] for i in sorted(false_pos)]
+    fp = [l for l in fp if not any(seg in l for seg in LOCAL_PATH_ALLOWED_SEGMENTS)]
+    if fp:
+        shown = "\n    ".join(fp)
+        problems.append(
+            "LOCAL_PATH_PATTERNS self-test failed — these are legitimate "
+            f"placeholders but the patterns flag them:\n    {shown}"
+        )
     return problems
 
 
