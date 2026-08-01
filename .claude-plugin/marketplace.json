@@ -9,7 +9,10 @@
   "plugins": [
     {
       "name": "jobxhunter",
-      "source": ".",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/soheilfallah/jobxhunter.git"
+      },
       "displayName": "JobXHunter",
       "version": "1.5.0",
       "description": "Build a master profile from a dump folder, tailor ATS-safe CVs to a JD, source live UK roles across connectors, write cover letters, and track every application.",

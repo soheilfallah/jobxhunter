@@ -8,6 +8,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **The marketplace could not be added in Claude Desktop or Cowork.** Adding
+  `soheilfallah/jobxhunter` there failed with "Marketplace sync failed. Check the repository URL
+  and try again", which points at the wrong thing: the repository was fine. Desktop and Cowork
+  register a marketplace with the claude.ai backend, which fetches it server-side and validates it
+  more strictly than Claude Code does. It rejected the plugin entry's `"source": "."` with
+  `marketplace_sync_external_source_unsupported`: an external marketplace must give each plugin an
+  explicit source object, not a path relative to the marketplace repo. That shorthand is reserved
+  for Anthropic's own first-party marketplace. The entry now names its own repository over HTTPS,
+  so the same manifest works on Claude Code, Desktop, and Cowork.
+
+  Deliberately the `url` form and not `github`: Claude Code resolves a `github` source by cloning
+  over SSH, which fails with "Host key verification failed" for anyone without a github.com entry
+  in `known_hosts` — most people installing a plugin. The HTTPS `.git` URL clones for everyone,
+  and is what the majority of the official marketplace's entries use. Verified end to end by
+  installing from a throwaway marketplace built on this manifest: `github` failed on SSH, `url`
+  installed cleanly.
+
 - **The local-path guard missed the very form that caused the leak.** The pattern first shipped
   used a bare backslash escape with a quantifier, which `git grep -E` reduces to *one optional*
   backslash. It matched the prose form (`C:\Users\me`) but sailed straight past the
