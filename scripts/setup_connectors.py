@@ -8,6 +8,10 @@ plus a ready-to-paste config snippet (placeholder key). It never writes a key an
 never edits the config itself — the agent running the skill applies changes after
 the user supplies a key (so JSON merge + backup happen with confirmation).
 
+For a plugin install it also reports which of the four userConfig keys actually hold
+a value. It reports lengths only, never the values, so `--json` output stays safe to
+paste into a bug report.
+
 Usage:
   python setup_connectors.py                 # human report
   python setup_connectors.py --json          # machine-readable status
@@ -146,9 +150,9 @@ def _installed_as_plugin():
     the doctor reports all three as MISSING and walks a plugin user through a
     manual merge they must not do, which is the opposite of what SETUP says.
 
-    The API keys themselves are declared `sensitive`, so they live in the OS
-    keychain rather than settings.json. We can therefore tell that the plugin is
-    installed, but not whether a given key has been entered.
+    The API keys themselves are declared `sensitive`, so they are kept out of
+    settings.json. Whether they are readable from here depends on the platform;
+    `_plugin_key_status()` answers that, and says so when it cannot.
     """
     settings = os.path.join(os.path.expanduser("~"), ".claude", "settings.json")
     try:
@@ -162,6 +166,74 @@ def _installed_as_plugin():
         if on and pid.split("@")[0] in ("jobxhunter", "jobsmith"):
             return pid
     return None
+
+
+def _userconfig_fields():
+    """userConfig field names the plugin declares, read from its own manifest.
+
+    Derived rather than hardcoded so a new connector key added to plugin.json is
+    reported here without a second edit. Falls back to the four known fields when
+    the manifest is not alongside us (running the script standalone).
+    """
+    manifest = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            ".claude-plugin", "plugin.json")
+    try:
+        with open(manifest, encoding="utf-8") as f:
+            fields = list((json.load(f).get("userConfig") or {}).keys())
+        if fields:
+            return fields
+    except (OSError, json.JSONDecodeError):
+        pass
+    return ["reed_api_key", "adzuna_app_id", "adzuna_app_key", "firecrawl_api_key"]
+
+
+def _plugin_key_status(plugin_id):
+    """Which of the plugin's userConfig keys actually hold a value.
+
+    `sensitive: true` keeps these out of settings.json, but not necessarily out of
+    reach: on Windows and Linux Claude Code writes them to
+    ~/.claude/.credentials.json under `pluginSecrets[<plugin@marketplace>]`, so we
+    can report exactly which are set instead of sending the user to eyeball a
+    dialog. On macOS they go to the OS keychain and there is nothing to read.
+
+    Returns {field: length} (0 meaning unset), or None when the store cannot be
+    read at all — an unknown status, which is not the same as "not set". Lengths
+    only: a wrong-length key is the common paste error, and a length leaks nothing.
+    """
+    path = os.path.join(os.path.expanduser("~"), ".claude", ".credentials.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            secrets = json.load(f).get("pluginSecrets") or {}
+    except (OSError, json.JSONDecodeError):
+        return None
+    stored = secrets.get(plugin_id) or {}
+    return {field: len(str(stored.get(field) or "")) for field in _userconfig_fields()}
+
+
+def _report_plugin_keys(plugin_id):
+    """Print which plugin userConfig keys are set, and the two traps around them."""
+    keys = _plugin_key_status(plugin_id)
+    if keys is None:
+        print("KEY STATUS: unknown — could not read ~/.claude/.credentials.json.")
+        print("  Expected on macOS, where sensitive values go to the OS keychain instead.")
+        print("  Check the configure screen to see which keys you have set.")
+        return
+
+    print("KEY STATUS (from your credential store; values are never printed):")
+    for field, size in keys.items():
+        mark = "OK" if size else "  "
+        detail = f"set, {size} chars" if size else "not set"
+        print(f"  [{mark}] {field:<18} {detail}")
+
+    missing = [f for f, size in keys.items() if not size]
+    if missing:
+        print("\n  Set the missing ones (one --config per key, your own values):")
+        flags = " ".join(f"--config {f}=<YOUR_VALUE>" for f in missing)
+        print(f"    claude plugin install {plugin_id} {flags}")
+    print("\n  Note: a key only reaches the connector at startup, so RESTART Claude Code")
+    print("  after setting one. And the connectors start happily with no key at all —")
+    print("  a server that appears in your tool list proves nothing about its key. If")
+    print("  sourcing returns 'Missing credentials', this is the screen that explains why.")
 
 
 def _snippet(name):
@@ -185,6 +257,7 @@ def main():
     plugin_id = _installed_as_plugin()
 
     if args.json:
+        keys = _plugin_key_status(plugin_id) if plugin_id else None
         print(json.dumps({
             "config_files": [p for p, _ in _config_paths()],
             # only our own connectors: the user's unrelated MCP servers are none
@@ -192,6 +265,10 @@ def main():
             "registered": sorted(n for n in registered if n in CONNECTORS),
             "connectors": status,
             "installed_as_plugin": plugin_id,
+            # null = could not read the store (unknown), NOT "nothing is set"
+            "plugin_keys_set": (None if keys is None
+                                else {f: bool(n) for f, n in keys.items()}),
+            "plugin_key_lengths": keys,
             "note": ("Installed as a plugin: connectors ship with it and keys come from plugin "
                      "user-config, so `connectors` false here does not mean missing."
                      if plugin_id else
@@ -205,10 +282,12 @@ def main():
         print("  plugin:jobxhunter:reed / :adzuna / :firecrawl")
         print("You do NOT hand-edit mcpServers for these. Set the keys with:\n")
         print(f"  /plugin configure {plugin_id}            (in Claude Code)")
-        print(f"  claude plugin install {plugin_id} --config KEY=VALUE   (from a terminal)\n")
+        print(f"  claude plugin install {plugin_id} --config KEY=VALUE   (from a terminal;")
+        print("      repeatable, one flag per key. It applies the values even when it answers")
+        print("      \"is already installed\", so it is the way to set keys on an existing")
+        print("      install without touching the interactive dialog.)\n")
         _report_runtimes()
-        print("Keys are stored in your OS keychain because they are marked sensitive, so this")
-        print("script cannot read back which ones you have set. Check the configure screen.")
+        _report_plugin_keys(plugin_id)
         print("\nThe hand-registration report below applies only to a standalone (non-plugin)")
         print("install. Ignore it unless you are running jobxhunter from a cloned skill folder.\n")
         print("-" * 70 + "\n")

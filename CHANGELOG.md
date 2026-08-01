@@ -24,6 +24,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   and is what the majority of the official marketplace's entries use. Verified end to end by
   installing from a throwaway marketplace built on this manifest: `github` failed on SSH, `url`
   installed cleanly.
+- **The connector doctor told you it could not see your keys, on the platforms where it can.**
+  `setup_connectors.py` claimed the API keys were unreachable in the OS keychain and sent you to
+  read a dialog instead. That is true only on macOS. On Windows and Linux, Claude Code stores plugin
+  userConfig in `~/.claude/.credentials.json` under `pluginSecrets`, so the doctor can say exactly
+  which of the four keys hold a value. It now does, reporting each as set or not set and offering a
+  ready-to-run command that fills only the missing ones. Where the store genuinely cannot be read it
+  reports *unknown* rather than *not set*, because guessing "not set" would send you to re-enter keys
+  that were already fine. Lengths are reported, never values, so `--json` output stays safe to paste
+  into an issue.
+- **A connector that appears in your tool list proved nothing about its key.** The bundled Reed,
+  Adzuna and Firecrawl servers start cleanly with empty credentials and only fail at the first real
+  search, which makes a missing key look like a broken connector. The doctor now says this outright,
+  alongside the other half of the trap: a key set while Claude Code is running does not reach the
+  server until you restart.
+- **The non-interactive way to set a key looked like a no-op and so went unused.**
+  `claude plugin install <id> --config KEY=VALUE` answers `"is already installed"` on a plugin you
+  already have, but it applies the values regardless. Since `claude plugin` has no `config`
+  subcommand and `update` takes no `--config`, this is the only route that avoids the interactive
+  dialog. The doctor now spells that out rather than printing the bare command.
 
 - **The local-path guard missed the very form that caused the leak.** The pattern first shipped
   used a bare backslash escape with a quantifier, which `git grep -E` reduces to *one optional*
