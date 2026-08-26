@@ -13,7 +13,7 @@ for every hard-gap/partial the coverage matrix surfaced (the questions they *wil
 sharp questions to ask them, and the likely curveballs (salary anchored to the fetched
 Adzuna band, notice period, any timeline gap).
 
-Follow `SKILL.md` ("Command: INTERVIEW PREP") and `references/interview-prep.md`. Truth rule
+Follow `SKILL.md` ("Command: INTERVIEW PREP") and `references/interview-prep.md`. Profile rule
 holds — never invent experience; prepare an honest, confident way to handle a gap. Ties to
 the tracker: `tracker.py update … {"status":"Interview"}` stamps the date and keeps the pack
 in the folder.

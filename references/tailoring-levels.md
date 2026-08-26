@@ -82,10 +82,13 @@ So classify each unmatched JD requirement into one of three, at coverage-matrix 
   *plausible basis*: class-2 has one (adjacency or an implying role) and is gated by the end-of-run
   yes/no; pure JD-echo with nothing behind it is class-3-or-worse and never goes in.
 
-This keeps the truth invariant intact — nothing false reaches a submittable document, because the
+This keeps the profile invariant intact — nothing false reaches a submittable document, because the
 user confirms before it's final — while never interrupting the draft and never treating a forgotten
 experience as a lie.
 
 ## Cover letters
 
-The L0–L2 dial does **not** apply to cover letters. A cover letter is inherently first-person and truthful, written from the user's own words. See `cover-letter.md`.
+The L0–L2 dial does **not** apply to cover letters. A cover letter is inherently first-person and
+profile-grounded, and is written **in full from the profile plus the JD** — finished and send-ready,
+never waiting on a brain-dump. The user's own words, where they volunteer them, are source text for
+the voice. See `cover-letter.md`.

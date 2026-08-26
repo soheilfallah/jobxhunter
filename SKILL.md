@@ -22,7 +22,7 @@ chat and in Claude Code.
 
 ## The one rule everything hangs on
 
-**The master profile is the only source of truth for any submittable document.** The skill
+**The master profile is the authority for any submittable document.** The skill
 *selects, reframes, reorders, and emphasises* — it never invents a fact. If evidence for a JD
 requirement isn't in the profile, that's a **gap to surface, not a blank to fill**. Only the L2
 alternative-world persona may generate beyond the profile, and it is never submittable. Hold this
@@ -46,7 +46,7 @@ line in every command below.
 
 - **On-demand (classic):** the user hands over one JD → run TAILOR (+ recruiter loop, cover letter).
 - **Autonomous daily hunt:** point the skill at a workspace → it sources, triages, tailors every new
-  live match, files everything, and writes a dated summary. If no workspace resolves, it **scaffolds**
+  live match, files everything, and builds the day's apply-from-here bundle. If no workspace resolves, it **scaffolds**
   one and stops for the user to fill their profile. See `references/daily-hunt.md` (SETUP + DAILY RUN).
 
 ## Running in Cowork (Claude Desktop) — read if the surface isn't Claude Code
@@ -118,6 +118,7 @@ conventions doc + a board list + a connector map, nothing in the engine changes.
 | choosing/operating the dial | `references/tailoring-levels.md` |
 | reading the profile | `references/master-profile-schema.md` |
 | writing a cover letter | `references/cover-letter.md` |
+| writing for a research / PhD / fellowship target | `references/academic-register.md` (on top of the writing model) |
 | finding jobs to apply to (sourcing) | `references/job-search-guide.md` |
 | finding target companies + cold-emailing them | `references/company-discovery-cold-outreach.md` |
 | running the autonomous daily hunt / scaffolding a workspace | `references/daily-hunt.md` |
@@ -141,6 +142,15 @@ self-sufficient fallback, so the skill never hard-depends on an optional tool.
   formality. It's fully self-contained: the agent applies it **inline** on every final draft, together with
   the `cv-mistakes.md` banned-buzzword catalogue. No external tools or plugins required — never ship prose
   that hasn't been through it.
+- **Humanizer pass (mandatory in TAILOR and COVER LETTER).** After the writing model, apply the
+  installed **`humanizer`** skill's checklist, if present, to the summary, every bullet and the whole
+  letter. It supplements `writing-voice.md`; it never replaces it. If it is not installed,
+  `writing-voice.md` §"AI tells" is the whole pass, and `scripts/validate_profile.py`'s AI-tell WARN
+  is the mechanical backstop either way.
+- **What is and is not bundled.** This plugin ships its scripts, references and two agents. It does
+  **not** bundle `humanizer`, `/make-pdf`, `/scrape`, the native `docx`/`pdf`/`xlsx` file skills, or
+  any `academic-prose` skill — detect each on your surface and use the fallback named here when it is
+  absent. Never wire a skill name that resolves to nothing.
 - **Rendering the CV / cover letter.**
   - **cowork / Claude Desktop:** the native `docx`, `pdf`, and `xlsx` file-creation skills produce the
     CV `.docx`, an optional recruiter-facing `.pdf`, and the `tracker.xlsx`. Hold the ATS rules
@@ -190,7 +200,7 @@ market and hands off. Full method: `references/profile-intake.md`.
    still-unreadable dump files, confidential-hold items) — one neutral batch, never an accusation.
 8. Hand off to DAILY HUNT (or TAILOR) using the market path chosen in step 6.
 
-Truth rule applies throughout: the profile may only contain what the dump (and the user's confirmations)
+Profile rule applies throughout: the profile may only contain what the dump (and the user's confirmations)
 actually support.
 
 ## Command: SETUP (scaffold a workspace — first run / new user)
@@ -222,14 +232,18 @@ connector is optional; missing ones fall back to WebSearch/browser. Full walkthr
 ## Command: DAILY HUNT (autonomous run — populated workspace)
 
 The repeatable daily hunt. Read `references/daily-hunt.md` and follow it: read the playbook → read the
-profile fresh → concurrency lock + rebuild ledger → **source** the priority families (live connectors,
-LIVE-only, new-since-last-run) → knockout sweep → **tailor every new live match (no cap)** → prep
-cover-letter scaffolds and flag braindumps → **track & file** every job (Drafted/Skipped with reason +
-link) → rebuild ledger + regenerate the priority view → **assemble the dated apply-from-here bundle**
-(`daily_bundle.py --root <apps>` → CVs, cover letters and a `<date>-roles.xlsx` in
-`tasks/daily/<DATE>/`, then write that day's `FINDINGS.md` into it) → write a dated
-`daily-hunt/<DATE>-summary.md` (same-day re-run ⇒ `-run-b`). Never touch `Applied` rows; never claim
-a profile "never-claim" gap; dedupe on the canonical link key, not folder slugs.
+profile fresh → concurrency lock + rebuild ledger → **source with `run_hunt.py`** (every source across
+the whole `SEARCH-KEYWORDS.md`, then the employers' own boards from `TARGET-COMPANIES.md`, consolidate,
+rank, verify breadth, fetch the JDs → `to-tailor.csv`) → **triage every fetched advert on disk**
+(`triage.py`, round-robin by lane, a reason on every skip) → **tailor every role you can defend (no
+cap)** → **write each cover letter complete** (never a scaffold, never a request for a brain-dump —
+the run has nobody to ask) → the L2 alternative-world CV + delta per role → **track & file** every job
+(Drafted/Skipped with reason + link) → rebuild ledger + regenerate the priority view → **assemble the
+dated apply-from-here bundle** (`daily_bundle.py --root <apps>` → one folder per role with the CV,
+cover letter, L2 CV, advert and notes, plus a `<date>-roles.xlsx`) → `verify_run.py` (a FAIL means
+search more, not write it up). The tracker, `queries.csv` and the bundle are the record of the day;
+no separate summary file is written. Never touch `Applied` rows; never claim a profile "never-claim"
+gap; dedupe on the canonical link key, not folder slugs.
 
 **Keep quality flat across a long batch (Claude Code).** A no-cap hunt can tailor a dozen-plus roles
 in one context, where later CVs quietly get less care. Where subagents are available, fan out **one
@@ -324,7 +338,7 @@ For when there is no advert — target companies directly. See
    on why this company and what they'd bring. **If it isn't supplied, ask for it and wait — never
    cold-generate.** Write the email FROM their words: preserve the spoken cadence, strip only true
    filler, never corporatise it. 120–180 words, specific human subject line, one clear low-friction
-   ask, tailored CV attached, truth rule applies (claims map to profile evidence). UK email etiquette
+   ask, tailored CV attached, profile rule applies (claims map to profile evidence). UK email etiquette
    ("Kind regards"). Draft via **Gmail** `create_draft` for the user to review/send.
 4. **TRACK** — log each target with `new_application.py --category cold-outreach --status Cold-emailed`;
    flip to `Replied` on a response; one polite follow-up after ~5–7 working days, then stop. Companies
@@ -338,14 +352,22 @@ Given profile + JD + level, produce a tailored CV. Six steps:
    tone, keywords, salary band). Follow `references/jd-analysis.md`. Capture the JD text for filing.
 2. **Build the coverage matrix** — every requirement mapped to real profile evidence, marked
    **strong / partial / adjacent-provisional / hard-gap** (`tailoring-levels.md`, "Gap classes").
+   Where the move is a career change or the history is non-linear, build the red thread first with
+   `references/career-narrative.md` — the matrix is much stronger once the story is decided.
    This matrix is the spine: it drives selection, it's what the recruiter scores against, and its
    hard gaps define the L2 delta. *Hard gaps* (no plausible basis) are surfaced, never filled.
    *Adjacent-provisional* items (a skill under another name, or one a listed role obviously implies)
    are handled by the provisional mechanism — see step 4 and the end-of-run confirmation — not
    dropped and not treated as gaps.
 3. **Select and order** — pull the matching skills cluster from the profile's warehouse using the
-   family taxonomy as a *palette* (match to real evidence, never add a skill the profile lacks);
+   family taxonomy (`references/keyword-taxonomy/<family>.md`; families listed under the reference
+   map) as a *palette* (match to real evidence, never add a skill the profile lacks);
    drop weak/irrelevant material; order for this JD and this reader.
+   **Never thin a CV because the role is junior.** A stretch-down advert gets the complete history,
+   education and skills; only the *emphasis* changes. Where the role sits materially below level,
+   soften rather than shorten — lead with hands-on and operational evidence and let the strongest
+   academic credentials sit in Education rather than the summary. Nothing is removed or denied;
+   note the softening in `notes.md` so it is reversible.
 4. **Draft** — bullets as `strong verb + real task + method + quantified outcome` (`cv-craft.md`).
    Weave keywords naturally and in-context; pair every acronym with its expansion, e.g. "NLP
    (natural language processing)". Respect the level: L0 faithful, L1 aggressive-but-true (the `%`
@@ -363,19 +385,39 @@ Given profile + JD + level, produce a tailored CV. Six steps:
      rules and tone in `tailoring-levels.md` ("Gap classes, provisional inclusions").
 5. **Voice pass + integrity check** — apply the writing model (`references/writing-voice.md`) inline, and
    strip everything in the `cv-mistakes.md` catalog (buzzwords, unquantified claims,
-   responsibilities-not-achievements, tense/date drift). Apply `uk-conventions.md` (CV not résumé, two pages, UK spelling/dates, no
-   photo/DOB, right-to-work phrasing when a JD asks). Also run these three checks every time:
-   - **Date consistency:** normalise all dates to one format ("Mon YYYY – Mon YYYY"); label genuinely
-     concurrent roles "(concurrent…)" so overlaps don't read as errors; add the target-role headline
-     line for the six-second scan.
+   responsibilities-not-achievements, tense/date drift). Then the **humanizer pass — mandatory**: the
+   installed `humanizer` skill's checklist, if present, on the summary and every bullet (see "Tools &
+   external skills" for the fallback when it is absent). Apply the **market conventions doc chosen by
+   the profile's market — `references/uk-conventions.md` for `uk`, `references/ca-conventions.md` for
+   `ca`** (for `uk`: CV not résumé, two pages, UK spelling/dates, no photo/DOB, right-to-work phrasing
+   when a JD asks); academic/research targets also `references/academic-register.md`. Also run these
+   three checks every time:
+   - **Date consistency:** normalise all dates to one format ("Mon YYYY – Mon YYYY"). Overlapping
+     roles: print exactly ONE, chosen by lane — the `overlap-print` menu in the profile's rules block
+     is the authority (`references/master-profile-schema.md`). Never both, no "(concurrent)" label, no
+     explanation on the page: an ATS cannot read it and a recruiter reads it as an error. Education is
+     SELECTED per lane the same way (`education-for-lane`): only the listed degrees, in the listed
+     order, grades only where the lane allows. Add the target-role headline line (`## <target>`
+     immediately under the name, no blank line) for the six-second scan.
    - **Gap check:** scan the timeline for unexplained recent gaps (a common one: the tail between a
      course ending and "present"). Surface any gap to the user for an honest line — never paper it over.
-   - **Truth sweep:** re-read every line against the profile; any claim not traceable to it *and not
-     on the pending-confirmation list* is a violation to fix before rendering. (Provisional items are
-     allowed through here because they are gated by step 6's confirmation.)
+     **In the autonomous daily run there is no user to ask: write the gap into `notes.md` and keep
+     going.** Either way it never appears on the page.
+   - **Profile check — RUN IT, do not eyeball it:**
+     ```bash
+     python "${CLAUDE_PLUGIN_ROOT}/scripts/validate_profile.py" --profile <profile.md> --folder <application dir>
+     ```
+     Exit 0 or the CV does not get rendered (exit 2 = the profile's rules block itself is broken —
+     stop and report). The rules come from the profile's own `profile-rules` block, so the profile is
+     the authority and the check is decidable — "does this line trace to the profile?" rather than
+     "is this claim true?", which is not a question this skill can answer and which a plausible
+     invention passes. Warnings list proper nouns the profile does not use: usually the employer's
+     own name, occasionally something invented, so read them. Anything genuinely provisional goes on
+     the pending-confirmation list and is gated by step 6.
 6. **Render + end-of-run confirmation** — write the CV as markdown in the
    `assets/cv-markdown-template.md` convention, then render per surface (see "Tools & external
-   skills"). In Claude Code — **pass `--page` by market** (`a4` default for `uk`; `letter` for `ca`/US):
+   skills"). The render must satisfy `references/ats-mechanics.md` §9 (the ATS-safe checklist) —
+   check it there rather than from memory. In Claude Code — **pass `--page` by market** (`a4` default for `uk`; `letter` for `ca`/US):
    ```
    python "${CLAUDE_PLUGIN_ROOT}/scripts/render_docx.py" --in <cv.md> --outdir <job-folder> --page <a4|letter>
    ```
@@ -395,6 +437,10 @@ Given profile + JD + level, produce a tailored CV. Six steps:
      differently. On *yes*, keep it (offer to add it to the master profile); on *no*, remove it and
      re-render, and it may become a surfaced gap. Nothing provisional ships as "final" unconfirmed.
      Exact framing and tone: `tailoring-levels.md` ("Gap classes, provisional inclusions").
+     **This batch is for the interactive commands only.** The autonomous daily run has nobody to
+     answer it, and a run that pauses for confirmation produces no documents at all. There, the
+     provisional list goes into `notes.md` under "pending confirmation" and the CV ships; the user
+     reviews the list when they choose.
 
 Output to the user: the CV, the coverage matrix (with hard gaps called out), the end-of-run
 confirmation batch (if any provisional items), and — after the loop — the recruiter scorecard so they
@@ -412,7 +458,10 @@ score, PASS/REVISE verdict, and a short list of **specific, actionable fixes ran
 the scoring in the bundled **`recruiter-critic`** agent and hand it **only** the JD + the rendered
 `CV.txt` — never the tailorer's notes or coverage matrix — so the grade can't be biased by the
 writer's own rationale (self-scoring is how slop survives). Fall back to an in-context persona only
-where subagents aren't available.
+where subagents aren't available. **Point the critic at the writer's standard:** its authenticity
+dimension is scored against `references/writing-voice.md` and `references/cv-mistakes.md` §1 — the
+same banned list the tailorer worked from — not against the critic's own sense of what "reads like
+AI". A critic and a writer holding different standards loop forever.
 
 Loop: score → fixes → tailorer revises → re-score. Stop at **PASS** (default threshold: overall ≥
 4.0/5 AND no dimension < 3, AND the "would I forward this?" test passes) or after **3 passes**.
@@ -428,7 +477,7 @@ interviewer persona, and write `interview-prep.md` into that folder: a 30-second
 CV headline, predicted questions grouped by the JD's must-have competencies with **STAR answers
 built only from real profile evidence**, honest **gap-defence** answers for every hard-gap/partial
 the matrix surfaced (the questions they *will* probe), sharp questions to ask them, and the likely
-curveballs (salary anchored to the fetched Adzuna band, notice period, any timeline gap). Truth rule
+curveballs (salary anchored to the fetched Adzuna band, notice period, any timeline gap). Profile rule
 holds — never invent experience; prepare a confident, honest way to handle a gap. Ties to the tracker:
 `tracker.py update … {"status":"Interview"}` stamps the date and keeps the pack in the folder.
 
@@ -443,22 +492,23 @@ persona. Full rules: `references/tailoring-levels.md`.
 
 ## Command: COVER LETTER
 
-Shares the JD analysis and profile feed but produces a letter, not a CV. **Best input: a short
-brain-dump** of the user's own thoughts on *this* role (why they want it, their angle, any company
-connection) — **always ask for it first and strongly encourage it**, and **invite a spoken/verbal
-narrative** (a voice note or ramble; work from the transcript, keep the spoken cadence). Offer a quick
-3–5 prompt brainstorm as the easy on-ramp ("What first caught your eye about them? Which of your
-projects felt most like this job?"). **But the brain-dump is recommended, not required: if it isn't
-supplied, draft anyway from the JD + profile** — build motivation only from what the profile/research
-honestly support (never fabricate familiarity), keep it a touch shorter, and **flag the "why this
-company" paragraph as profile-only** in your return note so the user fixes the input rather than
-wordsmithing the output. Where the brain-dump exists, write the letter *from* the user's words: preserve
-their voice and cadence, strip slop but never de-voice them (a de-slopped letter that no longer sounds
-like them is a failure). Claims map to real profile evidence (same truth rule). Run the same voice pass
-(the writing model, `references/writing-voice.md`).
-UK conventions; render to `.docx` + plain text (bundled script or the `docx` skill), and route through
-`/make-pdf` if the user wants a human-facing PDF to send directly. The L0–L2 dial does NOT
-apply — a cover letter is inherently first-person and truthful. Full craft: `references/cover-letter.md`.
+Shares the JD analysis and profile feed but produces a letter, not a CV. **Draft first — never ask
+for a brain-dump, a voice note, or the user's own words.** Write the letter complete from the JD +
+profile: name the employer in the body, and build the "why this employer" paragraph from the advert
+and verifiable public knowledge like any other paragraph (never fabricate familiarity; if research
+turns up nothing specific, say less). No placeholders, no bracketed gaps, no "draft" label — the user
+reviews the finished letter and says if something does not sound like them. If the user **volunteers**
+their own words (typed, or a voice-note transcript), write the letter *from* them: preserve their voice
+and cadence, strip slop but never de-voice them (a de-slopped letter that no longer sounds like them is
+a failure). Claims map to real profile evidence (same profile rule). Run the same voice pass (the
+writing model, `references/writing-voice.md`), then the **humanizer pass — mandatory**: the installed
+`humanizer` skill's checklist, if present, on the whole letter (`validate_profile.py` WARNs on AI-tell
+vocabulary as the mechanical backstop). For academic/research targets apply
+`references/academic-register.md` on top.
+Market conventions by the profile's market; render to `.docx` + plain text (bundled script or the
+`docx` skill), and route through `/make-pdf` if the user wants a human-facing PDF to send directly.
+The L0–L2 dial does NOT apply — a cover letter is inherently first-person and profile-grounded. Full
+craft: `references/cover-letter.md`.
 
 ## Command: TRACK & FILE (every run)
 
@@ -475,10 +525,11 @@ python "${CLAUDE_PLUGIN_ROOT}/scripts/new_application.py" --root <apps> --catego
 This makes `<category>/<date>_<company>_<role>/` with `job-description.md` and `notes.md`, and adds
 one tracker row (it **auto-inits** the tracker on first use and **preflights** deps first, so the row
 is never silently dropped). Categories are dynamic — create whatever fits (ai, research-assistant,
-plant-science, data, security, …). Render the CV into that folder; put the brain-dump, coverage
-matrix, recruiter scorecard, and any L2 delta into `notes.md`. Pass `--link` always so the dedupe
-ledger key resolves. **If the application has screening/knockout questions** (Workday/Greenhouse
-supplementals), also draft the truthful, profile-grounded **application answer pack** into `notes.md`
+plant-science, data, security, …). Render the CV into that folder; put the coverage matrix, the
+user's own words if they volunteered any, the recruiter scorecard, and any L2 delta into `notes.md`.
+Pass `--link` always so the dedupe ledger key resolves. **If the application has screening/knockout
+questions** (Workday/Greenhouse supplementals), also draft the profile-grounded **application answer
+pack** into `notes.md`
 per `references/application-answers.md` — a review-and-paste draft (never auto-submitted), with salary
 anchored to the fetched Adzuna band and any profile-only answer flagged.
 
@@ -554,6 +605,36 @@ demos (see `assets/sample-tracker.csv`).
   Selects on tracker `logged_date`, so it never depends on folder naming. Idempotent, and it
   **never overwrites an existing `FINDINGS.md`** — the written briefing is the one thing it will not
   touch. Read-only over the tracker.
+- `scripts/run_hunt.py` — one command for the whole sourcing half: sweep every source → company
+  boards (`--skip-companies` to skip the only credit-spending step) → consolidate → rank → verify →
+  fetch JDs → `to-tailor.csv`. `--dry-run` prints the stages; `--stage <name>` runs one. Fails loudly
+  (named FAIL, exit 3 on a rejected credential) rather than producing a confident thin day.
+- `scripts/sweep.py` — drive the WHOLE `SEARCH-KEYWORDS.md` across one connector, broad-to-narrow,
+  with novelty-based pagination (a query stops when a page adds nothing unseen this run). A 401 stops
+  the source and is logged as `auth:`; exit 2 on an unknown `--source`.
+- `scripts/harvest.py` — enumerate a whole result set (not page 1) for one query and reduce it to a
+  triage row per advert; raises `DeadCredential` on 401 so the run fails by name.
+- `scripts/harvest_companies.py` — read vacancies off employers' own boards for every company in
+  `TARGET-COMPANIES.md` (Greenhouse / Workable / Lever / Ashby / SmartRecruiters / Recruitee, with an
+  identity check, and a `| careers:<url>` pin to override it); rows go through `import_rows.py`.
+- `scripts/rank.py` — judge the shortlist on the job TITLE against the keyword file's lists (aim-up >
+  core > same-work); only clearance and the Global knockouts reject, an unmatched title scores 0. A
+  bracketed keyword keeps its qualifier as a ranking signal (`references/job-search-guide.md`).
+- `scripts/verify_run.py` — read `queries.csv` and fail the day by name when it was thin: platform
+  floor, every lane in `JOB-LANES.md` queried, no reconstructed counts; auth-refused sources are
+  excluded from the floor and named.
+- `scripts/validate_profile.py` — validate a CV / letter against the profile's own `profile-rules`
+  block (8 verbs, `role:` keys, `education-for-lane`, `overlap-print`): exit 0 clean, 1 violations,
+  2 the rules are broken. `--folder <dir>` infers lane + JD; `--emit-template` prints a starter block.
+  WARNs on AI-tell vocabulary and on proper nouns the profile never uses. Run it, do not eyeball it.
+- `scripts/cvgen.py` — assemble a CV from shared blocks whose every fact is bound to the profile
+  (lane blocks + JD-gated extras), so a batch cannot drift. `scripts/regen_batch.py` regenerates every
+  Drafted application against the current profile — re-laned, re-rendered, re-validated, re-bundled —
+  idempotently (`--priority` orders the batch).
+- `scripts/triage.py` — the on-disk triage ledger for a day's fetched adverts: `--init`, `--next`
+  (round-robin by lane), `--mark`, `--status` (non-zero while anything is pending).
+- `scripts/import_rows.py` — bring rows from a source the scripts cannot reach (an OAuth MCP
+  connector, a bot-walled board) through the same gate, ledger and query log as a harvester.
 
 All CLIs force UTF-8 stdout so non-Latin-1 job data prints cleanly on a default Windows console, and
 `tracker.py` saves atomically (never truncates; a clear message if the file is open in Excel).
@@ -568,7 +649,7 @@ exact `pip install` if missing — they never proceed into a half-commit.
 
 ## Hold-the-line invariants
 
-1. Master profile is truth for L0/L1; gaps surfaced, never filled. **Never claim a technique the
+1. The profile is the authority for L0/L1; gaps surfaced, never filled. **Never claim a technique the
    profile lists under "never claim"; respect confidential holds** (capability, not protected specifics).
 2. ATS-safe rendering — no tables, columns, or graphics in the CV.
 3. No slop — enforced against `cv-mistakes.md`.
@@ -579,4 +660,8 @@ exact `pip install` if missing — they never proceed into a half-commit.
 8. **Path-agnostic** — resolve the workspace root at runtime; never hard-code a machine path.
 9. **Daily hunt:** only LIVE roles, only NEW roles (dedupe on the canonical link key, never a folder
    slug), **no cap** on how many to tailor; the tracker is owned only by `tracker.py` and `Applied`
-   rows are never touched; same-day re-runs append (`-run-b`), never overwrite.
+   rows are never touched; same-day re-runs are deduped by the ledger and `done_queries`, never
+   re-tailored.
+10. **Ship complete, never ask.** Cover letters are written in full, first; the user volunteers their
+   own words when they want to. Any step that would confirm with the user has an unattended branch
+   (`notes.md`), so an autonomous run never pauses.

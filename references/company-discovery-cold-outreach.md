@@ -81,7 +81,7 @@ this company, what they'd bring, what they want. Then transcribe/work from that.
   evidence from the profile, mapped to what the company does; (3) a clear, low-friction ask
   ("Would you be open to a 15-minute chat?" or "Are you taking on anyone with this background?");
   (4) sign-off + one-line signature. Attach the tailored CV.
-- **Truth rule applies** (as everywhere): every claim maps to real profile evidence. No invented
+- **Profile rule applies** (as everywhere): every claim maps to real profile evidence. No invented
   achievements. Cold mail is first-person and truthful — the CV L0/L1/L2 dial does NOT apply.
 - **UK etiquette:** named recipient → warm but professional; "Best regards"/"Kind regards" is the
   norm for email (not the formal letter "Yours sincerely/faithfully"). UK spelling.

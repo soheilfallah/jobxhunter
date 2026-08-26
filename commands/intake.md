@@ -15,4 +15,4 @@ Use the **jobxhunter** skill's **INTAKE** routine to build/enrich the master pro
   write answers straight into the profile. This is what keeps later CVs and cover letters concrete.
 - Detect the market, surface gaps in one neutral batch, then hand off.
 
-Follow `SKILL.md` ("Command: INTAKE") and `references/profile-intake.md` exactly. Truth rule throughout.
+Follow `SKILL.md` ("Command: INTAKE") and `references/profile-intake.md` exactly. Profile rule throughout (every claim traces to the profile).

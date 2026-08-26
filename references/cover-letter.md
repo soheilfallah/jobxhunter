@@ -1,45 +1,35 @@
 # Cover Letter Reference (UK-first)
 
-You are writing a UK cover letter FROM the user's own words. This document is your
-rulebook. Read the whole thing before drafting.
+You are writing a UK cover letter that is finished and send-ready. This document is
+your rulebook for how it should read. Read the whole thing before drafting.
 
-## The best input: the brain-dump (strongly recommended, not required)
+## Inputs: the JD and the profile — draft first, never ask
 
-- The letter is built from TWO inputs: (1) the user's brain-dump — their raw,
-  unpolished thoughts on why they want THIS role at THIS company — and (2) profile
-  evidence (the same evidence base the CV draws on). The brain-dump is what makes
-  the "why this company" paragraph ring true, so **always ask for it first** and
-  strongly encourage it — a few sentences of honest rambling beats a blank page.
-- **But do not STOP if it's missing.** If the user has none, or wants to proceed
-  without one, **draft anyway** from the JD + profile. When you do:
-  - Build motivation from what the profile and honest research support (real
-    products used, a genuine sector interest evidenced in the profile, a concrete
-    skill match) — never fabricate familiarity or feelings the user never stated.
-  - **Flag the profile-only paragraph.** In the return note, say plainly that the
-    "why this company / this role" paragraph is running on profile + research only
-    and will be generic until the user adds a line or two of their own — so they
-    fix the *input*, not wordsmith the output.
-  - Keep it a touch shorter and more restrained rather than padding a fake
-    motivation to full length.
-- **Offer a quick brainstorm as the easy on-ramp** (this is the suggestion, not a
-  gate). Present 3–5 starter prompts the user can answer in a sentence each or skip:
-  - "What first caught your eye about *them* — a product, a post, a person, a value?"
-  - "Which of your projects felt most like *this* job?"
-  - "Why now — what's pulling you toward this kind of role?"
-  - "If you got it, what's the first thing you'd want to work on there?"
-  - "Any real connection — you use their product, know someone, applied before?"
-  Even one answer lifts the letter out of generic; make clear they can reply by
-  voice note or just skip and let you draft from the profile.
-- **Invite a spoken/verbal narrative.** The most natural brain-dump is often
-  spoken, not typed — a voice note or a stream-of-consciousness ramble. Explicitly
-  offer that: "A voice note or just talking it out is perfect — I'll work from
-  your transcript." Spoken input is looser, warmer and more digressive than
-  writing; that IS the voice to preserve. Work from the transcript, keep the
-  spoken cadence, and tidy only true filler/repetition — do not flatten it into
+- **Never ask for a brain-dump, a voice note, or the user's own words.** Do not
+  offer it, do not recommend it, do not wait for it. Write the letter in full,
+  every time, from the profile plus the job description.
+- **The "why this company / this role" paragraph is written like any other
+  paragraph** — from the advert, the employer's public material and what the
+  profile evidences (real products used, a genuine sector interest, a concrete
+  skill match). Never fabricate familiarity or feelings; if research turns up
+  nothing specific, say less rather than padding.
+- **No placeholders.** Never emit `[YOUR LINE HERE]` or any bracketed gap, and
+  never flag a paragraph as needing the user's input.
+- **Deliver it as finished, not as a draft.** Do not label output "AI-drafted", "a
+  draft to edit", or something to personalise before sending. The user reviews it
+  and says if something is wrong or does not sound like them. That is their call,
+  not a caveat to write in. A fact that would help but is genuinely unknown stays
+  off the page and goes into `notes.md` as a question.
+- **If the user volunteers their own words** — a typed note, a voice-note
+  transcript, a ramble in chat — they are the best input there is: use them as
+  source text (next section). Spoken input is looser, warmer and more digressive
+  than writing; that IS the voice to preserve. Work from the transcript, keep the
+  spoken cadence, tidy only true filler and repetition, never flatten it into
   written formality. (The cold-outreach command shares this rule — see
   `company-discovery-cold-outreach.md`.)
-- If the brain-dump is thin (one line), draft, but flag which paragraphs are
-  running on fumes and ask the targeted follow-ups above.
+- **The profile rule is unchanged and absolute.** Complete means the strongest
+  *honest* version. Never invent a qualification, employer, licence, number or
+  experience the profile cannot back.
 
 ## CENTRAL RULE: tone preservation
 
@@ -48,7 +38,7 @@ spot generated letters by their "corporate, high-vocabulary HR speak that most
 people don't naturally type" — and most view them negatively. A de-slopped letter
 that no longer sounds like the user is a FAILURE, even if every sentence is clean.
 
-- Treat the brain-dump as source text, not as a prompt. Reuse the user's actual
+- Treat the user's own words, where they gave any, as source text, not as a prompt. Reuse the user's actual
   phrases, metaphors, and reasons. If they wrote "I've been low-key obsessed with
   their pricing model", the letter says something like "I'll admit I've been
   slightly obsessed with your pricing model" — not "I am deeply impressed by your
@@ -56,7 +46,7 @@ that no longer sounds like the user is a FAILURE, even if every sentence is clea
 - Keep their cadence. Short blunt sentences stay short and blunt. If they write
   long winding sentences with dashes, keep some dashes. Match their average
   sentence length within reason.
-- Keep their register. If the brain-dump is warm and informal, the letter is warm
+- Keep their register. If their words are warm and informal, the letter is warm
   and professional — not stiff. If the user is dry and understated, do NOT inject
   enthusiasm words ("thrilled", "excited", "passionate") they never used.
 - Preserve idiosyncrasy. One slightly odd-but-true detail ("I read your
@@ -80,22 +70,27 @@ for a cover letter, apply its **voice-preservation** register, not its neutral-C
 - DO NOT introduce: buzzwords, "leverage/utilise/spearhead" verbs the user never
   used, balanced tricolons ("X, Y, and Z") everywhere, or em-dash-heavy
   "AI rhythm" if the user doesn't write that way.
-- Test after drafting: read the letter and the brain-dump side by side. Could the
-  user plausibly have typed this letter themselves? If any sentence sounds like a
-  press release, rewrite it using words from the brain-dump.
+- Test after drafting: read the letter beside the user's words (if any) and the
+  profile's own phrasing. Could the user plausibly have typed this letter
+  themselves? If any sentence sounds like a press release, rewrite it in plainer
+  words. Then the humanizer pass: the installed `humanizer` skill's checklist, if
+  present, on the whole letter (mandatory when installed; `writing-voice.md`
+  §"AI tells" is the whole pass when it is not).
 - When the user's phrasing is too casual for a letter ("this job looks sick"),
   translate the ENERGY, not the words: "I genuinely want this one" — still them,
   just dressed for the occasion.
 
-## First-person and truthful — no levels dial
+## First-person and profile-grounded — no levels dial
 
 - Cover letters are inherently first-person and signed by the user. The CV's
   L0/L1/L2 framing dial does NOT apply here. There is exactly one register:
-  the user, telling the truth, in their own voice.
-- The CV truth rule DOES apply: every factual claim (skills, outcomes, numbers,
+  the user, saying only what the profile supports, in their own voice.
+- The CV profile rule DOES apply: every factual claim (skills, outcomes, numbers,
   employers, dates) must map to real profile evidence. No new achievements may be
-  minted for the letter. Motivation and opinion come from the brain-dump; facts
-  come from the profile. Never let one impersonate the other.
+  minted for the letter. Motivation comes from the advert, public research and
+  the user's own words where given; facts come from the profile. Never let one
+  impersonate the other.
+- Academic / research targets: apply `references/academic-register.md` on top.
 
 ## Structure: 3–4 paragraphs, one A4 page max
 
@@ -104,12 +99,14 @@ on shape. Target 250–400 words. Never exceed one page.
 
 1. **Opening hook (2–3 sentences).** Name the role (exact title from the advert,
    plus reference number if given) and land one genuinely specific reason —
-   from the brain-dump — why this application exists. Do NOT open with
-   boilerplate (see banned openers below).
-2. **Why this company / this role (1 paragraph).** The user's motivation, made
+   from the user's words if given, else from the advert and the profile — why
+   this application exists. Do NOT open with boilerplate (see banned openers below).
+2. **Why this company / this role (1 paragraph).** The motivation, made
    concrete with research hooks (see below). This is the paragraph most letters
-   fake and hiring managers most easily see through — it must be built almost
-   entirely from the brain-dump.
+   fake and hiring managers most easily see through — build it from what is
+   verifiable (the advert, the employer's own material, evidence in the profile)
+   and from the user's words where they gave any; a shorter honest paragraph
+   beats a longer generic one.
 3. **Evidence (1–2 paragraphs).** Pick the 3–5 requirements from the JD that
    matter most, and map each to a real, specific piece of profile evidence.
    State the match explicitly — don't make the reader infer it. One concrete
@@ -147,7 +144,7 @@ Banned (they waste the seven seconds you get):
 - "As a passionate and results-driven professional..."
 - Any opener that could top a letter to a different company unchanged.
 
-Better patterns (always seeded from the brain-dump, never invented):
+Better patterns (seeded from the user's words or from verifiable research, never invented):
 - Company hook: "Your engineering blog's post on flattening the on-call rota is
   the reason this letter exists."
 - Achievement bridge: "Last year I took a reporting pipeline from nightly to
@@ -161,8 +158,8 @@ Better patterns (always seeded from the brain-dump, never invented):
 
 ## Company research hooks
 
-- Use hooks the USER supplied first (brain-dump). If you add hooks from your own
-  research, they must be verifiable and specific: a named product, a blog post,
+- Use hooks the USER supplied first, if they gave any. Hooks from your own
+  research must be verifiable and specific: a named product, a blog post,
   a results announcement, a stated company value with evidence they live it —
   not "your innovative culture".
 - One or two hooks, woven in, is right. Five hooks is a stalker's letter.
@@ -207,20 +204,23 @@ Better patterns (always seeded from the brain-dump, never invented):
 - Plain formatting: no tables, text boxes, headers/footers carrying content, or
   images. Standard fonts (Arial/Calibri, 10–12pt).
 
-## Final checks before returning a draft
+## Final checks before returning the letter
 
-1. Brain-dump used where supplied (point to phrases that survived); if none was
-   given, is the "why this company" paragraph flagged as profile-only in the note?
-2. Voice test passed — could the user have typed this?
-3. Every factual claim traceable to the profile?
+1. Complete — no placeholder, no bracketed gap, no "draft" label; the employer is
+   named in the body; the user's own words used where they gave any.
+2. Voice test passed — could the user have typed this? Humanizer pass done.
+3. Every factual claim traceable to the profile (`scripts/validate_profile.py`
+   exits 0 on the folder)?
 4. Named recipient hunted for; sincerely/faithfully matches the salutation?
 5. Under one page; 3–4 paragraphs; opener not on the banned list?
 6. UK spelling; "CV" not "resume"; exact job title appears once?
 7. No cliché the user didn't say; no evidence the profile doesn't hold?
 
-Return the draft with a one-line note listing anything you flagged (thin
-brain-dump sections, evidence gaps, missing recipient name) so the user can fix
-inputs rather than wordsmith outputs.
+Return the letter with a one-line note listing anything worth knowing (an
+evidence gap, a missing recipient name, a question parked in `notes.md`).
+Interactive commands may add: "if you want a line of your own in the
+why-this-company paragraph, say it and I'll fold it in" — an offer after the
+finished letter, never a gate before it.
 
 ## Sources
 

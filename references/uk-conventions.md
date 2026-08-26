@@ -120,6 +120,38 @@ hide it.
 - Never write "Nationality: X". Work authorisation is the only immigration fact
   an employer may lawfully weigh, so it is the only one the CV states.
 
+## The personal-details block — relevance-gated
+
+The short block at the foot of a UK CV (licences, certificates, languages, right
+to work) is the easiest place on the page to waste. Every line in it displaces a
+line of evidence, so each one has to earn its place against *this* advert.
+
+- **Driving licence** — only when the advert asks for a licence or own transport,
+  or the role obviously needs one: field and site work, multi-site, rural,
+  on-call, or travel between locations named in the duties. A desk role in a city
+  does not need to know. On a CV that never leaves an office it reads as padding.
+- **Languages** — only when the advert names a language, the employer is plainly
+  international, or the region makes it useful. Never list English on an
+  English-language application; writing the application in English is the
+  evidence. Never list a test score.
+- **Right to work** — always present, one line, exact wording, no route detail.
+- **Certificates** — the ones this employer would actually value. A first-aid or
+  security certificate is an asset on site, front-of-house and technician roles
+  and noise on an analyst CV.
+
+The test for every line: *would a recruiter reading this advert be worse off
+without it?* If not, cut it. Blanket-including these lines on every CV is the
+common failure — it looks thorough and reads as filler. The profile's rules block
+(`forbid-unless-jd-mentions`) enforces it mechanically via `validate_profile.py`.
+
+## Education — selected per lane, never printed wholesale
+
+The profile's `education-for-lane` table (`references/master-profile-schema.md`) is
+the authority: only the listed degrees, in the listed order, grade marks only where
+the lane allows. A UK recruiter cannot place a mark on a foreign scale — the marks
+are the argument only where the reader is academic (see
+`references/academic-register.md`).
+
 ## References / referees
 
 - **Do not list referees on a standard CV.**
@@ -130,9 +162,11 @@ hide it.
   cut it. Follow the latter: it is current practice.
 - Keep a separate one-page referee sheet (names, titles, relationship, contact
   details) ready to send when asked — never embedded in the CV.
-- **Exceptions**:
+- **Exceptions** (the profile's rules block can allow the references line on the
+  research lane only — this is why):
   - Academic CVs: list 2–3 referees with titles, affiliations, and emails.
-    Choose people known in the field; get their permission first.
+    Choose people known in the field; get their permission first. Register:
+    `references/academic-register.md`.
   - NHS/Trac and Civil Service application *forms* require referee details
     covering the last ~3 years — that lives in the form, not the CV.
 

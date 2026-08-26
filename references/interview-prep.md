@@ -7,7 +7,7 @@ master profile (the real evidence). This routine turns that into a prep pack the
 can actually walk in with — and, crucially, it prepares them for the questions their *gaps*
 invite, which generic prep never does.
 
-**Truth rule still holds.** Every STAR answer is built from real profile evidence. For a
+**Profile rule still holds.** Every STAR answer is built from real profile evidence. For a
 hard gap, you do **not** invent experience — you prepare an honest, confident way to handle
 the question (transferable evidence + a learning plan), which is what a good candidate
 actually does.

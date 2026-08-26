@@ -8,7 +8,7 @@ needed to answer them: the master profile, the cover-letter brain-dump, and the 
 salary band fetched during sourcing. This routine assembles a **draft answer pack** the user
 reviews and pastes — it never auto-submits.
 
-**Truth rule holds.** Every answer maps to real profile evidence. A knockout the candidate
+**Profile rule holds.** Every answer maps to real profile evidence. A knockout the candidate
 can't truthfully clear is surfaced (and the role is likely a `Skipped`), not fudged.
 
 ## When

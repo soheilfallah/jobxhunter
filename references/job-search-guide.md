@@ -200,6 +200,33 @@ three that matter for the target family so new roles arrive without re-searching
    spending effort — especially for agency-posted roles, which are often duplicated or thin.
 6. **Capture the survivors** (below).
 
+## The workspace keyword file (`SEARCH-KEYWORDS.md`) — what the scripts read
+
+`sweep.py` and `rank.py` read `<workspace>/SEARCH-KEYWORDS.md` as machine input (`init_workspace.py`
+drops a starter). Each `## <heading> (`lane-name`)` section — the backticked token is the lane from
+`JOB-LANES.md` — carries a **Ready-to-run queries** line (the queries actually sent to the boards)
+and four title lists — **Core titles (N)**, **Aim up (N)**,
+**Same work, different name (N)**, **Title knockouts** — separated by ` · `. Aim-up outranks core
+outranks same-work; per-lane knockouts are a score penalty; only the **Global knockouts** section
+and security clearance reject a role outright. An unmatched title scores 0 and sorts last.
+
+**Bracket qualifiers.** A keyword written `General Manager (Nursery)` still matches the bare phrase
+`General Manager` at lower quality, but a title that also carries the qualifier wins outright. So
+the way to stop an ambiguous bare term (`General Manager`, `Operations Manager`, `Technical
+Manager`) claiming another lane's roles is to qualify it, not to delete it: nothing is lost, and a
+complete match beats a partial one. The qualifier is a ranking signal, never a requirement — making
+it mandatory moved most of a live corpus into "unmatched". Advert-side brackets are decoration and
+are stripped for positive matching, kept for knockouts (`(DV Cleared)` must still fire).
+
+**Update the `(N)` counts by hand** when you edit a list. The parser ignores them; a wrong count is
+the only sanity signal a human reading the file has.
+
+**Pin the outcome against the LIVE keyword file.** When a mislaned title has been fixed by
+qualifying a term, add a guarded check to `rank.py --self-check` (skipped when the workspace is
+absent) that judges the real advert title against the real `SEARCH-KEYWORDS.md` and asserts the
+lane. A tempdir fixture cannot catch someone re-adding the bare term six weeks later; only the live
+file can.
+
 ## From a found listing into the pipeline
 
 Once a role passes triage:

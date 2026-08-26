@@ -13,11 +13,15 @@ Creates:
   <root>/applications/daily-hunt/
         _RUN-PLAYBOOK.md                 # hard rules + live-connector board list
         seen-jobs.csv                    # empty dedupe ledger (header only)
+  <root>/JOB-LANES.md                    # filing lanes (### `lane` headings) — verify_run reads them
+  <root>/SEARCH-KEYWORDS.md              # the hunt's search list — sweep.py + rank.py read it
+  <root>/TARGET-COMPANIES.md             # employers' own boards — harvest_companies.py reads it
   <root>/scripts/                        # copy of the skill's scripts (portable)
   <root>/applications/tracker.xlsx+csv   # via tracker.py init
 
 Usage:
   python init_workspace.py --workspace <dir> [--name alex] [--force]
+  python init_workspace.py --self-check
 """
 import argparse
 import os
@@ -45,7 +49,7 @@ CHANGELOG_TEMPLATE = """\
 # Intake changelog
 
 Each intake run appends what it added or changed in the master profile.
-Newest entries at the bottom. The profile itself is the source of truth;
+Newest entries at the bottom. The profile itself is the authority;
 this is the audit trail.
 """
 
@@ -97,14 +101,15 @@ _One tight positioning line per target family — how you want to be read for ea
 
 ## Experience
 _Every role: employer, title, dates, what you actually did, methods, quantified outcomes.
-Mark concurrent roles. This is the evidence the tailorer draws bullets from._
+Note overlapping roles — a CV prints one per lane (the rules block's `overlap-print`), never
+both and never a "(concurrent)" label. This is the evidence the tailorer draws bullets from._
 -
 
 ## Skills warehouse
 _Everything you can genuinely do — tools, techniques, languages, domains. Group loosely._
 -
 
-### NEVER claim (hard gaps — truth guardrail)
+### NEVER claim (hard gaps — profile guardrail)
 _Techniques/tools you have NOT performed. The tailorer must never assert these, even if a
 JD asks. A CV that can't survive the interview question is worse than a shorter honest one._
 -
@@ -154,7 +159,8 @@ Edit the lessons section as you learn what works for this profile.
 ## Hard rules (do not weaken)
 1. **Read this playbook, then read the profile fresh.** If the profile is missing or empty,
    STOP and report — do nothing else.
-2. **Truth first.** Never claim a skill/technique the profile lists under "NEVER claim".
+2. **Profile first.** Never claim a skill/technique the profile lists under "NEVER claim";
+   `scripts/validate_profile.py --folder <dir>` must exit 0 before a CV is rendered.
    Respect confidential holds — describe capability, never protected specifics.
 3. **Only LIVE roles.** Expired/withdrawn listings (redirect, "no longer advertised") are
    never tailored — file them Skipped with a "watch for re-post" reason.
@@ -166,13 +172,14 @@ Edit the lessons section as you learn what works for this profile.
    Applied rows are final/locked — never touch them.
 7. **File everything** — Drafted (tailored) or Skipped (with a reason + source link), so the
    ledger key always resolves.
-8. **Cover letters in the autonomous run default to a scaffold** — prep it and flag "needs brain-dump"
-   (no user is present to brainstorm with). The on-demand COVER LETTER command may draft a profile-only
-   letter without a brain-dump (recommended, not required), flagging the "why this company" paragraph.
+8. **Cover letters ship complete.** Write every letter in full from the JD + profile — no
+   scaffold, no placeholder, no request for the user's words (nobody is present to answer).
+   The user volunteers their own words when they want them used.
 
-## Sourcing lanes (live connectors first)
-Board choice follows the profile's target priority order. Connectors available now
-(prefer these over raw WebSearch — they give structured, filterable, live/expired signals):
+## Sourcing (run_hunt.py first)
+`python scripts/run_hunt.py --workspace <root>` sweeps every configured source across the whole
+SEARCH-KEYWORDS.md, reads the employers' own boards in TARGET-COMPANIES.md, ranks, verifies
+breadth and fetches the JDs. Board notes, for the sources it cannot reach and for hand searches:
 - **Commercial roles** → Adzuna + Reed MCP connectors (UK, salary-aware). Also Indeed.
 - **Academic / research** → jobs.ac.uk (search EACH discipline facet SEPARATELY — multi-facet
   queries silently drop one), plus institute career pages.
@@ -183,10 +190,107 @@ Board choice follows the profile's target priority order. Connectors available n
 ## Knockout criteria (profile-driven — record the reason on every Skip)
 Compare each JD's essentials against the profile: languages, licences (e.g. SIA), right-to-work,
 degree field, wet-lab/technique requirements listed under "NEVER claim". A hard knockout the
-candidate cannot truthfully meet → Skip with the reason.
+profile cannot evidence → Skip with the reason.
 
 ## Lessons learned (append as you go)
 - (e.g. "Harper Adams reposts CCES RA roles ~quarterly — keep on watch-list.")
+"""
+
+LANES_TEMPLATE = """\
+# Job lanes — filing tags, not a search list
+
+Lanes are folders for filing (`applications/<lane>/`) and the set `verify_run.py` checks was
+queried every run. They are NOT a priority order and NOT what the hunt searches from —
+`SEARCH-KEYWORDS.md` is the search list, and it is deliberately wider than these lanes.
+A good role that fits no lane is filed under the closest one or a new one; it is never skipped
+for that reason. Evidence, titles and what may be claimed live in the profile; this file does
+not restate them. One `### <lane-name>` heading per lane (lowercase, hyphens, in backticks).
+
+## The lanes (alphabetical — no ranking implied)
+
+### `ai-adoption`
+AI adoption, enablement and transformation consulting — the "which part of the business needs
+AI" family: diagnosis, stakeholder work, knowing what is worth building. Not an engineering lane.
+**Watch:** engineering screens dressed as consulting; change-management certification as
+essential; security clearance.
+
+### `retail-hospitality`
+Retail, hospitality and venue management at assistant-manager tier and above.
+**Watch:** commission-only, night-time economy, roles below supervisor level.
+
+<!-- add your own lanes: ### `data-ai`, ### `research`, ### `ops-admin`, … -->
+"""
+
+KEYWORDS_TEMPLATE = """\
+# Search keywords — the hunt's search list
+
+**This file, not `JOB-LANES.md`, is what the hunt searches from.** `sweep.py` sends every
+`Ready-to-run queries` term to every source; `rank.py` judges each advert's TITLE against the
+lists. Format per `## Heading (`lane-name`)` section (the backticked token maps the section to
+its lane in `JOB-LANES.md` — see `references/job-search-guide.md`, "The workspace keyword file"):
+
+- **Ready-to-run queries** — backtick-quoted, ` · ` separated, short (boards match badly beyond
+  2–4 words).
+- **Core titles (N)** / **Aim up (N)** / **Same work, different name (N)** — ` · ` separated;
+  aim-up outranks core outranks same-work. A bracketed qualifier, `General Manager (Retail)`,
+  still matches the bare phrase at lower quality and a complete match wins — qualify ambiguous
+  terms rather than delete them. Update the `(N)` counts by hand; the parser ignores them.
+- **Title knockouts — auto-reject** — a per-lane knockout is a score penalty; only the
+  **Global knockouts** section and security clearance reject a role outright.
+
+---
+
+## AI adoption · enablement · transformation consulting (`ai-adoption`)
+
+**Ready-to-run queries**
+
+`AI adoption lead` · `AI enablement lead` · `AI transformation consultant` · `solutions consultant` · `digital transformation consultant` · `digital adoption specialist` · `implementation consultant` · `AI automation consultant`
+
+**Core titles (8)** — AI Adoption Lead · AI Enablement Manager · AI Transformation Consultant · AI Consultant · Solutions Consultant · Digital Transformation Consultant · Digital Adoption Specialist · Implementation Consultant
+
+**Aim up (4)** — Head of AI Transformation · Head of Digital Adoption · Senior Solutions Consultant · AI Programme Manager
+
+**Same work, different name (6) — search these** — AI Readiness Consultant · Change Manager (AI) · Solutions Engineer · Customer Engineer · Business Analyst (AI) · Technology Adoption Manager
+
+**Title knockouts — auto-reject** — Machine Learning Engineer · MLOps Engineer · Solutions Architect · Account Executive · Sales Development Representative · SC Cleared · DV Cleared
+
+---
+
+## Retail · hospitality · venue management (`retail-hospitality`)
+
+**Ready-to-run queries**
+
+`assistant manager` · `deputy manager` · `duty manager` · `store manager` · `assistant store manager` · `front of house manager` · `restaurant manager` · `venue manager`
+
+**Core titles (8)** — Assistant Manager · Deputy Manager · Duty Manager · Assistant Store Manager · Retail Team Leader · Front of House Manager · Restaurant Manager · Venue Manager
+
+**Aim up (4)** — Store Manager · General Manager (Retail) · General Manager (Hospitality) · Operations Manager (Retail)
+
+**Same work, different name (5) — search these** — Deputy Store Manager · Floor Manager · Shift Manager (Hospitality) · Guest Experience Manager · Cafe Manager
+
+**Title knockouts — auto-reject** — Sales Assistant · Retail Assistant · Cashier · Barista · Waiter · Chef · Cleaner · Commission Only · Regional Manager
+
+---
+
+## Global knockouts — never wanted, in ANY lane (`global`)
+
+**Title knockouts — auto-reject** — Apprentice · Apprenticeship · Graduate Scheme · Intern · Internship · Work Experience
+
+<!-- add a `## Heading (`lane-name`)` section per lane in JOB-LANES.md — the backticked token
+     is what maps the section to its lane; keep the four bold list markers exactly as above -->
+"""
+
+COMPANIES_TEMPLATE = """\
+# Target companies
+
+# One employer per line. `## Sector` groups them (matched by harvest_companies --only).
+# `#` lines are comments. Pin a board when the identity check cannot know a trading name:
+#   - Company Name | careers:https://example.com/careers/
+#   - Company Name | greenhouse:slug      (greenhouse|workable|lever|ashby|recruitee|smartrecruiters)
+# A pin is terminal: an empty pinned page is reported empty, never re-searched.
+
+## Sector name
+- Company Name
 """
 
 WORKSPACE_MAP_TEMPLATE = """\
@@ -210,18 +314,22 @@ an empty slot is expected rather than something you need to fix.
     _intake/                  ← intake internals (private)
       placeholders/           ← a stub for each dump file that couldn't be read as text here
       CHANGELOG.md            ← what each intake run added to the profile
+  JOB-LANES.md                ← filing lanes (### `lane` headings); verify_run checks each was queried
+  SEARCH-KEYWORDS.md          ← the hunt's search list — what sweep.py sends and rank.py judges against
+  TARGET-COMPANIES.md         ← employers' own boards, one per line (`- Name | careers:<url>` to pin)
   applications/
     tracker.xlsx | .csv       ← the system of record (owned ONLY by scripts/tracker.py)
     tracker-priority.xlsx     ← [later] worklist from `tracker.py priority-view`
     <category>/<YYYY-MM-DD>_<company>_<role>/   ← [later] one per job you tailor for
       job-description.md      ← the captured full JD
-      notes.md                ← coverage matrix, brain-dump, recruiter scorecard, L2 delta
+      notes.md                ← coverage matrix, recruiter scorecard, L2 delta, parked questions
       CV.md  CV.docx  CV.txt  ← the tailored CV (markdown source + rendered outputs)
-      cover-letter.*          ← if generated
+      CoverLetter.*           ← the finished letter
+      CV-L2-alternative-world.*  ← the alternative-world CV (delta in notes.md)
     daily-hunt/
       _RUN-PLAYBOOK.md        ← hard rules + lessons — read FIRST every hunt
       seen-jobs.csv           ← dedupe ledger (canonical job key -> status)
-      <YYYY-MM-DD>-summary.md ← [later] one dated summary per hunt run
+  tasks/daily/<YYYY-MM-DD>/   ← [later] run_hunt.py working files + the day's apply-from-here bundle
   scripts/                    ← a portable copy of the skill's deterministic scripts
 ```
 
@@ -251,8 +359,8 @@ add something, without redoing old work.
   (it owns the green-fill + lock on `Applied` rows); never hand-edit.
 
 ## Trust rules
-- The **master profile is the only source of truth** for any submitted document — the skill selects and
-  reframes from it, never invents.
+- The **master profile is the authority** for any submitted document — the skill selects and
+  reframes from it, never invents; `scripts/validate_profile.py` checks every CV against it.
 - `dump/`, `profiles/` (incl. `_intake/`) are **personal data** — keep the workspace out of any public repo.
 - Every job — applied or skipped — is filed in a category folder and logged, so nothing is lost.
 """
@@ -281,7 +389,10 @@ def main():
     ap.add_argument("--workspace", help="workspace root (else JOBXHUNTER_DIR / discovery)")
     ap.add_argument("--name", default="profile", help="profile file basename (e.g. alex)")
     ap.add_argument("--force", action="store_true", help="scaffold even if workspace exists")
+    ap.add_argument("--self-check", action="store_true")
     args = ap.parse_args()
+    if args.self_check:
+        return self_check()
 
     # Sanitize --name before it becomes a filename under profiles/ (prevents traversal).
     args.name = re.sub(r"[^A-Za-z0-9._-]", "", args.name) or "profile"
@@ -323,6 +434,9 @@ def main():
     _write_if_absent(os.path.join(dump, "README.md"), DUMP_README, root, args.force)
     _write_if_absent(os.path.join(dump, "_manifest.csv"), MANIFEST_HEADER, root, args.force)
     _write_if_absent(os.path.join(intake, "CHANGELOG.md"), CHANGELOG_TEMPLATE, root, args.force)
+    _write_if_absent(os.path.join(root, "JOB-LANES.md"), LANES_TEMPLATE, root, args.force)
+    _write_if_absent(os.path.join(root, "SEARCH-KEYWORDS.md"), KEYWORDS_TEMPLATE, root, args.force)
+    _write_if_absent(os.path.join(root, "TARGET-COMPANIES.md"), COMPANIES_TEMPLATE, root, args.force)
     _write_if_absent(os.path.join(root, "WORKSPACE-MAP.md"),
                      WORKSPACE_MAP_TEMPLATE.format(
                          name=args.name,
@@ -346,6 +460,40 @@ def main():
     print(f"  MANUAL: fill in profiles/{args.name}.md by hand. Put in everything true about you,")
     print("          not just what one CV would show — tailoring selects from it.")
     print("Then run the daily hunt. Stopping here so nothing runs against an empty profile.")
+
+
+def self_check():
+    """Scaffold into a tempdir and prove the lane/keyword/company templates parse the way the
+    hunt scripts read them — the only thing here that can silently rot."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        root = os.path.join(tmp, "ws")
+        out = subprocess.run([sys.executable, __file__, "--workspace", root, "--name", "sample"],
+                             capture_output=True, text=True)
+        assert out.returncode == 0, out.stderr
+        for fn in ("JOB-LANES.md", "SEARCH-KEYWORDS.md", "TARGET-COMPANIES.md", "WORKSPACE-MAP.md"):
+            assert os.path.isfile(os.path.join(root, fn)), fn
+        from verify_run import declared_lanes
+        lanes = declared_lanes(root)
+        assert {"ai-adoption", "retail-hospitality"} <= lanes, lanes
+        from sweep import parse_queries
+        by_lane = {}
+        for lane, q in parse_queries(os.path.join(root, "SEARCH-KEYWORDS.md")):
+            by_lane.setdefault(lane, []).append(q)
+        assert set(by_lane) == lanes, (set(by_lane), lanes)   # every declared lane has queries
+        assert all(by_lane.values())
+        from rank import parse_titles
+        titles = parse_titles(os.path.join(root, "SEARCH-KEYWORDS.md"))
+        assert titles["retail-hospitality"]["aim_up"] and titles["ai-adoption"]["core"], titles
+        assert titles["global"]["knockout"], titles
+        from harvest_companies import parse_companies
+        assert parse_companies(os.path.join(root, "TARGET-COMPANIES.md")) == \
+            [("Sector name", "Company Name", None)]
+        # a second run is a no-op: discover-and-reuse, nothing rewritten
+        out = subprocess.run([sys.executable, __file__, "--workspace", root],
+                             capture_output=True, text=True)
+        assert out.returncode == 0 and "already exists" in out.stdout, out.stdout
+    print("init_workspace self-check OK")
 
 
 if __name__ == "__main__":
