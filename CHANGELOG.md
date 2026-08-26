@@ -4,6 +4,122 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-08-26
+
+The hunt pipeline that was built downstream against a live job hunt (22–24 Aug 2026) is now in
+the plugin: sourcing, ranking, verification, profile validation, generation and regeneration —
+every script with a `--self-check` that passes from a clean clone. Minor bump: a new profile-rules
+grammar and a new pipeline stage.
+
+### Added
+
+- **`scripts/run_hunt.py`** — one command for the hunt, stages `full > companies > consolidate >
+  rank > verify > jds`. The day folder is the day after the last existing `tasks/daily/<date>`,
+  never the wall clock (a run that crosses midnight no longer splits its output), and no dry-run
+  or nothing-to-do path creates a folder. A 401 from a source is announced by name and labelled
+  `:auth-401`; `--skip-companies` leaves out the only credit-spending L0 step.
+- **`scripts/harvest.py`** — enumerates a whole result set (Reed, Adzuna, jobs.ac.uk, Totaljobs,
+  NHS Jobs) with novelty-stop pagination: a query stops the moment a page contributes nothing
+  unseen, so fifty overlapping queries cost ~220 calls instead of ~3,000 pages. Credentials come
+  from `--env-file`, the environment, or the plugin's user-config — never a machine path.
+  `--min-salary` defaults to 0 and agrees with the orchestrator.
+- **`scripts/sweep.py`** — drives `SEARCH-KEYWORDS.md` across one source, broad-to-narrow, with
+  four recorded stops (exhausted / quota / novelty / auth). A section heading carrying its lane in
+  backticks (`` ## Data · AI (`data-ai`) ``) maps explicitly, so a second user's lanes need no
+  code edit.
+- **`scripts/scrape.py`** — `needs-scraper` used to be where an advert died (76 of 150 on one
+  run). Calls Firecrawl, ScraperAPI, scrape.do and Zyte over plain HTTP with keys from
+  `FIRECRAWL_API_KEY`, `SCRAPERAPI_KEY`, `SCRAPEDO_TOKEN`, `ZYTE_API_KEY` (comma-separated lists
+  rotate) or an optional `--keyfile`; a short 200 and a redirect stub both count as a miss.
+- **`scripts/fetch_jds.py`** — L2 fetch for the shortlist, cheapest path first (Reed API → Reed
+  mirror of an Adzuna listing → plain GET → paid scraper), round-robin across lanes, day/hourly
+  rate detection so an annualised day rate stops ranking as a six-figure salary, and body-level
+  security-clearance detection (flagged, never dropped).
+- **`scripts/consolidate.py`** — cross-source dedupe on normalised employer + title with
+  `also_on`; a `keep:salary-suspect` verdict travels with its figures across a merge.
+- **`scripts/import_rows.py`** / **`scripts/indeed_to_rows.py`** — a drop-in for sources only
+  the agent can reach (OAuth MCP connectors, bot-walled boards): JSON grouped by query goes
+  through the same gate, ledger and query log as a harvester's rows; a currency string becomes
+  "no salary", never `0`.
+- **`scripts/triage.py`** — one row per fetched advert, handed out round-robin by lane; a skip
+  requires a reason; `--status` exits non-zero while anything is pending.
+- **`scripts/verify_run.py`** — fails a run with no query log, too few live sources, a declared
+  lane never searched, an unexplained zero platform, or an unrecovered 401.
+- **`scripts/rank.py`** — relevance ranks instead of gating: an unmatched title scores 0 and sorts
+  last; only clearance and global knockouts reject; per-lane knockouts are a penalty. A bracketed
+  qualifier (`General Manager (Nursery)`) is kept and ranks a complete match above a partial one;
+  ties go hand-curated lane > match quality > list weight > term length; sort is score, then
+  recency, then a *capped* salary.
+- **`scripts/harvest_companies.py`** — employers' own boards as a source. Probes six public-JSON
+  ATSes (Greenhouse, Workable, Lever, Ashby, Recruitee, SmartRecruiters) per company in
+  `TARGET-COMPANIES.md`, with a careers-page fallback. Five false-positive classes are pinned in
+  the self-check: an empty board is not a resolution; no bare first-word slug for a multi-word
+  name; rows are filtered to the profile's `market`; the search step is identity-checked by token
+  set and first host label, with terminal `Name | careers:<url>` pins; relevance gates only
+  boards over 20 roles.
+- **`scripts/validate_profile.py`** — every CV and letter line must trace to the profile. The
+  profile declares its own rules in a `profile-rules` block with a closed grammar of eight verbs
+  (`forbid`, `require-cv`, `allow`, `role`, `forbid-unless-lane`, `forbid-unless-jd-mentions`,
+  `education-for-lane`, `overlap-print`); an unknown verb, an undeclared lane, or a `role:`/degree
+  key matching zero or several headings exits **2** ("nothing was checked"), distinct from 1 (a
+  document failed). `allow:` names are blanked before the gates but never before `forbid`; en/em
+  dashes normalise so a rule typed with a hyphen matches a real heading. Also checks required-line
+  placement, orphan bullets, evidence lifted across employers, letters that never name the
+  employer, and AI-tell vocabulary (warning only). `assets/sample-profile.md` carries a block using
+  every verb; `references/master-profile-schema.md` documents the grammar.
+- **`scripts/cvgen.py`**, **`scripts/l2gen.py`**, **`scripts/regen_batch.py`** — CVs assembled
+  from curated blocks in `profiles/<name>.blocks.md` so a fact cannot drift between documents;
+  `bind()` refuses to build if any declared fact is missing from the profile; lane and JD gates
+  apply by construction. `regen_batch` regenerates a Drafted batch idempotently from a one-time
+  basename-keyed backup, with `--priority` and `--rewrites`.
+- **`tracker.py reconcile`** — the CSV mirror had rows the workbook lacked and the next write
+  would have deleted them. Copies the csv to `.pre-reconcile.bak` once, adds every missing row,
+  dedupes on folder *basename* (a re-laned folder must not come back as a twin) and asserts the
+  counts agree. `tracker.py` gains `--self-check`.
+- **`references/academic-register.md`** — a compact register for research/PhD/fellowship
+  targets, replacing a wired-up skill name that resolved to nothing.
+- **`init_workspace.py`** now writes `JOB-LANES.md`, `SEARCH-KEYWORDS.md` (sample `ai-adoption`
+  and `retail-hospitality` lanes + global knockouts) and `TARGET-COMPANIES.md`, and gains
+  `--self-check`. Every script's `--self-check` passes from a clean clone with no workspace.
+
+### Fixed
+
+- **A rejected credential read as a fifth connector.** A 401 fell to a bare `except Exception`,
+  was logged as `error: HTTPError` on every query (spending a call each), and the verifier counted
+  the platform as sourced. `harvest.py` raises `DeadCredential` on 401 (429/403 stay
+  `QuotaExhausted`); `sweep.py` stops the source, writes `auth: 401 — credentials rejected` on
+  the failing query and every unrun one, and exits **3** (argparse owns 2); `verify_run.py` drops
+  an all-auth platform from the floor and fails the run naming it.
+- **Relaxing the salary floor silently disabled the plausibility labels.** The gate wrapped its
+  whole salary block in `if min_salary:`, so a floor of 0 stopped producing `salary-suspect` and a
+  typo'd ceiling ranked first. The label is now computed for every row; only the comparison is
+  conditional.
+- **Two bundles looked identical whether the profile gate passed or never ran.**
+  `daily_bundle.py` validates every bundled document and writes `Profile check: N docs, F
+  failures, <profile> @ <mtime>` as line 3 of `APPLY-TODAY.md`; broken rules surface as
+  `RULES ERROR` rather than "skipped". Pipeline working files are tidied into `_work/`.
+- **`## <target role>` after the name rendered as the contact line.** `render_docx.py` emits a
+  target-title subtitle and strips HTML comments so template notes never reach a `.docx`.
+- **The cover-letter routine argued with itself** — "always ask for a brain-dump first" in two
+  files, "never ask" in a third. The superseded text is deleted: letters are drafted first and
+  complete; the user's own words are source text only when volunteered; the humanizer pass (the
+  installed `humanizer` skill, if present) is mandatory in TAILOR and COVER LETTER with the
+  validator's AI-tell warning as backstop. SKILL.md says which external skills are and are not
+  bundled.
+- **Overlapping roles were labelled "(concurrent)"** — the opposite of the profile rule, and five
+  full-time jobs to an ATS. One role per lane from `overlap-print`; education per lane from
+  `education-for-lane`.
+- **Style guides sat in a table nobody applied, and the critic scored "reads like AI" from its
+  own priors.** Each command step names the reference it needs; `recruiter-critic` scores
+  authenticity against the same list the writer worked from; every "ask the user to confirm" step
+  has an unattended branch.
+- **Docs restated withdrawn rules** ("truth sweep", "(concurrent)", scaffold letters). All point at
+  the profile and `validate_profile.py` instead; "truth rule" is now the profile rule everywhere.
+- **A bracketed keyword silently widened to its bare phrase.** `references/job-search-guide.md`
+  documents the qualifier as a ranking co-requirement and the hand-maintained `(N)` counts.
+- **Self-check asserts that contained their own search literal could never fail.** Source-reading
+  asserts now use a regex that cannot match itself or count only the body before the self-check.
+
 ## [1.5.1] - 2026-08-26
 
 ### Added
