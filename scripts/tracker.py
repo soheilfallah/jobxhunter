@@ -30,6 +30,7 @@ truncated file, when the tracker is open in Excel or read-only.
 import argparse
 import csv
 import datetime
+import io
 import json
 import os
 import sys
@@ -82,6 +83,7 @@ STATUS_FILL = {
     "Rejected":    "F4CCCC",  # red
     "Skipped":     "D9D9D9",  # grey
     "Not applied": "D9D9D9",
+    "Archived":    "EDEDED",  # pale grey — retired from the active pipeline, not deleted
     "Cold-emailed":"E4DFEC",  # light purple — speculative outreach sent
     "Replied":     "DDEBF7",  # pale blue — got a response to outreach
     "Drafted":     None,      # no fill
@@ -207,30 +209,74 @@ def _atomic_save_workbook(wb, path):
         _locked_exit(path, e)
 
 
-def _write_csv(ws, root):
-    """Atomic CSV mirror write (same temp-file + os.replace discipline as the xlsx)."""
+def _csv_bytes(ws):
+    """Render the CSV mirror to a string, without touching the filesystem."""
+    buf = io.StringIO(newline="")
+    w = csv.writer(buf)
+    w.writerow(COLUMNS)
+    for d in _rows_as_dicts(ws):
+        w.writerow([safe_cell(d[c]) for c in COLUMNS])
+    return buf.getvalue()
+
+
+def _write_csv(ws, root, data=None):
+    """Write the CSV mirror. Atomic (temp + os.replace) where the filesystem allows it;
+    falls back to a truncating in-place write when os.replace is blocked on the target
+    but the file itself is still writable. Some Windows setups (a sync/indexing agent, or
+    a second Claude session holding the file) deny the rename while permitting open('w') --
+    without this fallback the xlsx commits and the mirror silently rots."""
     path = csv_path(root)
+    payload = _csv_bytes(ws) if data is None else data
     tmp = None
     try:
         fd, tmp = tempfile.mkstemp(prefix=".tracker-", suffix=".csv.tmp",
                                    dir=os.path.dirname(os.path.abspath(path)))
         with os.fdopen(fd, "w", newline="", encoding="utf-8") as f:
-            w = csv.writer(f)
-            w.writerow(COLUMNS)
-            for d in _rows_as_dicts(ws):
-                w.writerow([safe_cell(d[c]) for c in COLUMNS])
+            f.write(payload)
         os.replace(tmp, path)
     except (PermissionError, OSError) as e:
         _rm(tmp)
+        try:
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                f.write(payload)
+            print(f"note: atomic CSV replace was blocked ({e.__class__.__name__}); "
+                  f"rewrote {os.path.basename(path)} in place instead. Mirrors are consistent.")
+        except (PermissionError, OSError):
+            _locked_exit(path, e)
+
+
+def _preflight_csv(root):
+    """Confirm the CSV mirror is writable BEFORE the xlsx is committed. The xlsx is the
+    system of record; if we save it and then fail on the mirror, the two diverge silently
+    (which is exactly what happened on 2026-08-03). Check first, fail before committing."""
+    path = csv_path(root)
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, "a", encoding="utf-8"):
+            pass
+    except (PermissionError, OSError) as e:
         _locked_exit(path, e)
 
 
 def _save(wb, ws, root):
     _reprotect(ws)
-    # xlsx first: if it's locked we exit BEFORE touching the csv, so the two mirrors
-    # never diverge on the common "workbook open in Excel" failure.
+    # Mirror-writability is checked BEFORE the xlsx is committed, so a csv-only lock can
+    # never leave the xlsx ahead of the csv. Render the csv payload first for the same
+    # reason: if rendering raises, nothing has been written yet.
+    _preflight_csv(root)
+    payload = _csv_bytes(ws)
     _atomic_save_workbook(wb, xlsx_path(root))
+    _write_csv(ws, root, data=payload)
+
+
+def cmd_repair_mirror(root):
+    """Regenerate tracker.csv from tracker.xlsx (the system of record). Use after any
+    interrupted write, or if the two ever disagree on row count."""
+    _, ws = _load(root)
     _write_csv(ws, root)
+    n = len(_rows_as_dicts(ws))
+    print(f"CSV mirror regenerated from {os.path.basename(xlsx_path(root))}: {n} data rows.")
 
 
 def cmd_init(root):
@@ -245,6 +291,7 @@ def cmd_init(root):
 
 
 def cmd_add(root, data):
+    _reject_unknown_columns(data, "add")
     wb, ws = _load(root)
     data = dict(data)
     data.setdefault("logged_date", _today())
@@ -263,7 +310,30 @@ def cmd_add(root, data):
     print(f"Added row {r}: {data.get('company','?')} / {data.get('role','?')} [{data.get('status')}]")
 
 
+def _reject_unknown_columns(data, cmd):
+    """Fail loudly on a column name that isn't real. These used to be dropped in silence,
+    so `--data '{"ats":"X","level":"L1"}'` looked like it worked while writing nothing —
+    the real columns are ats_platform and level_used."""
+    unknown = [k for k in data if k not in COLUMNS and k != "_force"]
+    if not unknown:
+        return
+    import difflib
+    lines = []
+    for k in unknown:
+        # prefix/substring first ('ats' -> 'ats_platform'), then fuzzy; difflib alone
+        # scores a short key poorly against a longer column name.
+        kl = k.lower()
+        hit = ([c for c in COLUMNS if c.startswith(kl)]
+               or [c for c in COLUMNS if kl in c]
+               or difflib.get_close_matches(kl, COLUMNS, n=1, cutoff=0.55))
+        lines.append(f"  {k!r}" + (f"  -> did you mean {hit[0]!r}?" if hit else ""))
+    sys.exit(f"tracker {cmd}: unknown column(s) in --data; nothing was written.\n"
+             + "\n".join(lines)
+             + "\n\nValid columns: " + ", ".join(COLUMNS))
+
+
 def cmd_update(root, key, data):
+    _reject_unknown_columns(data, "update")
     wb, ws = _load(root)
     target = None
     nk = _normkey(key)
@@ -305,9 +375,21 @@ def cmd_update(root, key, data):
     print(f"Updated row {r} -> status={new_status}")
 
 
-def cmd_show(root):
+def cmd_show(root, key=None):
     _, ws = _load(root)
     rows = _rows_as_dicts(ws)
+    if key:
+        # Single row, every column — the read-back after an update. Without this the only way
+        # to verify a write was to parse the csv by hand.
+        nk = _normkey(key)
+        for d in rows:
+            if _normkey(d["folder_path"]) == nk:
+                print(f"row {d['_row']} in {xlsx_path(root)}")
+                for c in COLUMNS:
+                    if str(d[c]):
+                        print(f"  {c:<19} {d[c]}")
+                return
+        sys.exit(f"No row with folder_path={key}")
     print(f"{len(rows)} row(s) in {xlsx_path(root)}")
     for d in rows:
         print(f"  [{d['status']:<11}] {d['category']:<20} {d['company']:<22} {d['role']}")
@@ -403,6 +485,7 @@ PRIORITY_BUCKET = {
     "Interviewed": 1, "Offer": 1,                            # in-progress
     "Applied": 2,                                            # done for now — sinks
     "Rejected": 3, "Skipped": 3, "Not applied": 3,           # dead / watch — bottom
+    "Archived": 4,                                           # retired from the pipeline — very bottom
 }
 PRIORITY_VIEW_COLUMNS = ["status", "company", "role", "location",
                          "closing_date", "fit_score", "link"]
@@ -472,13 +555,15 @@ def cmd_priority_view(root):
 def main():
     ap = argparse.ArgumentParser(description="Application tracker (xlsx + csv).")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("init", "add", "update", "show", "dedupe", "priority-view"):
+    for name in ("init", "add", "update", "show", "dedupe", "priority-view", "repair-mirror"):
         p = sub.add_parser(name)
         p.add_argument("--root", required=True, help="applications directory")
         if name in ("add", "update"):
             p.add_argument("--data", required=True, help="JSON object of column values")
         if name == "update":
             p.add_argument("--key", required=True, help="folder_path of the row to update")
+        if name == "show":
+            p.add_argument("--key", help="folder_path of one row to show in full (else list all)")
         if name == "dedupe":
             p.add_argument("--apply", action="store_true", help="rewrite (default: dry run)")
     args = ap.parse_args()
@@ -490,11 +575,13 @@ def main():
     elif args.cmd == "update":
         cmd_update(args.root, args.key, data)
     elif args.cmd == "show":
-        cmd_show(args.root)
+        cmd_show(args.root, getattr(args, "key", None))
     elif args.cmd == "dedupe":
         cmd_dedupe(args.root, apply=args.apply)
     elif args.cmd == "priority-view":
         cmd_priority_view(args.root)
+    elif args.cmd == "repair-mirror":
+        cmd_repair_mirror(args.root)
 
 
 if __name__ == "__main__":

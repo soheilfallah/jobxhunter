@@ -4,9 +4,73 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.5.1] - 2026-08-26
+
+### Added
+
+- **`SETUP.md`** — a five-step setup walkthrough with an agent procedure for the "I pasted the repo,
+  set me up" case; README, AGENTS.md and the `setup` command point to it; API keys are explicitly
+  optional and last.
 
 ### Fixed
+
+- **Rendering a cover letter silently destroyed the CV next to it.** `render_docx.py --basename`
+  defaulted to the literal string `"CV"`, so any input rendered into a job folder with `--outdir`
+  and no explicit `--basename` landed on `CV.docx` / `CV.txt`. The documented two-step in SKILL.md
+  — render the CV, then render the cover letter into the same folder — therefore overwrote the CV
+  with the letter, and the script reported success both times. The default is now the input file's
+  own stem, so `CV.md → CV.docx` and `CoverLetter.md → CoverLetter.docx`; an explicit `--basename`
+  still wins.
+- **A locked CSV mirror left the tracker's two files permanently out of step.** `_save()` committed
+  `tracker.xlsx` first and only guarded against *the workbook* being locked, on the assumption that
+  "open in Excel" was the only failure mode. It is not: on Windows a sync agent, an indexer or a
+  second Claude session can deny `os.replace` on `tracker.csv` while `open(path, 'a')` still
+  succeeds. The xlsx committed, the mirror write died, and every later read of the csv returned
+  stale rows with nothing to signal it. The mirror's writability is now preflighted *before* the
+  workbook is saved, the csv payload is rendered before anything is written, and a blocked atomic
+  replace falls back to a truncating in-place write with a note on stdout. Added
+  **`tracker.py repair-mirror --root <apps>`** to regenerate the csv from the xlsx after any
+  interrupted write.
+- **`tracker.py add` / `update` silently discarded unknown column names.** `--data
+  '{"ats":"Agency","level":"L1"}'` exited 0, printed a success line, and wrote nothing — the real
+  columns are `ats_platform` and `level_used`. Both commands now hard-fail before touching the
+  workbook and print a did-you-mean (prefix and substring matched before falling back to difflib,
+  so `ats` suggests `ats_platform` rather than `status`).
+- **Reed and Adzuna were documented with the wrong calling convention.** SKILL.md and
+  `references/job-search-guide.md` showed `reed_search_jobs(keywords, locationName,
+  distanceFromLocation)` and `reed_get_job_details(jobId)`. Both servers wrap every argument in a
+  single `params` object and use snake_case, so the documented form fails validation outright —
+  `Field required [params]`, then `Extra inputs are not permitted` on the camelCase retry. Two
+  wasted round trips per lane, mid-hunt. Both docs now show the `params` form, name the snake_case
+  keys, and note that Indeed and Dice are the opposite (flat, no wrapper).
+- **`build_seen_ledger.py` was the only script that rejected `--root`.** Every sibling takes
+  `--root <applications dir>`; this one took only `--applications`, so the muscle-memory call
+  failed mid-run. `--root` is now an accepted alias.
+
+- **`Archived` status.** Retires a row from the active pipeline without deleting it — renders pale
+  grey and sorts below every other status in `priority-view`. Previously an unknown status fell
+  through `PRIORITY_BUCKET.get(..., 2)` and sorted *above* `Skipped`, so a bulk archive pushed
+  retired rows above live ones on the worklist.
+- **`tracker.py show --key <folder_path>`** prints one row with every populated column. Reading a
+  row back after an update previously meant parsing the csv by hand.
+- **`scripts/daily_bundle.py`** — assembles one day's hunt into a dated, self-contained
+  apply-from-here folder. A day's output was previously scattered across per-job folders, the
+  tracker, and a hand-assembled briefing, so actually applying meant opening four things at once.
+  The bundle gathers a `CV_<Company>_<Role>.docx` and matching cover letter per role, a
+  `<date>-roles.xlsx` sheet (status, pay, closing date, fit score, apply link, with closing ≤7 days
+  in red and ≤14 in amber), and a `FINDINGS.md` scaffold. Rows are selected on tracker
+  `logged_date`, so it never depends on folder naming; re-running refreshes in place; and an
+  existing `FINDINGS.md` is **never** overwritten, since the written briefing is the one artefact
+  the script must not touch.
+- **New keyword taxonomy family: `pa-ea-private-office`.** Covers private PA to a HNWI/UHNWI,
+  executive assistant, private- and family-office support, lifestyle and household administration,
+  property-portfolio administration, and AI-enabled VA work. This family had no palette at all
+  despite being one of the most common bridge lanes, so every PA/EA job description was being
+  decomposed from scratch. Includes the knockouts that actually decide these roles — managing
+  domestic staff, events at the highest level, an established local supplier network, sector-specific
+  EA backgrounds — a sector-flavour cheat-sheet (private household vs family office vs corporate EA
+  vs property private office vs agency brief), and an explicit rule that a confidential principal is
+  never identified by **profession**, not just by name.
 
 - **The marketplace could not be added in Claude Desktop or Cowork.** Adding
   `soheilfallah/jobxhunter` there failed with "Marketplace sync failed. Check the repository URL

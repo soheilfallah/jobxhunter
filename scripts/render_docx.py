@@ -238,7 +238,11 @@ def main():
     ap.add_argument("--out-docx")
     ap.add_argument("--out-txt")
     ap.add_argument("--outdir")
-    ap.add_argument("--basename", default="CV")
+    ap.add_argument("--basename", default=None,
+                    help="output stem inside --outdir. Defaults to the INPUT file's own stem, so "
+                         "CV.md -> CV.docx and CoverLetter.md -> CoverLetter.docx. (It used to "
+                         "default to 'CV', which silently overwrote the CV when rendering a letter "
+                         "into the same folder.)")
     ap.add_argument("--page", choices=("a4", "letter"), default="a4",
                     help="page size: a4 (UK/world, default) or letter (Canada/US market=ca).")
     args = ap.parse_args()
@@ -249,8 +253,11 @@ def main():
 
     if args.outdir:
         os.makedirs(args.outdir, exist_ok=True)
-        out_docx = args.out_docx or os.path.join(args.outdir, args.basename + ".docx")
-        out_txt = args.out_txt or os.path.join(args.outdir, args.basename + ".txt")
+        # Derive the stem from the input unless the caller named one explicitly. Rendering
+        # CoverLetter.md into a job folder must never land on CV.docx.
+        stem = args.basename or os.path.splitext(os.path.basename(args.infile))[0]
+        out_docx = args.out_docx or os.path.join(args.outdir, stem + ".docx")
+        out_txt = args.out_txt or os.path.join(args.outdir, stem + ".txt")
     else:
         out_docx = args.out_docx or (os.path.splitext(args.infile)[0] + ".docx")
         out_txt = args.out_txt or (os.path.splitext(args.infile)[0] + ".txt")

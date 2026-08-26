@@ -51,13 +51,16 @@ It's the tool I used for my own hunt, and my friends used for theirs. It's yours
 
 ## Quick start
 
+> **New here? Read [`SETUP.md`](SETUP.md) — five steps, about five minutes.**
+> Pasting this repo into Claude Code? Say *"set me up"* and it follows that same file, one step at a time.
+
 ```
 /plugin marketplace add soheilfallah/jobxhunter
 /plugin install jobxhunter@soheil-jobxhunter
 /jobxhunter:setup
 ```
 
-`setup` scaffolds a private workspace. Drop your old CVs and notes into the `dump/` folder it makes, run `/jobxhunter:intake` to build your master profile, then `/jobxhunter:tailor` a role (or `/jobxhunter:hunt` to find and tailor many). Say *"I applied to this one"* and the tracker row locks.
+Leave the API-key prompts blank during install — they're optional and come last. `setup` scaffolds a private workspace. Drop your old CVs and notes into the `dump/` folder it makes, run `/jobxhunter:intake` to build your master profile, then `/jobxhunter:tailor` a role (or `/jobxhunter:hunt` to find and tailor many). Say *"I applied to this one"* and the tracker row locks.
 
 > ⭐ If it saves you one wasted application, a star helps other job-hunters find it.
 

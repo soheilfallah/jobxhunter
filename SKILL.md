@@ -127,8 +127,8 @@ conventions doc + a board list + a connector map, nothing in the engine changes.
 | answering application-form / screening questions | `references/application-answers.md` |
 
 Keyword families: `plant-science-research`, `research-assistant-lead`, `ai-technician-junior-ai`,
-`data-research-analysis`, `security-frontline`. Pick the closest; if none fit, decompose the JD
-directly with `jd-analysis.md` and note the taxonomy gap.
+`data-research-analysis`, `pa-ea-private-office`, `security-frontline`. Pick the closest; if none
+fit, decompose the JD directly with `jd-analysis.md` and note the taxonomy gap.
 
 ## Tools & external skills (surface-aware routing)
 
@@ -225,9 +225,11 @@ The repeatable daily hunt. Read `references/daily-hunt.md` and follow it: read t
 profile fresh → concurrency lock + rebuild ledger → **source** the priority families (live connectors,
 LIVE-only, new-since-last-run) → knockout sweep → **tailor every new live match (no cap)** → prep
 cover-letter scaffolds and flag braindumps → **track & file** every job (Drafted/Skipped with reason +
-link) → rebuild ledger + regenerate the priority view → write a dated `daily-hunt/<DATE>-summary.md`
-(same-day re-run ⇒ `-run-b`). Never touch `Applied` rows; never claim a profile "never-claim" gap;
-dedupe on the canonical link key, not folder slugs.
+link) → rebuild ledger + regenerate the priority view → **assemble the dated apply-from-here bundle**
+(`daily_bundle.py --root <apps>` → CVs, cover letters and a `<date>-roles.xlsx` in
+`tasks/daily/<DATE>/`, then write that day's `FINDINGS.md` into it) → write a dated
+`daily-hunt/<DATE>-summary.md` (same-day re-run ⇒ `-run-b`). Never touch `Applied` rows; never claim
+a profile "never-claim" gap; dedupe on the canonical link key, not folder slugs.
 
 **Keep quality flat across a long batch (Claude Code).** A no-cap hunt can tailor a dozen-plus roles
 in one context, where later CVs quietly get less care. Where subagents are available, fan out **one
@@ -269,10 +271,18 @@ Firecrawl)**, climbing only while results are thin. Firecrawl captures each full
    `budget` mode, work the tiers above in order instead) — then dedupe hits by company+role. Don't stop
    at the first board; each covers different roles:
    - **Indeed** (`search_jobs`, `country_code='GB'`) — the broad UK workhorse.
-   - **Reed** (`reed_search_jobs`, `locationName` + `distanceFromLocation` in **miles**) — strong on
-     UK security, data, admin and agency roles.
+   - **Reed** (`reed_search_jobs`) — strong on UK security, data, admin and agency roles.
    - **Adzuna** (`adzuna_search_jobs`, `country='gb'`) — wide UK aggregator; also gives labour-market
      salary context (`adzuna_salary_histogram`, `adzuna_top_companies`) to fill a band the JD omits.
+
+   > **Reed and Adzuna take every argument nested inside a single `params` object, in
+   > `snake_case`.** Passing them flat, or in camelCase, is rejected outright by pydantic —
+   > `Field required [params]` or `Extra inputs are not permitted`. So it is
+   > `reed_search_jobs(params={"keywords": …, "location_name": "London",
+   > "distance_from_location": 30, "results_to_take": 25})`, **not** `locationName` /
+   > `distanceFromLocation` / `resultsToTake`, and `adzuna_search_jobs(params={"what": …,
+   > "country": "gb", "results_per_page": 25})`. Reed distance is in **miles**, Adzuna's in km.
+   > Indeed and Dice are the opposite — flat top-level args, no `params` wrapper.
    - **Dice** (`search_jobs` on the Dice connector) — US-leaning tech; worth a pass for the AI/data
      families only (weak UK coverage).
    When the connectors don't cover a role/board (niche board, institute page, company careers
@@ -284,7 +294,7 @@ Firecrawl)**, climbing only while results are thin. Firecrawl captures each full
    with Indeed's `get_company_data` (reviews, salary bands) or Adzuna salary tools. Drop
    hard-knockout fails.
 4. **Capture** survivors — pull the FULL JD text before tailoring, never tailor off the search
-   snippet: Indeed `get_job_details(job_id)`, Reed `reed_get_job_details(jobId)` (also returns
+   snippet: Indeed `get_job_details(job_id)`, Reed `reed_get_job_details(params={"job_id": …})` (also returns
    normalised yearly salary + apply URL), Adzuna → fetch the result's `redirect_url`. If none of
    those yield the full text (external ATS, PDF, bare listing), **crawl the apply/JD URL with
    Firecrawl** (`firecrawl_scrape` for one page, `firecrawl_extract` to pull structured JD fields)
@@ -488,6 +498,21 @@ day-to-day worklist, generate the prioritised view (`tracker.py priority-view` �
 stays the system of record. Clean duplicate rows with `tracker.py dedupe` (dry-run by default;
 `--apply` to rewrite; it dedupes on the canonical link key and never drops `Applied` rows).
 
+**Status vocabulary.** `Drafted` · `Skipped` · `Applied` · `Interview` / `Interviewed` · `Offer` ·
+`Rejected` · `Cold-emailed` · `Replied` · `Not applied` · **`Archived`**. `Applied / Interview /
+Interviewed / Offer / Rejected` are *committed*: status moves freely among them, but regressing out
+of the set — or editing an identity field — needs `"_force": true`. **`Archived`** retires a row
+from the active pipeline without deleting it: it renders pale grey and sinks below everything in
+the priority view. Use it for a bulk reset, and keep an index of what was archived so the rows stay
+reachable.
+
+**Two things that bite (both fixed in the scripts, both worth knowing):** `update`/`add` now
+**hard-fail on an unknown column name** instead of silently writing nothing — the real columns are
+`ats_platform` and `level_used`, not `ats`/`level`; and the csv mirror is preflighted *before* the
+xlsx commits, so a csv-only lock can no longer leave the two out of step. If they ever do diverge,
+`tracker.py repair-mirror --root <apps>` regenerates the csv from the xlsx. Read a row back with
+`tracker.py show --root <apps> --key <folder_path>`.
+
 ## Command: DASHBOARD (share the pipeline at a glance)
 
 Turn the tracker into one self-contained HTML page — headline tiles, the apply→interview→offer
@@ -523,6 +548,12 @@ demos (see `assets/sample-tracker.csv`).
   **not** a match score; `--min` makes it a pass/fail gate. Import or CLI.
 - `scripts/dashboard.py` — tracker CSV → one self-contained HTML dashboard (funnel, status, category,
   recruiter-score spread). Stdlib only (no openpyxl); offline; no network requests. Read-only.
+- `scripts/daily_bundle.py` — gathers one day's hunt into a dated apply-from-here folder:
+  `CV_<Company>_<Role>.docx` + `CoverLetter_…` per role, a `<date>-roles.xlsx` sheet (status, pay,
+  closing date, fit score, apply link; closing ≤7d red, ≤14d amber), and a `FINDINGS.md` scaffold.
+  Selects on tracker `logged_date`, so it never depends on folder naming. Idempotent, and it
+  **never overwrites an existing `FINDINGS.md`** — the written briefing is the one thing it will not
+  touch. Read-only over the tracker.
 
 All CLIs force UTF-8 stdout so non-Latin-1 job data prints cleanly on a default Windows console, and
 `tracker.py` saves atomically (never truncates; a clear message if the file is open in Excel).

@@ -8,7 +8,9 @@ The user's **master profile is the only source of truth** for anything submittab
 
 ## Start here
 
-Read [`SKILL.md`](SKILL.md). It is the engine: a workflow map that pulls deeper knowledge from `references/` only when a step needs it. Everything below is a pointer into it.
+**Setting a user up for the first time?** Follow [`SETUP.md`](SETUP.md) — five steps, in order, one question at a time, keys last and optional. That file has the agent procedure and the per-step check.
+
+Otherwise read [`SKILL.md`](SKILL.md). It is the engine: a workflow map that pulls deeper knowledge from `references/` only when a step needs it. Everything below is a pointer into it.
 
 ## The pipeline
 

@@ -49,7 +49,10 @@ def canonical_key(link, folder_path=""):
 def main():
     ap = argparse.ArgumentParser(description="Build the daily-hunt dedupe ledger.")
     ap.add_argument("--workspace", help="workspace root (else JOBXHUNTER_DIR / discovery)")
-    ap.add_argument("--applications", help="explicit applications dir (overrides workspace)")
+    ap.add_argument("--applications", "--root", dest="applications",
+                    help="explicit applications dir (overrides workspace). --root is an alias: "
+                         "every other script in this folder names that argument --root, and the "
+                         "mismatch reliably costs a failed call mid-hunt.")
     ap.add_argument("--today", help="date stamp for last_seen (YYYY-MM-DD); default today")
     args = ap.parse_args()
 

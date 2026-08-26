@@ -62,14 +62,23 @@ connectors** for every search — each indexes different roles — then dedupe h
   - `get_resume()` — reads any resume the user has on Indeed; a shortcut to seed a profile.
 - **Reed** (`reed` connector) — Reed.co.uk, a top UK aggregator. Strong on security, data, admin and
   agency roles. Verified working (2026-07-17).
-  - `reed_search_jobs(keywords, locationName, distanceFromLocation, …)` — live UK roles. **Distance
-    is in MILES** (not km); default 10. Returns only a SHORT description.
-  - `reed_get_job_details(jobId)` — full JD text **plus** normalised yearly salary, salary type,
-    contract type and the external apply URL. This is the Reed CAPTURE source — always call it before
-    tailoring. Salary can be hidden by the employer; an absent salary is "Not disclosed", never £0.
+  - `reed_search_jobs(params={"keywords": …, "location_name": …, "distance_from_location": …,
+    "results_to_take": …})` — live UK roles. **Distance is in MILES** (not km); default 10. Returns
+    only a SHORT description.
+  - `reed_get_job_details(params={"job_id": …})` — full JD text **plus** normalised yearly salary,
+    salary type, contract type and the external apply URL. This is the Reed CAPTURE source — always
+    call it before tailoring. Salary can be hidden by the employer; an absent salary is "Not
+    disclosed", never £0.
 - **Adzuna** (`adzuna` connector) — wide UK aggregator + labour-market data. Verified working.
-  - `adzuna_search_jobs(what, where, country='gb', …)` — live roles; returns only a SNIPPET of each
-    JD. For the full text, fetch the result's `redirect_url` (via Firecrawl/WebFetch).
+  - `adzuna_search_jobs(params={"what": …, "where": …, "country": "gb", "results_per_page": …})` —
+    live roles; returns only a SNIPPET of each JD. For the full text, fetch the result's
+    `redirect_url` (via Firecrawl/WebFetch).
+
+> **CALLING CONVENTION — Reed and Adzuna only.** Both wrap every argument in a single `params`
+> object and use `snake_case`. Flat args fail with `Field required [params]`; camelCase fails with
+> `Extra inputs are not permitted`. Neither error is recoverable by retrying the same shape, and
+> each wasted call is a wasted round trip. **Indeed and Dice are the opposite** — flat top-level
+> arguments, no wrapper. (Confirmed live 2026-08-03.)
   - Labour-market context to fill a salary band the JD omits: `adzuna_salary_histogram`,
     `adzuna_salary_history`, `adzuna_regional_breakdown`, `adzuna_top_companies`. All salaries are
     ANNUAL, GBP for `gb`.

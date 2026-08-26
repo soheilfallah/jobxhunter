@@ -47,3 +47,7 @@ dist/
 # Local agent/session state — never published
 .claude/
 .claude-flow/
+
+# Working notes from a downstream install — improvements pending review before
+# they are written up properly. Never published as-is.
+/UPSTREAM-IDEAS.md

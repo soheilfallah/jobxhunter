@@ -5,6 +5,10 @@ argument-hint: "[optional: workspace directory to scaffold]"
 
 Use the **jobxhunter** skill's **SETUP** routine.
 
+**Walk the user through `SETUP.md`, one step at a time, and verify each step before the next.**
+Keys are step 5 and optional — never lead with them, never block on them. Stop after the profile
+is built and the user has looked at it; tell them which command to run next.
+
 1. Resolve or create the workspace (`python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve`; if none, scaffold with
    `python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]`). This drops the profile template,
    the `dump/` folder, `WORKSPACE-MAP.md`, and the tracker, then stops.
