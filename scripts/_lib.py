@@ -177,6 +177,48 @@ def scripts_dir(root):
     return os.path.join(root, SCRIPTS_DIR)
 
 
+# ------------------------------------------------------------- plugin user-config
+# userConfig field -> the environment variable the connectors and scripts read.
+PLUGIN_SECRET_ENV = {
+    "reed_api_key": "REED_API_KEY",
+    "adzuna_app_id": "ADZUNA_APP_ID",
+    "adzuna_app_key": "ADZUNA_APP_KEY",
+    "firecrawl_api_key": "FIRECRAWL_API_KEY",
+}
+
+
+def plugin_secrets(store=None):
+    """-> {userConfig field: value} for this plugin, from Claude Code's credential store.
+
+    `sensitive: true` userConfig values are written (Windows/Linux) to
+    ~/.claude/.credentials.json under `pluginSecrets[<plugin@marketplace>]`; the same
+    place setup_connectors.py reports from. macOS keeps them in the keychain, so this
+    returns {} there and the caller falls back to environment variables. Never raises:
+    an unreadable store is "no keys", not a crash.
+    """
+    import json
+    path = store or os.path.join(os.path.expanduser("~"), ".claude", ".credentials.json")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            secrets = json.load(fh).get("pluginSecrets") or {}
+    except (OSError, ValueError):
+        return {}
+    for pid, vals in secrets.items():
+        if pid.split("@")[0] == "jobxhunter" and isinstance(vals, dict):
+            return {k: str(v) for k, v in vals.items() if v}
+    return {}
+
+
+def secret_env(name, store=None):
+    """-> the value for an env-var name such as REED_API_KEY: the environment first, then
+    the plugin's user-config (see PLUGIN_SECRET_ENV). '' when neither has it."""
+    if os.environ.get(name):
+        return os.environ[name]
+    fields = [f for f, env in PLUGIN_SECRET_ENV.items() if env == name]
+    vals = plugin_secrets(store)
+    return next((vals[f] for f in fields if vals.get(f)), "")
+
+
 # ------------------------------------------------------------------------ CLI
 def main():
     ap = argparse.ArgumentParser(description="JobXHunter shared helpers (preflight / resolve).")
