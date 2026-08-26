@@ -1,4 +1,5 @@
 # Firstname Lastname
+## Target Role Title
 City, Country | +44 7XXX XXXXXX | you@email.com | linkedin.com/in/handle | github.com/handle
 
 ## Professional Summary
@@ -35,7 +36,11 @@ Year
 <!--
 RENDER CONTRACT (read by render_docx.py):
   #   -> name            ## -> section heading      ### -> entry title (role/degree)
-  first line after name -> contact line             -  -> bullet (indent 2 spaces for sub-bullet)
+  `## <target role>` IMMEDIATELY after the name (no blank line between) -> the target-title
+  subtitle for the six-second scan. A blank line there resets the parser and the title
+  renders as a section heading instead — this shape shipped `## <title>` as the contact
+  line on 139 of 139 CVs, 23 Aug 2026.
+  first line after name/title -> contact line       -  -> bullet (indent 2 spaces for sub-bullet)
   other non-empty line  -> paragraph (dates auto-italicised)
 ATS-safe by construction: single column, no tables, no columns, no text boxes, no
 images, no headers/footers. Do NOT add any of those. Keep to two pages.

@@ -81,6 +81,11 @@ ACCENT = RGBColor(0x30, 0x54, 0x96)
 
 def parse(md):
     """Return a structured list of ('kind', text/level) tokens."""
+    # HTML comments are how a template carries its own instructions. They MUST NOT reach the
+    # rendered document: the base data/AI template carried template notes that quoted the barred
+    # IELTS line, and without this they rendered into the .docx and would have been sent to an
+    # employer. A CV is the one artefact where a leaked internal note is unrecoverable.
+    md = re.sub(r"<!--.*?-->", "", md, flags=re.S)
     lines = md.replace("\r\n", "\n").split("\n")
     tokens = []
     name_seen = False
@@ -96,6 +101,12 @@ def parse(md):
             tokens.append(("name", stripped[2:].strip()))
             name_seen = True
             contact_pending = True
+            continue
+        if contact_pending and stripped.startswith("## "):
+            # The target-role line sits between the name and the contact line. Recruiter-critics
+            # flagged its absence on all six CVs of 10 Aug; without this branch it was swallowed
+            # as the contact line and rendered with its literal '##'.
+            tokens.append(("target", stripped[3:].strip()))
             continue
         if contact_pending:
             tokens.append(("contact", stripped))
@@ -151,6 +162,13 @@ def build_docx(tokens, out_path, page="a4"):
             r.bold = True
             r.font.size = Pt(NAME_SIZE)
             r.font.color.rgb = DARK
+            p.paragraph_format.space_after = Pt(2)
+        elif kind == "target":
+            p = doc.add_paragraph()
+            r = p.add_run(_strip_md_inline(val))
+            r.bold = True
+            r.font.size = Pt(BODY_SIZE + 1)
+            r.font.color.rgb = ACCENT
             p.paragraph_format.space_after = Pt(2)
         elif kind == "contact":
             p = doc.add_paragraph()
@@ -213,6 +231,8 @@ def build_txt(tokens, out_path):
     for kind, val in tokens:
         if kind == "name":
             out.append(_strip_md_inline(val).upper())
+        elif kind == "target":
+            out.append(_strip_md_inline(val))
         elif kind == "contact":
             out.append(_strip_md_inline(val))
             out.append("")
@@ -232,8 +252,43 @@ def build_txt(tokens, out_path):
         f.write("\n".join(out).rstrip() + "\n")
 
 
+def self_check():
+    md = ("# Firstname Lastname\n"
+          "## AI Lead\n"
+          "a@b.com | london\n\n"
+          "## Professional Summary\n"
+          "Ships things.\n\n"
+          "<!-- TEMPLATE NOTE: IELTS Academic 7.0 must never appear on a CV -->\n"
+          "## Additional\n"
+          "- Eligible to work in the UK.\n")
+    toks = parse(md)
+    kinds = [k for k, _ in toks]
+    assert kinds[:3] == ["name", "target", "contact"], kinds
+    assert ("target", "AI Lead") in toks
+    assert ("contact", "a@b.com | london") in toks
+    # the whole point: nothing from inside an HTML comment may survive into the document
+    flat = " ".join(str(v) for _, v in toks)
+    assert "IELTS" not in flat and "TEMPLATE NOTE" not in flat, flat
+    import tempfile
+    import os as _os
+    d = tempfile.mkdtemp()
+    try:
+        p = _os.path.join(d, "CV.txt")
+        build_txt(toks, p)
+        got = open(p, encoding="utf-8").read()
+        assert "AI Lead" in got and "IELTS" not in got and "##" not in got, got
+    finally:
+        import shutil
+        shutil.rmtree(d, ignore_errors=True)
+    print("render_docx self-check OK")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description="Render ATS-safe .docx + .txt from a markdown CV.")
+    ap.add_argument("--self-check", action="store_true")
+    if "--self-check" in sys.argv:
+        return self_check()
     ap.add_argument("--in", dest="infile", required=True)
     ap.add_argument("--out-docx")
     ap.add_argument("--out-txt")
