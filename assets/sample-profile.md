@@ -94,5 +94,46 @@ January 2016 – October 2022 · Self-employed
 ## References
 Available on request. (Academic referees from University of Tehran; UK employment references available.)
 
+## Rules (machine-checked)
+
+Parsed by `scripts/validate_profile.py` — see `references/master-profile-schema.md` for the grammar.
+Every verb is used here so the sample exercises the whole checker.
+
+```profile-rules
+# Never on a submitted document.
+forbid: SIA licence held
+forbid: IELTS
+
+# Every CV ends with this exact line, in its last section.
+require-cv: Eligible to work in the UK.
+
+# Vocabulary the profile does not spell out but which is fine to use. Blanked before the
+# lane/JD gates run, so "University of Tehran" never trips the Tehran gate below.
+allow: Microsoft Office
+allow: University of Tehran
+
+# One per `### ` heading under ## Experience: the substring that identifies the employer on
+# the profile AND on any CV that prints it.
+role: Photosynthesis Laboratory
+role: Greenhouse Operations Supervisor
+role: Citrus
+role: Retail
+
+# Only on these lanes.
+forbid-unless-lane: Farrow & Ball, retail -> retail-hospitality, ops-admin
+
+# Only when the advert asks for it.
+forbid-unless-jd-mentions: driving licence, own transport
+forbid-unless-jd-mentions: Tehran, Iran, Mazandaran
+
+# Which degrees print, in which order, per lane.
+education-for-lane: research, agri-food -> MSc Controlled Environment, BSc Horticultural, MSc Big Data
+education-for-lane: * -> MSc Big Data, MSc Controlled Environment
+
+# The two concurrent Tehran roles overlap: a CV prints AT MOST ONE of them, from the lane's menu.
+overlap-print: research, agri-food -> Greenhouse Operations Supervisor, Photosynthesis Laboratory
+overlap-print: * -> Photosynthesis Laboratory, Greenhouse Operations Supervisor
+```
+
 ## Confidential hold
 - Detailed immigration history and personal circumstances behind the UK relocation timeline: read-for-context only, never output to a CV or letter. State only "valid right to work in the UK" and let any gap be handled per career-narrative.md gap guidance.
