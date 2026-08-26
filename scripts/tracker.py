@@ -279,6 +279,50 @@ def cmd_repair_mirror(root):
     print(f"CSV mirror regenerated from {os.path.basename(xlsx_path(root))}: {n} data rows.")
 
 
+def cmd_reconcile(root):
+    """Every CSV-mirror row must exist in the xlsx BEFORE any tracker write: the workbook is
+    the system of record and the csv is regenerated from it on every save, so rows written
+    straight into the csv would be deleted by the first `add`/`update`. Reads a one-time
+    `.bak` copy of the csv (taken on the first call, never refreshed) so a partially
+    clobbered live csv cannot lose rows. Dedupes on folder BASENAME, not full path: a later
+    run legitimately re-paths a row when it moves a folder between lanes, and the frozen
+    bak still carries the old path — re-adding it would resurrect a ghost twin."""
+    csvp = csv_path(root)
+    bak = csvp + ".pre-reconcile.bak"
+    if not os.path.isfile(bak):
+        if not os.path.isfile(csvp):
+            print("reconcile: no csv mirror to reconcile from.")
+            return 0
+        import shutil
+        shutil.copy2(csvp, bak)
+    with open(bak, encoding="utf-8-sig", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    _, ws = _load(root)
+    xlsx_rows = _rows_as_dicts(ws)
+
+    def _base(p):
+        return os.path.basename(str(p or "").rstrip("/\\")).lower()
+    have = {_normkey(d.get("folder_path")) for d in xlsx_rows}
+    have_base = {_base(d.get("folder_path")) for d in xlsx_rows}
+    added = 0
+    for r in rows:
+        k = _normkey(r.get("folder_path"))
+        if not k or k in have or _base(r.get("folder_path")) in have_base:
+            continue
+        try:
+            cmd_add(root, {c: r.get(c, "") for c in COLUMNS})
+            added += 1
+        except SystemExit as exc:
+            print(f"  reconcile: add refused for {r.get('folder_path')}: {exc}")
+    _, ws = _load(root)
+    n_x = len(_rows_as_dicts(ws))
+    with open(csvp, encoding="utf-8-sig", newline="") as fh:
+        n_c = len(list(csv.DictReader(fh)))
+    print(f"reconcile: {added} added · xlsx {n_x} rows · csv {n_c} rows · bak {len(rows)} rows")
+    assert n_x == n_c, "xlsx and csv disagree after reconcile"
+    return n_x
+
+
 def cmd_init(root):
     os.makedirs(root, exist_ok=True)
     if os.path.exists(xlsx_path(root)):
@@ -552,10 +596,41 @@ def cmd_priority_view(root):
           f"soonest-closing next, closing≤7d in red). Full tracker stays the system of record.")
 
 
+def self_check():
+    import shutil
+    root = tempfile.mkdtemp()
+    try:
+        cmd_init(root)
+        cmd_add(root, {"company": "A", "role": "r", "folder_path": "applications/x/2026-01-01_a"})
+        # two rows written straight into the mirror: one new, one the SAME folder under a
+        # different lane (must not come back as a twin)
+        with open(csv_path(root), "a", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=COLUMNS)
+            w.writerow({"company": "B", "role": "r", "status": "Drafted",
+                        "folder_path": "applications/y/2026-01-02_b"})
+            w.writerow({"company": "A", "role": "r", "status": "Drafted",
+                        "folder_path": "applications/z/2026-01-01_a"})
+        assert cmd_reconcile(root) == 2
+        assert os.path.isfile(csv_path(root) + ".pre-reconcile.bak")
+        mtime = os.path.getmtime(csv_path(root) + ".pre-reconcile.bak")
+        assert cmd_reconcile(root) == 2          # idempotent; bak taken once
+        assert os.path.getmtime(csv_path(root) + ".pre-reconcile.bak") == mtime
+        with open(csv_path(root), encoding="utf-8-sig", newline="") as fh:
+            rows = list(csv.DictReader(fh))
+        assert [r["company"] for r in rows] == ["A", "B"], rows
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+    print("tracker self-check OK")
+    return 0
+
+
 def main():
+    if "--self-check" in sys.argv:
+        return self_check()
     ap = argparse.ArgumentParser(description="Application tracker (xlsx + csv).")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("init", "add", "update", "show", "dedupe", "priority-view", "repair-mirror"):
+    for name in ("init", "add", "update", "show", "dedupe", "priority-view", "repair-mirror",
+                 "reconcile"):
         p = sub.add_parser(name)
         p.add_argument("--root", required=True, help="applications directory")
         if name in ("add", "update"):
@@ -582,7 +657,9 @@ def main():
         cmd_priority_view(args.root)
     elif args.cmd == "repair-mirror":
         cmd_repair_mirror(args.root)
+    elif args.cmd == "reconcile":
+        cmd_reconcile(args.root)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
