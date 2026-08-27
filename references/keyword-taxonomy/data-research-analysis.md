@@ -1,7 +1,6 @@
 # Keyword taxonomy — Data / research analysis (UK, entry–mid)
 
-Use this as a KEYWORD PALETTE: match JD terms to REAL profile evidence. Never invent a tool or
-platform the candidate has not used. Flag missing must-haves as gaps; do not fabricate.
+Use this as a KEYWORD PALETTE: match JD terms to profile evidence; flag missing must-haves as gaps.
 
 **Weighting:** `W3` TITLE-MATCH · `W2` MUST-HAVE (essential) · `W1` NICE-TO-HAVE (desirable) ·
 `[KO]` common KNOCKOUT.

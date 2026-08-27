@@ -1,8 +1,7 @@
 # Keyword taxonomy — Research assistant / associate (UK, entry–mid)
 
-Use this as a KEYWORD PALETTE: match JD terms to REAL profile evidence. Never invent a method,
-tool, or degree the candidate lacks. If a must-have is absent from the profile, flag a gap — do
-not fabricate. Degree FIELD and TITLE match are the most heavily weighted signals in this family.
+Use this as a KEYWORD PALETTE: match JD terms to profile evidence; flag missing must-haves as gaps.
+Degree FIELD and TITLE match are the most heavily weighted signals in this family.
 
 **Weighting:** `W3` TITLE-MATCH · `W2` MUST-HAVE (essential/degree gate) · `W1` NICE-TO-HAVE ·
 `[KO]` common KNOCKOUT (binary gate — surface, never bluff).

@@ -1,6 +1,6 @@
 # Master profile schema — the data contract
 
-The master profile is the **only source of truth** for L0/L1 CVs and for the evidence in cover letters. This doc describes the *shape* of the feed the tailorer expects to read. It is deliberately **loose**: it describes the shape of the data, not the person. Any conforming markdown file works as input — yours, a friend's, or an invented persona. `assets/sample-profile.md` is just the first sample.
+The master profile is what L0/L1 CVs and cover-letter evidence are built from. This doc describes the *shape* of the feed the tailorer expects to read. It is deliberately **loose**: it describes the shape of the data, not the person. Any conforming markdown file works as input — yours, a friend's, or an invented persona. `assets/sample-profile.md` is just the first sample.
 
 ## Design principle
 
@@ -8,7 +8,7 @@ The profile is a **decoupled data feed**. The skill logic and knowledge base nev
 
 ## Format
 
-Plain markdown with `##` section headers matching the field names below. The tailorer parses by heading, so keep headings close to these names. Extra sections are fine and ignored if irrelevant. Missing sections are treated as "no evidence here" — never as a licence to invent.
+Plain markdown with `##` section headers matching the field names below. The tailorer parses by heading, so keep headings close to these names. Extra sections are fine and ignored if irrelevant. Missing sections are treated as "no evidence here".
 
 ## Fields
 
@@ -19,7 +19,7 @@ Name; location (city/area — full address optional); phone (local format for th
 Priority-ordered target job families (1 = most wanted); bridge/fallback lanes; last-resort lanes; salary floor; work pattern; and the **market** — the country/labour-market the hunt runs in, e.g. `uk`, `ca`, `us`. **The market is the switch** that selects the conventions layer (`uk-conventions.md` / `ca-conventions.md` / …), the job-board list, and the connectors the skill uses. If the market isn't stated, infer it from `location` + work authorisation and confirm with the user before tailoring. One profile can hold more than one target market (e.g. UK + Canada) — the run picks the active one.
 
 ### `## Headline / positioning` (optional but useful)
-One or two lines the person uses to describe themselves per track (e.g. a "horticultural researcher" line AND a "data analyst" line). Gives the tailorer honest raw material for the summary without inventing a stance.
+One or two lines the person uses to describe themselves per track (e.g. a "horticultural researcher" line AND a "data analyst" line). Gives the tailorer raw material for the summary.
 
 ### `## Experience`
 The core warehouse. For each role, in reverse-chronological order:
@@ -29,7 +29,7 @@ The core warehouse. For each role, in reverse-chronological order:
 - Real numbers wherever they exist (team size, sample size, %, duration, throughput, budget). Numbers are gold for tailoring; capture them here even if messy.
 
 ### `## Skills warehouse`
-A broad, clustered inventory — bigger than any one CV uses. Group loosely (e.g. lab techniques, data/analysis, tools/software, languages, domain knowledge, operational/soft). List everything the person can genuinely do. The tailorer pulls the matching cluster per JD; it must never add a skill that isn't here.
+A broad, clustered inventory — bigger than any one CV uses. Group loosely (e.g. lab techniques, data/analysis, tools/software, languages, domain knowledge, operational/soft). List everything the person can genuinely do. The tailorer pulls the matching cluster per JD.
 
 ### `## Education`
 Degrees/qualifications: title, institution, location, dates, classification/grade if known. Include international qualifications as-stated; note UK equivalence if known (the tailorer can present equivalence per `uk-conventions.md`). Relevant modules/dissertation titles optional but useful for early-career tailoring.
@@ -44,12 +44,12 @@ Publications (with DOI/links), conference talks, posters, patents, notable proje
 Referees with relationship and contact, OR a note that references are available on request. Kept in the profile so the tailorer knows they exist; per UK convention they usually don't go on the CV itself.
 
 ### `## Confidential hold` (optional)
-Anything the person does NOT want surfaced on any CV/letter (e.g. reasons for a gap, sensitive employers, immigration detail beyond right-to-work status, personal circumstances). The tailorer must treat this section as **read-for-context, never-output**. It exists so the person can be honest with the tool without that honesty leaking onto a document.
+Anything the person does NOT want surfaced on any CV/letter (e.g. reasons for a gap, sensitive employers, immigration detail beyond right-to-work status, personal circumstances). The tailorer must treat this section as **read-for-context, never-output**. It exists so the person can tell the tool things that must not reach a document.
 
 ## What the tailorer may and may not do with the profile
 
 - **May**: select, reframe, reorder, emphasise, cluster, quantify from stated numbers, translate a duty into an achievement, present international qualifications with UK equivalence, choose which headline to lead with.
-- **May not**: invent a role, skill, number, date, employer, qualification, or output not present here; upgrade a stated fact into a stronger false claim; output anything from `Confidential hold`.
+- **May not**: add a role, skill, number, date, employer, qualification, or output not present here; output anything from `Confidential hold`.
 - **On a gap** (JD wants X, profile has no X): first classify it (`tailoring-levels.md`, "Gap classes"). A **hard gap** (no plausible basis) is surfaced, never filled (only L2 may fill it). An **adjacent/plausibly-held** item (X under a different name, or one a listed role obviously implies) is *provisionally* included and confirmed in one neutral yes/no batch at the end of the run — not dropped, not treated as a lie. The profile being incomplete is expected: people forget experiences and rename skills.
 
 ### `## Rules` — the ` ```profile-rules ` block (optional, strongly recommended)
@@ -79,8 +79,10 @@ Arrow verbs split on ` -> ` before `,`. Lane tokens must be lanes declared in th
 declared rules the checker also flags orphan bullets (a bullet under `## Experience` with no
 employer heading), evidence lifted from one employer's entry printed under another, a cover letter
 that never names the employer outside the salutation, and AI-tell vocabulary (a warning, never a
-failure). Profiles written before the block existed fall back to a `never claim` prose section for
-`forbid` only — blunt; declare the block instead.
+failure). Profiles written before the block existed fall back to a prose section for `forbid`
+only — blunt; declare the block instead. That fallback keys on the heading text: the validator
+still accepts (and requires) a heading containing `never claim`, the older name for the not-on-CV
+list, so a prose-only profile keeps that heading.
 
 ### `profiles/<name>.blocks.md` — CV blocks (optional; needed by `cvgen.py`)
 

@@ -8,8 +8,8 @@ Use the **jobxhunter** skill's **COVER LETTER** routine.
 **Draft first — never ask for a brain-dump.** Write the letter complete from the JD + profile, name
 the employer in the body, and build the "why this employer" paragraph from the advert and verifiable
 public knowledge. If the user volunteers their own words (typed, or a voice-note transcript), treat
-them as source text and preserve their voice. Every factual claim maps to profile evidence
-(profile rule). Deliver it finished — no placeholders, no "draft" label.
+them as source text and preserve their voice. Every factual claim maps to profile evidence.
+Deliver it finished — no placeholders, no "draft" label.
 
 Follow `SKILL.md` ("Command: COVER LETTER").
 

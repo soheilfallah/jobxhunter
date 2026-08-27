@@ -61,7 +61,7 @@ against real profile evidence, drafts and de-slops an ATS-safe CV, runs the recr
 logs a tracker row. Say "I applied to this one" to turn the row green and lock it.
 
 ## Non-negotiables it enforces
-Master profile is truth for L0/L1 (gaps surfaced, never filled) · ATS-safe rendering (no
+L0/L1 built from the master profile (gaps surfaced) · ATS-safe rendering (no
 tables/columns/graphics) · no slop (`cv-mistakes.md`) · UK conventions on by default · L2 realistic,
 unwatermarked, delta stated, never submittable · profile stays swappable data · every job filed and
 logged, applied rows green and locked, skipped jobs recorded.

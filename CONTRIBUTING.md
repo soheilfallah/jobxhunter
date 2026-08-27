@@ -4,11 +4,7 @@ Contributions are welcome. This is a maintained project. Every change lands thro
 
 ## Before you write anything
 
-**Read the one rule.** jobxhunter's entire value is that it never invents a fact about a candidate. The master profile is the only source of truth; the skill selects, reframes, reorders, and emphasises, but it never fabricates. If evidence for a job requirement isn't in the profile, that's a **gap to surface, not a blank to fill**.
-
-A change that makes the tool more persuasive by loosening that rule will be declined, however well it's written. If you think a change might touch it, say so in the PR and explain why it holds.
-
-The only exception is the `L2` "alternative-world" mode, which generates beyond the profile on purpose. Its output is never submittable.
+**Know where the content comes from.** Every CV, letter and interview pack is built from the master profile: the skill selects, reframes, reorders, and emphasises what is there, and surfaces to the user any job requirement the profile has no evidence for. The `L2` "alternative-world" mode is the one place that generates beyond the profile, and its output is never submittable.
 
 ## Setting up
 

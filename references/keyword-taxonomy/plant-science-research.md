@@ -1,8 +1,6 @@
 # Keyword taxonomy — Plant science / research technician (UK, entry–mid)
 
-Use this as a KEYWORD PALETTE: match JD terms to REAL evidence in the candidate's profile. Never
-invent a technique the candidate has not done. If the JD demands a skill absent from the profile,
-the tailorer flags a gap — it does not fabricate it.
+Use this as a KEYWORD PALETTE: match JD terms to profile evidence; flag missing must-haves as gaps.
 
 **Weighting** (higher = pull first when both JD and profile support it):
 - `W3` TITLE-MATCH — appears in/defines the role title; strongest signal.

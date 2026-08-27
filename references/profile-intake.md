@@ -46,15 +46,15 @@ Anything and everything, in any format:
    (richer than any CV), section headings matching the schema, including `## Career targets & market`.
    On a first run this creates the file; on later runs it **merges** (see the incremental contract below).
 
-4. **Mark each file done as you go** so the manifest stays honest:
+4. **Mark each file done as you go** so the manifest stays current:
    ```
    python "${CLAUDE_PLUGIN_ROOT}/scripts/dump_manifest.py" mark --workspace <root> --path "<rel_path>" --status ingested
    ```
    Then delete that file's placeholder stub if one was created. Append a one-line entry to
    `profiles/_intake/CHANGELOG.md` describing what this run added (the audit trail).
 
-5. **Build the "never claim" list** by asking: which listed skills/techniques has the person NOT
-   actually performed? This guards the truth rule downstream.
+5. **Build the not-on-CV list** by asking: which listed skills/techniques has the person NOT
+   actually performed, and what else do they not want printed?
 
 6. **Run the profile enrichment interview** (below) — turn thin, vague, or unquantified spots into
    concrete evidence *now*, at the source, before any CV is tailored.
@@ -83,7 +83,7 @@ section the dump already answers):
 - **education/cert** missing grade, institution, or real years;
 - a **timeline gap**, ambiguous date, or overlapping roles;
 - **targets** unset (priority order, salary floor, geography, work pattern);
-- a claim you can't tell is real vs aspirational (→ candidate for "never claim").
+- a claim you can't tell is real vs aspirational (→ candidate for the not-on-CV list).
 
 **How to ask** — small neutral batches (5–8 at a time), grouped by profile section, framed as
 memory-jogs ("you probably did this and just didn't write it down"). Offer a voice note for anyone who'd
@@ -99,23 +99,23 @@ current CV.
 - *Education/certs:* "Institution, country, real years, and grade/classification?" · "Any licence number
   or expiry that matters (e.g. SIA, driving)?"
 - *Outputs:* "Anything published, shipped, or public — a DOI, repo, portfolio link, product name?"
-- *Gaps/timeline:* "The stretch between X and Y — study, caring, travel, freelance? One honest line is
-  all we need." (never paper a gap over.)
+- *Gaps/timeline:* "The stretch between X and Y — study, caring, travel, freelance? One line is all
+  we need."
 - *Targets/market:* "Rank your target roles 1–3." · "Salary floor you won't go below?" · "Locations,
   remote/hybrid, willing to relocate?" · "Full-time / part-time / contract?"
-- *Truth boundary:* "Anything here you've read about but not actually done? That goes on the 'never
-  claim' list so we never over-promise it."
+- *Not-on-CV:* "Anything here you've read about but not actually done, or don't want printed? That
+  goes on the not-on-CV list."
 
 Stop when the schema's minimal-viable sections (Identity, Experience, Education, Skills warehouse) are
 concrete and the top-priority target lane has enough specific evidence to tailor without hand-waving.
 
 ## Rules
-- **Truth first.** The profile may hold only what the dump + the user's confirmations support. A blank
-  is a gap to ask about, never a licence to invent.
+- **Blanks are questions.** The profile holds what the dump and the user's answers give it; where
+  the dump is silent, ask.
 - **Privacy.** The `dump/` folder, the built profile, and `profiles/_intake/` are personal data — they
   live in the workspace, which is gitignored/kept out of any published repo. Never echo
   `Confidential hold` content onto a document.
 - **Incremental, never clobbering.** Re-running intake after the user adds files must **enrich**, not
   overwrite: the manifest tells you what's new; merge new facts in, keep prior confirmations and the
-  "never claim" list intact, and log the delta to `profiles/_intake/CHANGELOG.md`. Confirmed content is
+  not-on-CV list intact, and log the delta to `profiles/_intake/CHANGELOG.md`. Confirmed content is
   never silently rewritten.

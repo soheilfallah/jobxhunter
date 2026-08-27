@@ -2,7 +2,7 @@
 
 You are building a UK CV. Say CV, never résumé. Use British spelling throughout (organised, analysed, programme, optimise). Two pages A4 maximum. Everything below is a rule to apply, not a suggestion to consider.
 
-**Non-negotiable: never invent facts.** No fabricated numbers, titles, dates, employers, tools, or outcomes. Your levers are selection, reframing, reordering, and emphasis of what the candidate actually did. If a number is unknown, use an honest range or a scope proxy (see Quantifying below) — or drop the claim.
+Your levers are selection, reframing, reordering, and emphasis of what the candidate did. If a number is unknown, use a range or a scope proxy (see Quantifying below) — or drop the claim.
 
 ## Bullet anatomy
 
@@ -83,11 +83,11 @@ Rules:
 - Every skill listed must be defensible in an interview and, ideally, visible somewhere in the bullets. Never add a skill just because the job ad names it.
 - Match the job ad's exact spelling for keywords ("Power BI" not "PowerBI"; include both "machine learning" and "ML" if space allows).
 - 8–15 items total. A 40-item skills dump signals indiscriminate padding and buries the signal.
-- Indicate depth only where honest and useful: "Python (pandas, scikit-learn — daily use)", "German (B2)". No skill bars, star ratings, or percentages — meaningless and ATS-hostile.
+- Indicate depth only where useful: "Python (pandas, scikit-learn — daily use)", "German (B2)". No skill bars, star ratings, or percentages — meaningless and ATS-hostile.
 
 ## Quantifying impact when there's no obvious number
 
-Numbers are proof; prose is assertion. When the candidate "doesn't have numbers", extract them with these proxies — all honest, none invented:
+Numbers are proof; prose is assertion. When the candidate "doesn't have numbers", extract them with these proxies:
 
 - **Scale/scope**: budget managed, team size, number of clients/users/sites/SKUs, dataset size. "Coordinated logistics across 12 UK sites."
 - **Frequency/volume**: how often, how many, per what period. "Processed 200+ samples weekly."
@@ -96,10 +96,10 @@ Numbers are proof; prose is assertion. When the candidate "doesn't have numbers"
 - **Percentage**: use when the absolute number is small or confidential. "Grew newsletter sign-ups 60%."
 - **Team/stakeholder count**: people trained, departments coordinated, seniority reached. "Trained 8 new starters; presented quarterly to directors."
 - **Stakes**: value of what depended on the work. "Sole analyst supporting a £2m contract renewal."
-- **Ranges and estimates**: legitimate when exact figures are unknown but defensible — "40–50 calls per day", "~£10k annual saving". Prefix genuine estimates with "~". Never a fabricated precise figure.
+- **Ranges and estimates**: legitimate when exact figures are unknown but defensible — "40–50 calls per day", "~£10k annual saving". Prefix genuine estimates with "~".
 - **Selectivity/rank**: "1 of 3 selected from 40 applicants", "top-rated seller in region".
 
-Not everything needs a number — aim for a metric in roughly two-thirds of bullets. A bullet with a strong qualitative outcome ("adopted as the standard template company-wide") beats a forced fake percentage. If no honest proxy exists, state the concrete deliverable and who used it.
+Not everything needs a number — aim for a metric in roughly two-thirds of bullets. A bullet with a strong qualitative outcome ("adopted as the standard template company-wide") beats a forced fake percentage. If no proxy exists, state the concrete deliverable and who used it.
 
 ## Length, whitespace, scan-ability
 
@@ -120,12 +120,12 @@ Not everything needs a number — aim for a metric in roughly two-thirds of bull
 - Weight space by relevance × recency: current/target-relevant roles get 4–6 bullets; a 15-year-old off-target job gets one line or is summarised ("Earlier roles: retail and hospitality positions, 2008–2012").
 - Roles older than ~10–15 years: compress or cut unless they carry unique target-relevant evidence.
 - Promotions within one employer: one employer heading, stacked titles with dates — shows progression without looking like job-hopping.
-- Multiple concurrent tracks (e.g. part-time role + freelance): keep chronology honest; a "Freelance & consulting" grouped entry with an overall date range is acceptable.
+- Multiple concurrent tracks (e.g. part-time role + freelance): keep the chronology intact; a "Freelance & consulting" grouped entry with an overall date range is acceptable.
 
 ## Tailoring discipline (applies to every rule above)
 
 - Read the job ad; extract the top 5–8 requirements. Each must be evidenced in the summary, skills block, or a bullet — provided the candidate genuinely has it.
-- Reorder bullets within roles so the target-relevant ones lead. Rewrite bullets to use the ad's vocabulary where truthful ("stakeholder management" vs "liaising with clients").
+- Reorder bullets within roles so the target-relevant ones lead. Rewrite bullets to use the ad's vocabulary where the evidence fits it ("stakeholder management" vs "liaising with clients").
 - Cut ruthlessly: material that doesn't serve this application is noise that dilutes what does. A tailored 2-page CV always beats a complete 3-page one.
 
 ## Sources

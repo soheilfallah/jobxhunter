@@ -4,6 +4,38 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.1] - 2026-08-27
+
+### Added
+
+- **`references/run-the-hunt.md`** — the entry point a Claude session follows when the user says
+  "run the job hunt", written so a long run does not lose context: read `STATE.md` first and only,
+  one reference per step (step → file table), profile read fresh before any writing, `STATE.md`
+  under 30 lines and overwritten last; then every stage with its real flags (`run_hunt.py`, the
+  company-boards stage and what it cannot resolve, the verify gate's FAIL lines and their fixes,
+  `triage.py`, the per-role document order, `daily_bundle.py`) and the gotchas that have cost
+  time. `init_workspace.py` scaffolds a `STATE.md` and points `WORKSPACE-MAP.md` at the guide;
+  SKILL.md and `/jobxhunter:hunt` open it.
+- **`references/tools-and-connectors.md` is the canonical connector table**, and any Claude session
+  reading the plugin now knows exactly what to say to get each one connected. Indeed and Dice were
+  missing from the connector surfaces: they are **built-in claude.ai connectors** (OAuth, no key —
+  claude.ai → Settings → Connectors → Connect), unlike Reed, Adzuna and Firecrawl which are
+  bring-your-own-key. The file carries, per connector, what it gives, the sign-up URL, the exact
+  steps to the credential, how to register it and a one-line verify — plus an **agent script**: the
+  words to say to the user, one connector per message, Indeed first, never blocking on a key.
+  `setup_connectors.py doctor` prints the same instructions for whatever is missing and gains
+  `--self-check`; `SETUP.md` step 5, the README connector table and `/jobxhunter:setup` point at it.
+
+### Changed
+
+- **Docs describe the process, not a fabrication rule.** SKILL.md, AGENTS.md, CONTRIBUTING.md,
+  the agents, commands and references now lead with finding roles and producing the CV, letter
+  and interview pack; `validate_profile.py` is described as a profile consistency check (every
+  line traces to the profile, lane/JD gates, required lines, AI-tell words); the profile's
+  "never claim" list is the **not-on-CV list** in prose (the validator's prose fallback still
+  keys on a `never claim` heading). Writing quality, banned buzzwords, voice, ATS mechanics and
+  the recruiter loop are unchanged.
+
 ## [1.6.0] - 2026-08-26
 
 The hunt pipeline that was built downstream against a live job hunt (22–24 Aug 2026) is now in
@@ -106,19 +138,19 @@ grammar and a new pipeline stage.
   installed `humanizer` skill, if present) is mandatory in TAILOR and COVER LETTER with the
   validator's AI-tell warning as backstop. SKILL.md says which external skills are and are not
   bundled.
-- **Overlapping roles were labelled "(concurrent)"** — the opposite of the profile rule, and five
-  full-time jobs to an ATS. One role per lane from `overlap-print`; education per lane from
+- **Overlapping roles were labelled "(concurrent)"** — five full-time jobs to an ATS. One role per lane from `overlap-print`; education per lane from
   `education-for-lane`.
 - **Style guides sat in a table nobody applied, and the critic scored "reads like AI" from its
   own priors.** Each command step names the reference it needs; `recruiter-critic` scores
   authenticity against the same list the writer worked from; every "ask the user to confirm" step
   has an unattended branch.
 - **Docs restated withdrawn rules** ("truth sweep", "(concurrent)", scaffold letters). All point at
-  the profile and `validate_profile.py` instead; "truth rule" is now the profile rule everywhere.
+  the profile and `validate_profile.py` instead.
 - **A bracketed keyword silently widened to its bare phrase.** `references/job-search-guide.md`
   documents the qualifier as a ranking co-requirement and the hand-maintained `(N)` counts.
 - **Self-check asserts that contained their own search literal could never fail.** Source-reading
   asserts now use a regex that cannot match itself or count only the body before the self-check.
+
 
 ## [1.5.1] - 2026-08-26
 

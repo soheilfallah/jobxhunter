@@ -1,8 +1,6 @@
 # Keyword taxonomy — PA / EA / private office (UK, entry–mid)
 
-Use this as a KEYWORD PALETTE: match JD terms to REAL profile evidence. Never invent a duty, a
-principal, or a system the candidate has not actually worked with. Flag missing must-haves as gaps;
-do not fabricate.
+Use this as a KEYWORD PALETTE: match JD terms to profile evidence; flag missing must-haves as gaps.
 
 **Weighting:** `W3` TITLE-MATCH · `W2` MUST-HAVE (essential) · `W1` NICE-TO-HAVE (desirable) ·
 `[KO]` common KNOCKOUT.
@@ -102,7 +100,7 @@ Only claim these where a bullet demonstrates them; never as an adjective block.
 - **Trust is the product.** The strongest opening is what the principal stopped having to think
   about once the candidate took it on — not a duty list. Duty lists are what everyone else sends.
 - **Do not inflate the relationship.** "Single point of contact", "trusted right hand" and
-  "ran his personal life" are strong *and* checkable. Inventing seniority is caught in one question.
+  "ran his personal life" are strong *and* checkable. Inflated seniority is caught in one question.
 - **Confidentiality is part of the pitch, so honour it on the page.** Where an engagement is private,
   say "a high-net-worth private client" or "a confidential private client" — never name the
   principal, their employer, or **their profession**. Naming the profession narrows identification

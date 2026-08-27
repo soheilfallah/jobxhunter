@@ -63,7 +63,7 @@ description (JD) explicitly overrides it. When UK and US conventions conflict, U
   - hobbies like "socialising, reading, travel"
   Interests earn a line only when they carry signal: a blog for a writing role,
   competitive sport for a sales culture, open-source work for engineering.
-- Handle employment gaps of 6+ months with one honest line ("Career break for
+- Handle employment gaps of 6+ months with one line ("Career break for
   caring responsibilities, 2022–2023") rather than silence — unexplained gaps
   trigger screening questions anyway.
 - One typo can kill an application; UK careers services say this explicitly.
@@ -114,7 +114,7 @@ hide it.
     Include the expiry only when it is comfortably long; recruiters will ask regardless.
   - Needs sponsorship:
     `Eligible for Skilled Worker visa sponsorship`
-    State it honestly and early. Hiding it wastes a licensed sponsor's time and
+    State it plainly and early. Hiding it wastes a licensed sponsor's time and
     burns the relationship. Target employers on GOV.UK's register of licensed
     sponsors and roles meeting Skilled Worker salary thresholds.
 - Never write "Nationality: X". Work authorisation is the only immigration fact

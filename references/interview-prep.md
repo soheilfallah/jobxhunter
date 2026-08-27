@@ -1,21 +1,20 @@
 # Interview prep — carry the candidate past "filed"
 
 Most tools stop at the application. The pipeline already holds everything needed to
-prepare for the interview **honestly**: the JD (what they'll probe), the coverage matrix
+prepare for the interview: the JD (what they'll probe), the coverage matrix
 in `notes.md` (exactly where the candidate is strong, partial, or has a hard gap), and the
 master profile (the real evidence). This routine turns that into a prep pack the candidate
 can actually walk in with — and, crucially, it prepares them for the questions their *gaps*
 invite, which generic prep never does.
 
-**Profile rule still holds.** Every STAR answer is built from real profile evidence. For a
-hard gap, you do **not** invent experience — you prepare an honest, confident way to handle
-the question (transferable evidence + a learning plan), which is what a good candidate
+Every STAR answer is built from profile evidence. For a hard gap, you prepare a
+confident way to handle the question (transferable evidence + a learning plan), which is what a good candidate
 actually does.
 
 ## Inputs
 - The job folder: `job-description.md` + `notes.md` (the coverage matrix, provisional items,
   recruiter scorecard).
-- The master profile (source of truth for every claim).
+- The master profile (the evidence behind every answer).
 - The market + role type (sets tone: NHS panel vs startup vs university vs security ops).
 
 ## Method
@@ -29,11 +28,11 @@ actually does.
    Result, pulled from the profile (prefer quantified outcomes). Keep them spoken-length
    (60–90 seconds), first person, in the candidate's own register — not corporate.
 4. **Gap-defence — the differentiator.** For every `hard-gap` and `partial` row in the
-   coverage matrix, prepare the question they *will* ask and an honest, non-defensive answer:
+   coverage matrix, prepare the question they *will* ask and a non-defensive answer:
    the closest transferable evidence, genuine enthusiasm, and a concrete "here's how I'd get
    up to speed" line. Never fake the experience; show the trajectory. Also prep any
    provisional ("pending confirmation") item — if it makes the CV, the candidate must be able
-   to speak to it truthfully.
+   to speak to it.
 5. **Questions for them.** 4–6 sharp, specific questions the candidate can ask — drawn from
    the JD and company research, signalling genuine interest (team shape, success in 6 months,
    the real challenge behind the role). Avoid anything answerable from the JD.

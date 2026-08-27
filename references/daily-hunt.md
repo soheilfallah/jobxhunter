@@ -31,10 +31,10 @@ directory** discovered or created at runtime — no hard-coded machine paths, ev
   scripts/                        # _lib, tracker, new_application, render_docx,
                                   #   build_seen_ledger, dump_manifest, keyword_coverage
 ```
-The profile is a **warehouse**: full experience, skills, education, a "**never claim**" gap list,
+The profile is a **warehouse**: full experience, skills, education, a **not-on-CV** list,
 career-target priority order, salary expectations, geography, confidential holds, conflicts to
 resolve, and a `profile-rules` block that `validate_profile.py` enforces. The tailorer *selects from*
-it and never invents facts. Every other document points at the profile rather than restating it —
+it. Every other document points at the profile rather than restating it —
 titles, dates, estate and team sizes come from the profile only.
 
 ## Resolve the workspace root (once, path-agnostic)
@@ -130,7 +130,7 @@ user to fill the profile. Idempotent; refuses to clobber a populated workspace. 
 
 ## Knockout sweep (profile-driven — record the reason on every Skip)
 Read each JD's essentials and compare against the profile: languages, licences (SIA), right-to-work,
-degree field, and anything under the profile's "**never claim**" list (e.g. wet-lab techniques not
+degree field, and anything on the profile's **not-on-CV** list (e.g. wet-lab techniques not
 performed). A hard knockout the profile cannot evidence → `Skipped` with the reason. Log
 expired-but-good-fit and bridge-lane stretch roles as `Skipped` with a "watch for re-post" reason so a
 later run can notice a re-post.
@@ -139,7 +139,7 @@ later run can notice a re-post.
 - **Profile first.** The profile is the authority. A line that does not trace to it does not go on
   the page, and `scripts/validate_profile.py` enforces the profile's declared rules mechanically —
   run it per role and treat a non-zero exit as a blocker, not a note. A CV that can't survive the
-  interview question is worse than a shorter honest one. Respect **confidential holds** —
+  interview question is worse than a shorter one. Respect **confidential holds** —
   capability, not protected specifics.
 - **Ship complete, never ask.** Letters are finished; confirmations and gap questions go into
   `notes.md`; nothing is labelled a draft.

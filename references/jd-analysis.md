@@ -2,7 +2,7 @@
 
 You are decomposing a single UK job description (JD) into a structured object the tailoring
 pipeline consumes. Be literal first, inferential second. Extract what the posting SAYS, then
-annotate what it WANTS. Never invent requirements the JD does not support. UK conventions
+annotate what it WANTS. List only requirements the JD supports. UK conventions
 govern: right-to-work, SIA, university pay spines, £/year and £/hour, hybrid day-counts.
 
 Your output is the `JDAnalysis` object defined at the bottom. Fill every field or mark it
@@ -163,7 +163,7 @@ Execute in order:
 10. **Emit** the `JDAnalysis` object. Leave unknowns explicit.
 
 Downstream, the tailorer matches `must_haves`/`nice_to_haves` to REAL profile evidence only. If
-the profile lacks a must-have, the tailorer flags a gap — it never fabricates the skill.
+the profile lacks a must-have, the tailorer flags a gap.
 
 ---
 

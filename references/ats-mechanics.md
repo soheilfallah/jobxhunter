@@ -21,7 +21,7 @@ graphics, no header/footer content. No exception, however pretty the alternative
 - Two things persist beyond one application: parsed profile data (Workday keeps it per employer)
   and searchability (recruiters mine past applicants for new roles). Parse quality compounds.
 
-## 2. Per-system behaviour (state confidence honestly)
+## 2. Per-system behaviour (state confidence plainly)
 
 Well-substantiated points are marked (solid); independent-test or recruiter-account claims
 (reported); thin evidence (uncertain). Never present per-system trivia to users as certainty.
@@ -124,7 +124,7 @@ Well-substantiated points are marked (solid); independent-test or recruiter-acco
   "CIPD (Chartered Institute of Personnel and Development)", "AML (anti-money laundering)".
   Recruiters search either form; a literal matcher finds only the string that is present.
 - Mirror the advert's exact phrasing for hard skills and qualifications ("stakeholder
-  management", not "managing stakeholders") — and the target job title, where truthful, in the
+  management", not "managing stakeholders") — and the target job title, where it applies, in the
   headline/profile line.
 - Place each priority keyword TWICE: once in the Skills section (clean field extraction and
   database search) and once in context inside an achievement bullet (phrase-level match plus

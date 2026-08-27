@@ -11,8 +11,8 @@ your rulebook for how it should read. Read the whole thing before drafting.
 - **The "why this company / this role" paragraph is written like any other
   paragraph** — from the advert, the employer's public material and what the
   profile evidences (real products used, a genuine sector interest, a concrete
-  skill match). Never fabricate familiarity or feelings; if research turns up
-  nothing specific, say less rather than padding.
+  skill match). If research turns up nothing specific, say less rather than
+  padding.
 - **No placeholders.** Never emit `[YOUR LINE HERE]` or any bracketed gap, and
   never flag a paragraph as needing the user's input.
 - **Deliver it as finished, not as a draft.** Do not label output "AI-drafted", "a
@@ -27,9 +27,7 @@ your rulebook for how it should read. Read the whole thing before drafting.
   spoken cadence, tidy only true filler and repetition, never flatten it into
   written formality. (The cold-outreach command shares this rule — see
   `company-discovery-cold-outreach.md`.)
-- **The profile rule is unchanged and absolute.** Complete means the strongest
-  *honest* version. Never invent a qualification, employer, licence, number or
-  experience the profile cannot back.
+- Complete means the strongest version the profile can back.
 
 ## CENTRAL RULE: tone preservation
 
@@ -85,9 +83,8 @@ for a cover letter, apply its **voice-preservation** register, not its neutral-C
 - Cover letters are inherently first-person and signed by the user. The CV's
   L0/L1/L2 framing dial does NOT apply here. There is exactly one register:
   the user, saying only what the profile supports, in their own voice.
-- The CV profile rule DOES apply: every factual claim (skills, outcomes, numbers,
-  employers, dates) must map to real profile evidence. No new achievements may be
-  minted for the letter. Motivation comes from the advert, public research and
+- Facts (skills, outcomes, numbers, employers, dates) come from the profile; no new
+  achievements are minted for the letter. Motivation comes from the advert, public research and
   the user's own words where given; facts come from the profile. Never let one
   impersonate the other.
 - Academic / research targets: apply `references/academic-register.md` on top.
@@ -105,7 +102,7 @@ on shape. Target 250–400 words. Never exceed one page.
    concrete with research hooks (see below). This is the paragraph most letters
    fake and hiring managers most easily see through — build it from what is
    verifiable (the advert, the employer's own material, evidence in the profile)
-   and from the user's words where they gave any; a shorter honest paragraph
+   and from the user's words where they gave any; a shorter specific paragraph
    beats a longer generic one.
 3. **Evidence (1–2 paragraphs).** Pick the 3–5 requirements from the JD that
    matter most, and map each to a real, specific piece of profile evidence.
@@ -129,8 +126,8 @@ on shape. Target 250–400 words. Never exceed one page.
   achievements list.
 - Scale language to evidence strength. Profile says "contributed to" → letter
   says "worked on", never "drove" or "owned". If evidence is adjacent rather
-  than exact, say so honestly: "I haven't used Terraform in production, but I've
-  run the same pattern with Pulumi" — honest adjacency is persuasive; quiet
+  than exact, say so: "I haven't used Terraform in production, but I've
+  run the same pattern with Pulumi" — stated adjacency is persuasive; quiet
   inflation is a time bomb.
 - Numbers only from the profile. Never round up, extrapolate, or "roughly"
   a figure into existence.
@@ -144,13 +141,13 @@ Banned (they waste the seven seconds you get):
 - "As a passionate and results-driven professional..."
 - Any opener that could top a letter to a different company unchanged.
 
-Better patterns (seeded from the user's words or from verifiable research, never invented):
+Better patterns (seeded from the user's words or from verifiable research):
 - Company hook: "Your engineering blog's post on flattening the on-call rota is
   the reason this letter exists."
 - Achievement bridge: "Last year I took a reporting pipeline from nightly to
   near-real-time; the Data Engineer role at Acme looks like the chance to do
   that at ten times the scale."
-- Honest motivation: "I've used Monzo daily for six years, and I've wanted to
+- Motivation: "I've used Monzo daily for six years, and I've wanted to
   work on the product roughly that long."
 - Plain-and-direct is fine too: "I'd like to be your next Research Assistant,
   and here's why I think that makes sense for both of us." Not every user is a
@@ -165,10 +162,8 @@ Better patterns (seeded from the user's words or from verifiable research, never
 - One or two hooks, woven in, is right. Five hooks is a stalker's letter.
 - Every hook must connect back to the user: "you did X" is trivia; "you did X,
   which is exactly the problem I spent 2024 on" is a reason to hire.
-- Never fabricate familiarity. If the user hasn't used the product, the letter
-  doesn't say they have. If research turns up nothing specific, say less rather
-  than padding with generic praise — a shorter honest paragraph outperforms a
-  longer fake one.
+- If research turns up nothing specific, say less rather than padding with
+  generic praise — a shorter specific paragraph outperforms a longer generic one.
 - Check recency: do not cite a "recent" funding round from three years ago or
   praise a product line they have shut down.
 

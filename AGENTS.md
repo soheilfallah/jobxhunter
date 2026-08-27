@@ -2,9 +2,9 @@
 
 jobxhunter is an agent-run job-hunting toolkit. Its core works in **any coding-agent CLI** that can read files and run Python: Claude Code, Codex, Gemini CLI / Antigravity, GitHub Copilot CLI, OpenCode, Qwen, Kimi, and others. This file tells your agent how to drive it. (Claude Code users get the full plugin experience; see `README.md`.)
 
-## The one rule (non-negotiable)
+## Where the content comes from
 
-The user's **master profile is the only source of truth** for anything submittable. Select, reframe, reorder, and emphasise the real experience in it. **Never invent** a title, number, skill, or date. If evidence for a job requirement isn't in the profile, surface it to the user as a gap; do not fill it. Only the `L2` "alternative-world" mode may go beyond the profile, and its output is never submitted.
+Everything submittable is built from the user's **master profile**. Select, reframe, reorder, and emphasise the experience in it; if evidence for a job requirement isn't there, surface it to the user as a gap. Only the `L2` "alternative-world" mode goes beyond the profile, and its output is never submitted.
 
 ## Start here
 

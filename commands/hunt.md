@@ -5,7 +5,7 @@ argument-hint: "[optional: workspace path]"
 
 Use the **jobxhunter** skill's **DAILY HUNT** routine against the populated workspace.
 
-Read the playbook → read the profile fresh → **`python "$root/scripts/run_hunt.py" --workspace "$w"`**
+**Open `references/run-the-hunt.md` and follow it** (context discipline + every command with its flags). In short: read `STATE.md` → read the profile fresh → **`python "$root/scripts/run_hunt.py" --workspace "$w"`**
 (sweep every source across the whole keyword file, company boards, consolidate, rank, verify, fetch
 JDs → `to-tailor.csv`) → triage every fetched advert on disk → tailor every role you can defend →
 **write each cover letter in full, finished and send-ready** → write the L2 alternative-world CV per

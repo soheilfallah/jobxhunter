@@ -1,8 +1,8 @@
 # Keyword taxonomy — Security (frontline, SIA-licensed) (UK, entry–mid)
 
-Use this as a KEYWORD PALETTE: match JD terms to REAL profile evidence. NEVER claim an SIA licence
-or clearance the candidate does not hold — the licence is a legal gate and a verifiable knockout.
-Flag missing gates; never bluff them.
+Use this as a KEYWORD PALETTE: match JD terms to profile evidence; flag missing must-haves as gaps.
+An SIA licence or clearance is a legal gate and a verifiable knockout: a missing one is flagged, not
+matched around.
 
 **Weighting:** `W3` TITLE-MATCH · `W2` MUST-HAVE · `W1` NICE-TO-HAVE · `[KO]` common KNOCKOUT.
 

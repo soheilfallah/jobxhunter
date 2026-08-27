@@ -5,17 +5,16 @@ This doc defines the control dial the tailorer operates on. Read it before produ
 ## The three levels
 
 ### L0 — True, reframed
-Same facts as the master profile, optimally worded and ordered for this specific JD. Nothing is dropped for being unflattering unless it's simply irrelevant to the target. This is the honest baseline and is **always submittable**.
+Same facts as the master profile, optimally worded and ordered for this specific JD. Nothing is dropped for being unflattering unless it's simply irrelevant to the target. This is the baseline and is **always submittable**.
 - Use when: the user wants a faithful CV, or as the floor of any run.
 - Rule: every line traces to profile evidence. Reframing and reordering only.
 
 ### L1 — Aggressive but true (DEFAULT)
-Maximal *honest* emphasis. Foreground the best-matching evidence, drop weak or irrelevant items entirely, use the most favourable accurate framing of real facts. Still **fully submittable** — nothing here is fiction.
+Maximal emphasis. Foreground the best-matching evidence, drop weak or irrelevant items entirely, use the most favourable framing of the profile's facts. Still **fully submittable**.
 - The `%` knob (0–100) sets how aggressive the emphasis is:
   - **~25%**: light touch — mild reordering, keep most content, gentle keyword weaving.
   - **~50%**: balanced — clear foregrounding of matches, cut the weakest 1–2 items.
-  - **~75–100%**: maximal honest slant — lead hard with matching evidence, cut everything that doesn't serve the target, most favourable (but still accurate) framing of every remaining line.
-- The knob NEVER crosses into invention. 100% aggressive is still 100% true.
+  - **~75–100%**: maximal slant — lead hard with matching evidence, cut everything that doesn't serve the target, most favourable framing of every remaining line.
 - Use when: real applications. This is the workhorse.
 
 ### L2 — The alternative world
@@ -27,7 +26,7 @@ A *different realistic person* — a "John/Jane Doe" — who already holds the e
 
 ## Non-negotiables (hold the line)
 
-1. **L0 and L1 never cross into fiction.** They select, reframe, reorder, emphasise — they never invent a fact, a role, a skill, a date, or a metric not grounded in the profile. If evidence for a requirement isn't in the profile, that's a **gap to surface**, not a blank to fill.
+1. **L0 and L1 work from the profile.** They select, reframe, reorder, emphasise. If evidence for a requirement isn't in the profile, that's a **gap to surface**.
 2. **Only L2 generates beyond the profile**, and only as the alternative-world persona, and only ever labelled as such **in the conversation/notes — never on the document**.
 3. **L2 is never presented as submittable.** When delivering L2, always pair it with the delta statement and a clear in-conversation note that this is a target persona, not the user.
 4. **The delta is mandatory output for L2.** An L2 CV with no delta statement is an incomplete, and dangerous, deliverable.
@@ -35,9 +34,9 @@ A *different realistic person* — a "John/Jane Doe" — who already holds the e
 ## How the level interacts with the pipeline
 
 - **Coverage matrix** (built for every run) marks each JD requirement as *strong / partial / gap* against profile evidence.
-  - L0/L1 work only from *strong* and *partial* rows; *gap* rows are surfaced to the user, never fabricated.
+  - L0/L1 work only from *strong* and *partial* rows; *gap* rows are surfaced to the user.
   - L2 is allowed to fill *gap* rows — that's what makes it the alternative world, and filling them is exactly what defines the delta.
-- The recruiter loop scores whatever level was produced. An L1 CV that scores poorly because of genuine gaps should NOT be "fixed" by inventing evidence — surface the gap and, if useful, offer to show the L2 delta instead.
+- The recruiter loop scores whatever level was produced. An L1 CV that scores poorly because of genuine gaps is handled by surfacing the gap and, if useful, offering the L2 delta.
 
 ## Gap classes, provisional inclusions & the end-of-run confirmation
 
@@ -54,7 +53,7 @@ So classify each unmatched JD requirement into one of three, at coverage-matrix 
    candidate has it: an equivalent skill under another name, or a skill a listed role obviously
    implies but doesn't state. **Provisionally include it, keep going, and confirm it at the end** (below).
 3. **Hard gap** — no plausible basis at all (SIA licence, a PhD, a specific tool with zero adjacency).
-   Do NOT add it, even provisionally. Surface it honestly; this is L2/roadmap territory.
+   Do NOT add it, even provisionally. Surface it; this is L2/roadmap territory.
 
 ### How provisional inclusions work (no interruption, no accusation)
 
@@ -78,13 +77,12 @@ So classify each unmatched JD requirement into one of three, at coverage-matrix 
   next time). *no* → remove it and re-render; it may then become a genuine gap to surface. Nothing
   provisional is ever presented as confirmed, or shipped in a "final" CV, until the user says yes.
 - **Reconciles with the anti-mirroring guard** (`SKILL.md` step 4 / `cv-mistakes.md`): pasting a JD
-  term with **no** basis in the profile is still fabrication and stays banned. The difference is
+  term with **no** basis in the profile stays out. The difference is
   *plausible basis*: class-2 has one (adjacency or an implying role) and is gated by the end-of-run
   yes/no; pure JD-echo with nothing behind it is class-3-or-worse and never goes in.
 
-This keeps the profile invariant intact — nothing false reaches a submittable document, because the
-user confirms before it's final — while never interrupting the draft and never treating a forgotten
-experience as a lie.
+The user confirms before anything provisional is final, the draft is never interrupted, and a
+forgotten experience is never treated as a lie.
 
 ## Cover letters
 

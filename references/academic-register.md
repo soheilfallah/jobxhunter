@@ -29,8 +29,8 @@ It never applies to industry CVs.
 - **First person sparingly, passive tolerated.** Academic convention accepts "measurements
   were taken"; the ban on passive voice in `writing-voice.md` is relaxed here, not lifted —
   prefer active where it reads naturally.
-- **Honest scope.** "Conceptual knowledge only" techniques (the profile's never-claim list)
-  stay unclaimed exactly as on industry CVs. An academic reader will probe them at interview.
+- **Scope.** "Conceptual knowledge only" techniques (the profile's not-on-CV list) stay off
+  the page exactly as on industry CVs. An academic reader will probe them at interview.
 
 ## Mechanics
 
@@ -40,4 +40,4 @@ It never applies to industry CVs.
   give the scale: "<mark>/<max> (<institution>)".
 - Research statements and cover letters for academic posts follow the same register: question,
   method, result, fit with the group's work. Read the group's two most recent papers before
-  writing the fit paragraph; name one, honestly.
+  writing the fit paragraph; name one.

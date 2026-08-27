@@ -28,7 +28,7 @@ The default register for CVs and research/academic letters:
 - **Active voice for the candidate's own actions** — "built", "led", "designed". Reserve passive only when
   the actor is genuinely irrelevant.
 - **Evidence-led.** Every claim anchors to a real number or output; scale the verb to the evidence
-  ("contributed to" ≠ "led"). Honest adjacency beats quiet inflation.
+  ("contributed to" ≠ "led"). Stated adjacency beats quiet inflation.
 - **Controlled formality.** Professional, not inflated. Prefer the plain word: *use* not *utilise*,
   *start* not *commence*, *help* not *facilitate* — but keep genuinely precise technical terms.
 - **Concision.** One idea per bullet; cut throat-clearing and stacked hedges.
@@ -84,13 +84,13 @@ warmth:
 ## Don't over-correct (false positives)
 
 Polish is not AI. Before cutting, protect genuine signal:
-- **Real, specific, hard-to-fabricate detail** — a metric, a named tool, a real project. Generated prose rounds
+- **Real, specific, hard-to-generate detail** — a metric, a named tool, a real project. Generated prose rounds
   specifics off; keep yours.
 - **Precise technical vocabulary** — don't flatten "quasi-experimental", "ANOVA", "Kubernetes" just because
   they sound formal. AI overuses *specific* fancy words (§ above), not all of them.
 - **One transition word, one short emphatic sentence** — a single "however" or a clipped line for emphasis
   is human. Flag only clusters and runs.
-- **Real numbers and named employers/dates** — never touch; the truth rule owns these.
+- **Real numbers and named employers/dates** — never touch.
 
 When in doubt, look for **clusters** of tells, not isolated ones — a lone comma-aside means nothing; buzzword
 + tricolon + significance inflation together is the confession.

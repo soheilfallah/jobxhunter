@@ -1,4 +1,4 @@
-# Application-form answer pack — the tedious supplemental questions, answered truthfully
+# Application-form answer pack — the tedious supplemental questions
 
 The most time-consuming part of a modern application isn't the CV — it's the Workday /
 Greenhouse / Lever supplemental questionnaire: right-to-work, years of experience, salary
@@ -8,8 +8,8 @@ needed to answer them: the master profile, the cover-letter brain-dump, and the 
 salary band fetched during sourcing. This routine assembles a **draft answer pack** the user
 reviews and pastes — it never auto-submits.
 
-**Profile rule holds.** Every answer maps to real profile evidence. A knockout the candidate
-can't truthfully clear is surfaced (and the role is likely a `Skipped`), not fudged.
+Every answer maps to profile evidence. A knockout the candidate can't clear is surfaced (and
+the role is likely a `Skipped`).
 
 ## When
 During TAILOR (or TRACK) for any role whose JD/application has screening or knockout
@@ -22,11 +22,11 @@ questions. Pull the parsed questions from the JD analysis (`references/jd-analys
 - The Adzuna salary band fetched during sourcing (for the expectation question).
 
 ## Build the pack (into the job folder's `notes.md`, under "## Application answer pack")
-For each question, draft a truthful, ready-to-paste answer:
+For each question, draft a ready-to-paste answer:
 - **Right-to-work / visa** — straight from the profile's work-authorisation field. Never
   overstate status.
-- **Years of experience with X** — *computed from the timeline*, not guessed. State the honest
-  figure; if it's below the ask, that's a surfaced gap, not a rounded-up number.
+- **Years of experience with X** — *computed from the timeline*, not guessed. If it's
+  below the ask, that's a surfaced gap.
 - **Salary expectation** — anchor to the fetched Adzuna band and the profile's floor; give a
   range, not a single number, and note it's negotiable. Never below the floor.
 - **Notice period / availability / relocation** — from the profile.

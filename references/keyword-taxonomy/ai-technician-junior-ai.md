@@ -1,8 +1,8 @@
 # Keyword taxonomy — AI / ML technician & junior AI engineer (UK, entry–mid)
 
-Use this as a KEYWORD PALETTE: match JD terms to REAL profile evidence. NEVER invent a framework,
-model, or deployment skill the candidate lacks — the AI/ML field over-rewards buzzwords and this
-is where fabrication is most tempting and most detectable. Flag gaps; do not bluff.
+Use this as a KEYWORD PALETTE: match JD terms to profile evidence; flag missing must-haves as gaps.
+The AI/ML field over-rewards buzzwords, so a framework or model name with no project behind it is
+the first thing an interviewer probes.
 
 **Weighting:** `W3` TITLE-MATCH · `W2` MUST-HAVE · `W1` NICE-TO-HAVE · `[KO]` common KNOCKOUT.
 

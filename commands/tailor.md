@@ -14,7 +14,7 @@ Every build runs `python scripts/validate_profile.py --profile <profile.md> --fo
 before rendering; exit 2 = the profile's rules block is broken — stop and report) and the mandatory
 humanizer pass before anything is called ready.
 
-Follow `SKILL.md` ("Command: TAILOR"). Never invent a fact — surface gaps.
+Follow `SKILL.md` ("Command: TAILOR").
 
 **Which reference each step reads.** Load only what the step needs; a step whose file is listed here is
 not finished until that file has been applied.

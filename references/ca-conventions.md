@@ -2,7 +2,7 @@
 
 Apply this layer instead of `uk-conventions.md` when the profile's **market** is `ca` (Canada). It is
 written as a **delta against the UK layer** — everything the tailorer already does (ATS-safe render,
-truth rule, quantified bullets, no slop) still holds; this only changes the market-specific norms.
+quantified bullets, no slop) still holds; this only changes the market-specific norms.
 
 ## Terminology
 - Call it a **résumé**, not a CV. In Canada "CV" means the long **academic** document (research,

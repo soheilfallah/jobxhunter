@@ -125,8 +125,8 @@ Rules:
   (users, tickets, transactions, headcount).
 - Percentages compare, raw numbers give scale — where possible give both: "cut errors 60%
   (from ~50 to ~20 a month)".
-- Honest estimates are fine and normal: "approximately", "around 200 a week". An estimated
-  number beats a vague adjective; a fabricated precise number is §10 territory.
+- Estimates are fine and normal: "approximately", "around 200 a week". An estimated
+  number beats a vague adjective; a precise number with nothing behind it is §10 territory.
 - If a bullet truly has no measurable outcome, quantify the scope instead (team size,
   budget, frequency, caseload) — or cut the bullet.
 
@@ -245,12 +245,10 @@ Rules:
 - Before: one profile for every application: "Versatile graduate seeking an exciting opportunity in a dynamic organisation."
 - After: "Economics graduate with 12 months' credit-risk placement experience at a UK retail bank; built the SQL loss-forecasting queries now used by the 8-person risk team" — for a credit-risk analyst advert naming SQL and forecasting.
 
-## 10. Over-claiming and dishonesty red flags
+## 10. Over-claiming red flags
 
-Lies end careers, not just applications: UK background screening checks dates, titles and
-qualifications, and discovered fabrication after hire is grounds for dismissal (and, for
-qualification fraud, potentially a Fraud Act offence). Recruiters also pattern-match
-inflation short of lying and discount the whole document when they see it.
+UK background screening checks dates, titles and qualifications, and recruiters pattern-match
+inflation and discount the whole document when they see it.
 
 Red flags screeners act on:
 - Dates massaged to hide gaps or stretch tenures — checks surface these first.
@@ -259,7 +257,7 @@ Red flags screeners act on:
 - Skill-list stuffing with tools the candidate couldn't survive an interview question on.
 - Suspiciously round or enormous unverifiable numbers ("saved £2m") with no mechanism —
   pair every big number with how it was achieved and your specific role in it.
-- Senior-register AI verbs on a junior history (§1) — reads as either dishonesty or slop.
+- Senior-register AI verbs on a junior history (§1) — reads as slop.
 - Unverifiable superlatives ("best in the region") — see §3.
 
 Rules: claim only what survives a competency interview and a reference call; scale "led"
