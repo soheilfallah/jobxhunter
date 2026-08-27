@@ -88,4 +88,4 @@ Questions or a change you're unsure about? Open an issue first. It's cheaper tha
 
 ## Licence
 
-By contributing you agree your work is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+By contributing you agree your work is licensed under the [MIT License](LICENSE).

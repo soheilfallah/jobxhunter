@@ -6,6 +6,10 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [1.6.1] - 2026-08-27
 
+### Changed
+
+- **Licence is now MIT** (was PolyForm Noncommercial 1.0.0). `LICENSE` is plain text, not markdown.
+
 ### Added
 
 - **`references/run-the-hunt.md`** — the entry point a Claude session follows when the user says

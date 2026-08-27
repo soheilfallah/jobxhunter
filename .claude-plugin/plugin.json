@@ -9,7 +9,7 @@
   },
   "homepage": "https://github.com/soheilfallah/jobxhunter",
   "repository": "https://github.com/soheilfallah/jobxhunter",
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "license": "MIT",
   "keywords": ["jobs", "job-search", "cv", "resume", "cover-letter", "ats", "uk", "recruitment", "tailoring"],
   "mcpServers": "./.mcp.json",
   "userConfig": {

@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-590000" alt="Claude Code">
   <img src="https://img.shields.io/badge/markets-UK%20%2B%20Canada-6b4a45" alt="Markets">
   <img src="https://img.shields.io/badge/recruiter--scored-4.0%2F5-590000" alt="Recruiter score">
-  <img src="https://img.shields.io/badge/license-noncommercial-590000" alt="License">
+  <img src="https://img.shields.io/badge/license-MIT-590000" alt="License">
 </p>
 
 <p align="center">
@@ -250,4 +250,4 @@ See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
 
 ## Licence
 
-Source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE). Free to use, study, and adapt for any noncommercial purpose, including running your own job hunt. You may not sell it or put it to commercial use. Copyright © 2026 Soheil Fallah.
+Open source under the [MIT License](LICENSE). Copyright © 2026 Soheil Fallah.
