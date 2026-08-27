@@ -16,6 +16,7 @@ Creates:
   <root>/JOB-LANES.md                    # filing lanes (### `lane` headings) — verify_run reads them
   <root>/SEARCH-KEYWORDS.md              # the hunt's search list — sweep.py + rank.py read it
   <root>/TARGET-COMPANIES.md             # employers' own boards — harvest_companies.py reads it
+  <root>/STATE.md                        # handover between runs — read first, overwrite last
   <root>/scripts/                        # copy of the skill's scripts (portable)
   <root>/applications/tracker.xlsx+csv   # via tracker.py init
 
@@ -293,6 +294,21 @@ COMPANIES_TEMPLATE = """\
 - Company Name
 """
 
+STATE_TEMPLATE = """# STATE — read this first, overwrite it last
+
+Handover between runs. Keep it under 30 lines: the next session reads this and nothing else.
+Procedure: `references/run-the-hunt.md` in the plugin.
+
+## Last run
+- (none yet — workspace scaffolded, profile not filled)
+
+## Next action
+- Fill `profiles/{name}.md` (or drop files in `dump/` and run INTAKE), then run the hunt.
+
+## Blocked on
+- (nothing)
+"""
+
 WORKSPACE_MAP_TEMPLATE = """\
 # Workspace map — what every folder and file here is for
 
@@ -306,6 +322,7 @@ an empty slot is expected rather than something you need to fix.
 ```
 <this folder>/
   WORKSPACE-MAP.md            ← you are here
+  STATE.md                    ← handover between runs: read FIRST, overwrite LAST, keep short
   dump/                       ← drop RAW material about yourself here (any format)
     README.md                 ← what to put in dump/
     _manifest.csv             ← INTAKE's book-keeping: one row per file, with a status
@@ -332,6 +349,10 @@ an empty slot is expected rather than something you need to fix.
   tasks/daily/<YYYY-MM-DD>/   ← [later] run_hunt.py working files + the day's apply-from-here bundle
   scripts/                    ← a portable copy of the skill's deterministic scripts
 ```
+
+## Running a day
+Say "run the job hunt". The session reads `STATE.md`, then follows the plugin's
+`references/run-the-hunt.md` (one `run_hunt.py` command, verify gate, triage, documents, bundle).
 
 ## About the master profile
 `profiles/{name}.md` is the one file everything else reads. Keep it **richer than any single CV
@@ -437,6 +458,7 @@ def main():
     _write_if_absent(os.path.join(root, "JOB-LANES.md"), LANES_TEMPLATE, root, args.force)
     _write_if_absent(os.path.join(root, "SEARCH-KEYWORDS.md"), KEYWORDS_TEMPLATE, root, args.force)
     _write_if_absent(os.path.join(root, "TARGET-COMPANIES.md"), COMPANIES_TEMPLATE, root, args.force)
+    _write_if_absent(os.path.join(root, "STATE.md"), STATE_TEMPLATE.format(name=args.name), root, args.force)
     _write_if_absent(os.path.join(root, "WORKSPACE-MAP.md"),
                      WORKSPACE_MAP_TEMPLATE.format(
                          name=args.name,
@@ -471,7 +493,7 @@ def self_check():
         out = subprocess.run([sys.executable, __file__, "--workspace", root, "--name", "sample"],
                              capture_output=True, text=True)
         assert out.returncode == 0, out.stderr
-        for fn in ("JOB-LANES.md", "SEARCH-KEYWORDS.md", "TARGET-COMPANIES.md", "WORKSPACE-MAP.md"):
+        for fn in ("JOB-LANES.md", "SEARCH-KEYWORDS.md", "TARGET-COMPANIES.md", "WORKSPACE-MAP.md", "STATE.md"):
             assert os.path.isfile(os.path.join(root, fn)), fn
         from verify_run import declared_lanes
         lanes = declared_lanes(root)
