@@ -9,6 +9,13 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 
 - **Licence is now MIT** (was PolyForm Noncommercial 1.0.0). `LICENSE` is plain text, not markdown.
+- **Docs describe the process, not a fabrication rule.** SKILL.md, AGENTS.md, CONTRIBUTING.md,
+  the agents, commands and references now lead with finding roles and producing the CV, letter
+  and interview pack; `validate_profile.py` is described as a profile consistency check (every
+  line traces to the profile, lane/JD gates, required lines, AI-tell words); the profile's
+  "never claim" list is the **not-on-CV list** in prose (the validator's prose fallback still
+  keys on a `never claim` heading). Writing quality, banned buzzwords, voice, ATS mechanics and
+  the recruiter loop are unchanged.
 
 ### Added
 
@@ -29,16 +36,6 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   words to say to the user, one connector per message, Indeed first, never blocking on a key.
   `setup_connectors.py doctor` prints the same instructions for whatever is missing and gains
   `--self-check`; `SETUP.md` step 5, the README connector table and `/jobxhunter:setup` point at it.
-
-### Changed
-
-- **Docs describe the process, not a fabrication rule.** SKILL.md, AGENTS.md, CONTRIBUTING.md,
-  the agents, commands and references now lead with finding roles and producing the CV, letter
-  and interview pack; `validate_profile.py` is described as a profile consistency check (every
-  line traces to the profile, lane/JD gates, required lines, AI-tell words); the profile's
-  "never claim" list is the **not-on-CV list** in prose (the validator's prose fallback still
-  keys on a `never claim` heading). Writing quality, banned buzzwords, voice, ATS mechanics and
-  the recruiter loop are unchanged.
 
 ## [1.6.0] - 2026-08-26
 
