@@ -56,6 +56,11 @@ the redirect.
 
 ## Setup
 
+> **Using the jobxhunter plugin?** Skip this section. The server is already wired in
+> `.mcp.json`; just put your App ID + App Key in with `/plugin configure jobxhunter@soheil-jobxhunter`
+> and restart Claude Code. See `references/tools-and-connectors.md` for the full connector table.
+> The steps below are for running the server standalone.
+
 1. Register at <https://developer.adzuna.com/signup> for a free `app_id` / `app_key`.
    (Note: this is a **separate account** from a normal adzuna.co.uk jobseeker login.)
 2. Install:

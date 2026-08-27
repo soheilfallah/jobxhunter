@@ -35,8 +35,8 @@ format, any language — into the `dump/` folder it just made. Messy is fine. Th
 ```
 
 It reads everything in `dump/` and writes one master profile of your real history. Read it once and
-correct anything wrong — **this file is the only thing the CVs are ever built from**, so an error
-here is an error on every CV.
+correct anything wrong — CVs are built from your master profile, so an error here is an error on
+every CV.
 
 **5. Use it.**
 
@@ -49,14 +49,23 @@ here is an error on every CV.
 
 Say *"I applied to this one"* and that application locks in the tracker.
 
-**Optional — live job boards.** Without keys, `hunt` uses web search and finds fewer roles. Two free
-keys fix that: **[Adzuna](https://developer.adzuna.com/signup)** (UK + Canada jobs, salaries) and
-**[Firecrawl](https://www.firecrawl.dev)** (reads full adverts on Workday/Greenhouse/Lever). Sign up,
-then run `/plugin configure jobxhunter@soheil-jobxhunter` and paste them — or just tell Claude Code
-*"here's my Adzuna key"* and it registers it for you. [Reed](https://www.reed.co.uk/developers/jobseeker)
-is a third, UK-only.
+**Optional — live job boards.** Without connectors, `hunt` uses web search and finds fewer roles.
+In order of value:
 
-That's it. Your history never leaves your machine; nothing is invented on a CV; you review and send.
+| Connector | Type | Do this |
+|---|---|---|
+| **Indeed** (UK + Canada, full adverts) | built into claude.ai, **no key** | [claude.ai → Settings → Connectors](https://claude.ai/settings/connectors) → **Indeed** → **Connect**. Restart Claude Code. |
+| **[Adzuna](https://developer.adzuna.com/signup)** (UK + Canada, salaries) | free key | create an app, copy **App ID** + **App Key** |
+| **[Firecrawl](https://www.firecrawl.dev)** (full adverts on Workday/Greenhouse/Lever) | free key | dashboard → API Keys → copy the `fc-…` key |
+| **[Reed](https://www.reed.co.uk/developers/jobseeker)** (UK only) | free key | copy the Jobseeker API key |
+| **Dice** (US-leaning tech, optional) | built into claude.ai, **no key** | claude.ai → Settings → Connectors → **Dice** → **Connect** |
+
+Keys go in with `/plugin configure jobxhunter@soheil-jobxhunter` — or just tell Claude Code *"here's
+my Adzuna key"* and it registers it for you. Check what's live with
+`python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" doctor`. Full detail per connector:
+[`references/tools-and-connectors.md`](references/tools-and-connectors.md).
+
+That's it. Your history never leaves your machine; you review and send.
 
 ---
 
@@ -83,7 +92,7 @@ The procedure, with the check for each step:
 | 2 Workspace | Ask where. Then `python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> --name <firstname>`. | The dir holds `profiles/`, `applications/`, `dump/`, `WORKSPACE-MAP.md`. Tell the user the path. |
 | 3 Dump | Say exactly: *"Put your old CVs, LinkedIn export, certificates and any notes into `<dir>/dump/` — any format — then tell me 'done'."* Wait. | `dump/` is non-empty. If they have nothing, one old CV is enough; if they have no CV at all, offer to build the profile from a conversation instead (`references/profile-intake.md`). |
 | 4 Profile | `/jobxhunter:intake` (the INTAKE routine in `SKILL.md`). | `profiles/<name>.md` exists. Show the user its path and the Experience headings, and ask them to correct anything wrong. Do not proceed until they have. |
-| 5 Hand over | Show the four-row table above. Ask once: *"Do you want live job boards now or later?"* If later, stop — nothing breaks. If now, give the Adzuna and Firecrawl sign-up links, wait for the keys, register them (`/plugin configure …`, or the connector routine in `references/connector-setup.md`), and run `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py"` to show what is live. | The doctor lists each connector as configured or missing, and says which fallback covers a missing one. |
+| 5 Hand over | Show the four-row table above. Ask once: *"Do you want live job boards now or later?"* If later, stop — nothing breaks. If now, run `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" doctor`, then follow the **Agent script** in `references/tools-and-connectors.md` for whatever is missing — Indeed first (claude.ai → Settings → Connectors → Indeed → Connect, no key), then Adzuna, Firecrawl, Reed; one connector per message, never blocking. Register keys with `/plugin configure …` or `claude plugin install … --config KEY=VALUE`, then re-run the doctor. | The doctor lists each key-based connector as set or not, prints the Indeed/Dice enable steps, and says which fallback covers a missing one. |
 
 Then stop. Do not start a hunt on the user's behalf; tell them which command to run next.
 

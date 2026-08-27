@@ -25,12 +25,12 @@
 
 jobxhunter searches live UK and Canada job boards, tailors an ATS-safe CV that fits each role from your real experience, then names the exact gaps worth closing. It sources through real API connectors with a web-search fallback, scores every draft with an independent recruiter agent, tracks the whole pipeline, and preps you for the interview. It drafts. You review and send.
 
-It works from one master profile of your real history, so nothing on the page is invented. Where your experience falls short of a role, it shows you the gap and how to close it, rather than faking a match.
+It works from one master profile of your real history. Where your experience falls short of a role, it shows you the gap and how to close it.
 
 **On one real UK role, blind-scored by the independent recruiter agent:**
 
 <p align="center">
-  <strong>4.0 / 5</strong> &nbsp;·&nbsp; <strong>0 fabrications</strong> &nbsp;·&nbsp; <strong>4 real gaps flagged to close</strong>
+  <strong>4.0 / 5</strong> &nbsp;·&nbsp; <strong>4 real gaps flagged to close</strong>
 </p>
 
 ---
@@ -41,7 +41,7 @@ I was hunting for a job in the UK, and I built this to take the grunt work off m
 
 It worked. I found a job. Then a friend in Canada asked me to run their search too, so I made Canada work out of the box. Then a friend in Italy asked. So instead of hard-coding one country, I made the market a setting, and more are on the way.
 
-It works from your real history and shows you the gaps to close, rather than filling them, because a single made-up line is what ends an interview.
+It works from your real history and shows you the gaps to close.
 
 It's the tool I used for my own hunt, and my friends used for theirs. It's yours now too.
 
@@ -68,8 +68,8 @@ Leave the API-key prompts blank during install — they're optional and come las
 
 ## What makes it different
 
-- **The search does the digging.** It pulls live roles from Reed, Adzuna and Firecrawl with a web-search fallback, reads the full job description behind Workday, Greenhouse and Lever links, and the autonomous daily hunt sources, triages, tailors and files every new match on its own.
-- **It fits you from your real experience.** The master profile is the only source of truth for a submittable document, and every CV is shaped for both the ATS parser and the six-second recruiter scan. No fabricated titles, numbers, or skills.
+- **The search does the digging.** It pulls live roles from Indeed, Reed, Adzuna and Firecrawl with a web-search fallback, reads the full job description behind Workday, Greenhouse and Lever links, and the autonomous daily hunt sources, triages, tailors and files every new match on its own.
+- **It fits you from your real experience.** CVs are built from your master profile, and every CV is shaped for both the ATS parser and the six-second recruiter scan.
 - **Then it recommends the gap to close.** Where a role needs something you cannot evidence, jobxhunter shows you the gap instead of papering over it. In its alternative-world mode it sketches the ideal candidate and the shortest path from you to them, a roadmap you can act on and never something it submits.
 - **The recruiter loop is genuinely independent.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. In Claude Code the scoring runs in a separate `recruiter-critic` agent that sees only the JD and the finished CV, never the writer's own notes, so it cannot rubber-stamp itself. In testing it caught the tailorer drifting into unsupported buzzwords and stripped them.
 - **It doesn't stop at "applied".** Once a role is filed, `/jobxhunter:interview` builds a prep pack from the same coverage matrix: predicted questions, STAR answers from real evidence, and an honest defence for the exact gaps the CV surfaced. A deterministic keyword check confirms the must-have terms actually landed on the page (a parse diagnostic, never a fake "match score").
@@ -85,7 +85,7 @@ Run end-to-end on live UK job descriptions, each CV blind-scored by the independ
 | Case | Level | Recruiter score |
 |---|---|---|
 | Strong-match research placement | L1 | **4.0 / 5** |
-| Research assistant (partial fit) | L1 | 2.9 / 5, real gap surfaced not faked |
+| Research assistant (partial fit) | L1 | 2.9 / 5, real gap surfaced |
 | Junior ML engineer (genuine stretch) | L1 + letter | 2.9 / 5, missing stack disclosed |
 
 A true match scored 4.0; genuine stretches scored lower, with the reasons stated on the page. ATS-safety was verified in the document XML. The fixtures live in [`evals/`](evals/).
@@ -129,17 +129,19 @@ claude plugin install jobxhunter@soheil-jobxhunter
 ```
 
 > [!IMPORTANT]
-> **You'll want free API keys for the job connectors.** Claude Code prompts for them during install, and nothing is committed. jobxhunter *runs* without them, because sourcing falls back to web search, but you get fewer roles and job descriptions aren't deep-crawled.
+> **You'll want the job connectors.** Claude Code prompts for the API keys during install, and nothing is committed. jobxhunter *runs* without any of them, because sourcing falls back to web search, but you get fewer roles and job descriptions aren't deep-crawled.
 >
-> | Connector | Get a free key | What you lose without it |
+> | Connector | How | What you lose without it |
 > |---|---|---|
-> | **[Adzuna](https://developer.adzuna.com/signup)** ⭐ | `developer.adzuna.com/signup` | UK **and Canada** job search, plus salary data |
-> | **[Firecrawl](https://www.firecrawl.dev)** ⭐ | `firecrawl.dev` | Full job-description crawling on Workday / Greenhouse / Lever and PDFs |
-> | **[Reed](https://www.reed.co.uk/developers/jobseeker)** | `reed.co.uk/developers/jobseeker` | UK-only listings (skip it if you're hunting in Canada) |
+> | **Indeed** ⭐ | built into claude.ai, **no key**: [Settings → Connectors](https://claude.ai/settings/connectors) → Indeed → Connect | UK **and Canada** search with full job descriptions |
+> | **[Adzuna](https://developer.adzuna.com/signup)** ⭐ | free key: create an app, copy App ID + App Key | UK **and Canada** job search, plus salary data |
+> | **[Firecrawl](https://www.firecrawl.dev)** ⭐ | free key: dashboard → API Keys (`fc-…`) | Full job-description crawling on Workday / Greenhouse / Lever and PDFs |
+> | **[Reed](https://www.reed.co.uk/developers/jobseeker)** | free Jobseeker API key | UK-only listings (skip it if you're hunting in Canada) |
+> | **Dice** | built into claude.ai, no key: Settings → Connectors → Dice → Connect | US-leaning tech roles (optional) |
 >
-> ⭐ = the two that matter most. All are free to start; leave any blank to skip it.
+> ⭐ = the three that matter most. All are free to start; leave any blank to skip it.
 >
-> Installed from a terminal? Set them afterwards with `/plugin configure jobxhunter@soheil-jobxhunter`, or pass `--config KEY=VALUE` to `claude plugin install`.
+> Installed from a terminal? Set keys afterwards with `/plugin configure jobxhunter@soheil-jobxhunter`, or pass `--config KEY=VALUE` to `claude plugin install`. Check what's live: `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" doctor`.
 
 <details>
 <summary><strong>Other ways to install</strong></summary>
@@ -207,16 +209,17 @@ The **tailoring dial:** `L0` true-and-reframed · `L1` aggressive-but-true (defa
 
 ## Connectors: bring your own keys
 
-No keys ship in this repo. Each job board is an optional MCP connector you register with your own free key; missing ones fall back to web search.
+No keys ship in this repo. Two kinds of connector, all optional; missing ones fall back to web search.
 
-| Connector | Key | Cost |
-|---|---|---|
-| **Reed** (UK jobs) | [reed.co.uk/developers](https://www.reed.co.uk/developers) | free |
-| **Adzuna** (UK + Canada jobs, salary data) | [developer.adzuna.com](https://developer.adzuna.com) | free tier |
-| **Firecrawl** (job-description crawling) | [firecrawl.dev](https://www.firecrawl.dev) | free tier + paid |
-| **Indeed / Dice** | claude.ai connectors (OAuth) | per host |
+| Connector | Type | Get it | Cost |
+|---|---|---|---|
+| **Indeed** (UK + Canada jobs, full JDs) | built-in claude.ai connector (OAuth) | [claude.ai → Settings → Connectors](https://claude.ai/settings/connectors) → Indeed → Connect | free |
+| **Adzuna** (UK + Canada jobs, salary data) | bundled MCP, your key | [developer.adzuna.com/signup](https://developer.adzuna.com/signup) → App ID + App Key | free tier |
+| **Firecrawl** (job-description crawling) | bundled MCP, your key | [firecrawl.dev](https://www.firecrawl.dev) → API Keys | free tier + paid |
+| **Reed** (UK jobs) | bundled MCP, your key | [reed.co.uk/developers/jobseeker](https://www.reed.co.uk/developers/jobseeker) | free |
+| **Dice** (US-leaning tech, optional) | built-in claude.ai connector (OAuth) | claude.ai → Settings → Connectors → Dice → Connect | free |
 
-As a plugin, these keys are the plugin's user-config, so there's no manual JSON editing. Full map: [`references/tools-and-connectors.md`](references/tools-and-connectors.md).
+Built-in connectors need nothing on your machine: once connected on your claude.ai account their tools appear in Claude Code and Cowork. Keys for the bundled MCPs are the plugin's user-config (`/plugin configure jobxhunter@soheil-jobxhunter`), so there's no manual JSON editing. The canonical per-connector table, verification steps, and what Claude should say to walk you through it: [`references/tools-and-connectors.md`](references/tools-and-connectors.md).
 
 ---
 
@@ -241,7 +244,7 @@ Tracked here rather than half-built:
 
 ## Contributing
 
-Issues and PRs welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md): the one rule every change has to hold (it works only from the master profile, never invents), how to test a real install, and the three things that silently break the plugin.
+Issues and PRs welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md): the one rule every change has to hold (it works only from the master profile), how to test a real install, and the three things that silently break the plugin.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
 

@@ -13,9 +13,13 @@ a value. It reports lengths only, never the values, so `--json` output stays saf
 paste into a bug report.
 
 Usage:
-  python setup_connectors.py                 # human report
+  python setup_connectors.py [doctor]        # human report (default)
   python setup_connectors.py --json          # machine-readable status
   python setup_connectors.py --emit <name>   # print just one connector's config snippet
+  python setup_connectors.py --self-check    # offline sanity check of this script's tables
+
+The canonical connector table and the words to say to the user live in
+references/tools-and-connectors.md; this report's wording mirrors that file.
 """
 import argparse
 import glob
@@ -74,11 +78,28 @@ CONNECTORS = {
                 "redirecting that resolution.",
     },
 }
-# Connectors you enable in claude.ai (OAuth) — no local config / key here.
+# Connectors you enable in claude.ai (OAuth) — no local config / key here. Once connected
+# on the account they surface in Claude Code as `mcp__claude_ai_<Name>__*` tools and in
+# Claude Desktop / Cowork as `<Name>:<tool>`. Wording mirrors the agent script in
+# references/tools-and-connectors.md.
 OAUTH_CONNECTORS = {
-    "Indeed": "Enable the Indeed connector in claude.ai → Settings → Connectors (OAuth, no key).",
-    "Dice": "Enable the Dice connector in claude.ai (OAuth, US-leaning tech; optional).",
+    "Indeed": ("broad UK + Canada job search with full job descriptions — free, no key",
+               "Open claude.ai → Settings → Connectors → Indeed → Connect, then come back and "
+               "say 'done'. Restart Claude Code if the Indeed tools do not appear."),
+    "Dice": ("US-leaning tech roles; optional, only for AI/data/software families",
+             "Open claude.ai → Settings → Connectors → Dice → Connect, then say 'done'."),
 }
+
+
+def _report_oauth():
+    """Built-in claude.ai connectors. They live in the account, not in any local file, so this
+    script cannot detect them — '?' means unknown, not missing. Ask the user, or list tools."""
+    print("BUILT-IN claude.ai CONNECTORS (OAuth, no key — cannot be detected from here):")
+    for n, (what, how) in OAUTH_CONNECTORS.items():
+        print(f"  [? ] {n} — {what}")
+        print(f"       {how}")
+    print("  Check: a tool named mcp__claude_ai_Indeed__search_jobs (Claude Code) or "
+          "Indeed:search_jobs (Desktop/Cowork) is in your tool list.\n")
 
 
 def _report_runtimes():
@@ -240,11 +261,36 @@ def _snippet(name):
     return json.dumps({name: CONNECTORS[name]["config"]}, indent=2)
 
 
+def _self_check():
+    """Offline: the tables here must match the plugin's own manifests, and every
+    report path must render without touching the network."""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(root, ".mcp.json"), encoding="utf-8") as f:
+        servers = set(json.load(f)["mcpServers"])
+    assert servers == set(CONNECTORS), f"CONNECTORS {set(CONNECTORS)} != .mcp.json {servers}"
+    fields = set(_userconfig_fields())
+    for want in ("reed_api_key", "adzuna_app_id", "adzuna_app_key", "firecrawl_api_key"):
+        assert want in fields, f"plugin.json userConfig lacks {want}"
+    assert {"Indeed", "Dice"} <= set(OAUTH_CONNECTORS)
+    for n in CONNECTORS:
+        json.loads(_snippet(n))
+    _report_oauth()
+    print("self-check OK")
+
+
 def main():
     ap = argparse.ArgumentParser(description="JobXHunter connector doctor.")
+    ap.add_argument("command", nargs="?", choices=["doctor"], default="doctor",
+                    help="doctor (default): report configured vs missing connectors")
     ap.add_argument("--json", action="store_true", help="machine-readable status")
     ap.add_argument("--emit", help="print one connector's config snippet and exit")
+    ap.add_argument("--self-check", action="store_true",
+                    help="offline: verify this script's tables agree with .mcp.json/plugin.json")
     args = ap.parse_args()
+
+    if args.self_check:
+        _self_check()
+        return
 
     if args.emit:
         if args.emit not in CONNECTORS:
@@ -288,7 +334,9 @@ def main():
         print("      install without touching the interactive dialog.)\n")
         _report_runtimes()
         _report_plugin_keys(plugin_id)
-        print("\nThe hand-registration report below applies only to a standalone (non-plugin)")
+        print()
+        _report_oauth()
+        print("The hand-registration report below applies only to a standalone (non-plugin)")
         print("install. Ignore it unless you are running jobxhunter from a cloned skill folder.\n")
         print("-" * 70 + "\n")
 
@@ -320,18 +368,13 @@ def main():
                 print(f"         {line}")
             if c.get("note"):
                 print(f"      note: {c['note']}")
-    print("\nClaude.ai OAuth connectors — CANNOT be detected from here:")
-    print("  This script only reads local JSON config. Claude.ai OAuth connectors live in your")
-    print("  account, so these may well be active already. '?' means unknown, not missing.")
-    for n, how in OAUTH_CONNECTORS.items():
-        mark = "OK" if n in registered else "? "
-        print(f"  [{mark}] {n} — {how}")
-
+    print()
+    _report_oauth()
     print("\nHow to add one: sign up for the connector (Firecrawl needs a free account too), copy "
           "YOUR OWN key, then paste it to the agent in chat — it registers the MCP for you (backs up "
           "your config, merges the entry, tells you to restart). You never edit JSON by hand. "
-          "Full guide: references/connector-setup.md inside the jobxhunter plugin/skill folder, "
-          "or https://github.com/soheilfallah/jobxhunter/blob/main/references/connector-setup.md")
+          "Canonical table + what to say to the user: references/tools-and-connectors.md "
+          "(https://github.com/soheilfallah/jobxhunter/blob/main/references/tools-and-connectors.md).")
 
 
 if __name__ == "__main__":

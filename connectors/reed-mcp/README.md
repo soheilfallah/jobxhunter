@@ -46,6 +46,11 @@ automatically; a real env var still wins over the file).
 
 ## Setup
 
+> **Using the jobxhunter plugin?** Skip this section. The server is already wired in
+> `.mcp.json`; just put the key in with `/plugin configure jobxhunter@soheil-jobxhunter` and restart
+> Claude Code. See `references/tools-and-connectors.md` for the full connector table. The steps
+> below are for running the server standalone.
+
 ```bash
 cd reed-mcp
 python -m venv .venv && .venv/Scripts/python -m pip install mcp httpx python-dotenv
