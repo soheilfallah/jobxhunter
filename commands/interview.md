@@ -1,19 +1,23 @@
 ---
-description: Prepare for the interview from the filed application — predicted questions, STAR answers from real evidence, and gap-defence.
-argument-hint: "[job folder path, or company/role to locate it]"
+description: Prepare for an interview from a filed job - predicted questions, STAR answers from real evidence, and answers for the gaps.
+argument-hint: "[job folder, or company and role to find it]"
 ---
 
-Use the **jobxhunter** skill's **INTERVIEW PREP** routine for a role you've applied to.
+Plugin folder: `${CLAUDE_PLUGIN_ROOT}`
 
-Read the job folder (`job-description.md` + the `notes.md` coverage matrix) and the master
-profile, then write `interview-prep.md` into that same folder: the interviewer persona for
-this JD, a 30-second opener, predicted questions grouped by the JD's must-have competencies
-with STAR answers built from profile evidence, **gap-defence** answers
-for every hard-gap/partial the coverage matrix surfaced (the questions they *will* probe),
-sharp questions to ask them, and the likely curveballs (salary anchored to the fetched
-Adzuna band, notice period, any timeline gap).
+Before anything else, read `SKILL.md` in the plugin folder and `references/interview-prep.md`. Every `references/`, `assets/`, `agents/`
+and `scripts/` path below is inside the plugin folder; give that real path to every agent you dispatch.
 
-Follow `SKILL.md` ("Command: INTERVIEW PREP") and `references/interview-prep.md`. For a gap,
-prepare a confident way to handle the question. Ties to
-the tracker: `tracker.py update … {"status":"Interview"}` stamps the date and keeps the pack
-in the folder.
+Use the **jobxhunter** skill's **INTERVIEW** routine (`SKILL.md`, "INTERVIEW") and follow
+`references/interview-prep.md`.
+
+Read the job folder (`job-description.md`, `evaluation.md`, the tailored CV if there is one) and the
+profile, then write `interview-prep.md` into that folder: a 30-second opener, predicted questions
+grouped by what the advert requires with STAR answers built from profile evidence, an honest
+answer for every gap `evaluation.md` lists (those are the questions they will probe), questions to
+ask them, and the likely curveballs.
+
+Set the job's row in `jobs/tracker.md` to `Interview`, whatever its status was before.
+
+Where the profile has no example for a question, write a prompt for the user to fill in. Never
+invent the example.

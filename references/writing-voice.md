@@ -38,7 +38,13 @@ The default register for CVs and research/academic letters:
 Hard rule and high-frequency offenders, each shown in application context:
 
 - **Em & en dashes → cut (hard constraint).** Zero `—`/`–` in any submitted document. Replace with a
-  period, comma, colon, or parentheses. Scan the final draft; any hit means it isn't done.
+  period, a comma or parentheses. Date ranges take a plain hyphen with spaces. Scan the final draft;
+  any hit means it isn't done.
+- **Colons in the middle of a sentence → cut.** A colon that sets up a reveal ("One result stood
+  out: ...") is a tell and a drag. Make it two sentences or one shorter one. A colon after a label in
+  a list ("Tools: Python, SQL") is fine.
+- **Over-explaining → cut.** Readers do not want to read much. Say the fact once and stop. No
+  clause that explains why the fact matters, no restating the point in other words.
 - **AI-vocabulary words.** spearheaded, leverage, utilise, delve, showcase, testament, underscore,
   pivotal, robust, seamless, vibrant, tapestry, honed, fostering, garner, intricate — drop or replace
   with the plain verb. (Full ban-list: `cv-mistakes.md` §1.)
@@ -69,15 +75,16 @@ warmth:
   register (dry stays dry; warm stays warm).
 - **Upgrade, don't replace.** The ceiling of intervention is "the user on their best writing day", never "a
   different, more corporate person". A de-slopped letter that no longer sounds like them is a failure.
-- Motivation/opinion comes from the brain-dump; facts come from the profile. Never let one impersonate the
-  other.
+- Motivation and opinion come from the user's own words when they volunteer them; facts come from the
+  profile. Never let one impersonate the other.
 
 ## The pass: draft → audit → final
 
 1. **Draft** in the correct register.
 2. **Audit** — read it and ask: *"What here sounds generated or generic?"* List the specific tells.
-3. **Final** — fix them, then scan explicitly for: em/en dashes (must be zero), any `cv-mistakes.md`
-   buzzword, forced tricolons, and even mid-length cadence. Read it aloud; real writing varies rhythm.
+3. **Final** — fix them, then scan explicitly for: em/en dashes (must be zero), mid-sentence colons,
+   any `cv-mistakes.md` buzzword, forced tricolons, and even mid-length cadence. Read it aloud; real
+   writing varies rhythm. Where the `humanizer` skill is installed, run it after this pass.
 4. This pass is part of finishing a draft, not an optional extra — never hand over a CV, letter, or email
    that hasn't been through it.
 

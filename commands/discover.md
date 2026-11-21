@@ -1,13 +1,19 @@
 ---
-description: Find target companies in the hidden job market and draft a cold email to the right contact.
-argument-hint: "[target family + location, e.g. plant science in Cambridge]"
+description: Find employers worth approaching directly and draft a cold email to the right person.
+argument-hint: "[target field and location, e.g. data science in Leeds]"
 ---
 
-Use the **jobxhunter** skill's **DISCOVER + COLD MAIL** routine for the hidden job market (no advert).
+Plugin folder: `${CLAUDE_PLUGIN_ROOT}`
 
-Build a ranked target-company list (WebSearch + Clay + Ahrefs "related companies" + Indeed vetting) → find
-the *named* hiring contact and a verified email (Clay, or RocketReach — a paid lookup credit, used frugally)
-→ draft a short, human cold email from the user's own spoken words, CV attached (Gmail draft for review) →
-track each target. Never cold-mail `info@`.
+Before anything else, read `SKILL.md` in the plugin folder and `references/company-discovery-cold-outreach.md`. Every `references/`, `assets/`, `agents/`
+and `scripts/` path below is inside the plugin folder; give that real path to every agent you dispatch.
 
-Follow `SKILL.md` ("Command: DISCOVER + COLD MAIL") and `references/company-discovery-cold-outreach.md`.
+Use the **jobxhunter** skill's **DISCOVER** routine (`SKILL.md`, "DISCOVER") and follow
+`references/company-discovery-cold-outreach.md`.
+
+Build a ranked list of target employers → find the named person who owns the hire and a verified
+address (paid lookups one confirmed target at a time) → draft a short email from the user's own
+words, with the role's master CV attached, for the user to review and send. Never write to `info@`.
+
+Add the employers to the `Target employers` section of `master-cvs/TARGETS.md` so the next search
+reads their own job boards, and record each approach in `jobs/tracker.md`.

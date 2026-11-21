@@ -26,14 +26,14 @@ description (JD) explicitly overrides it. When UK and US conventions conflict, U
 - **Reverse-chronological is the default structure.** Use a skills-led/functional
   CV only to manage a career change or a long gap — and even then keep a dated
   work history section; UK recruiters distrust CVs with no visible timeline.
-- **Personal profile at the top**: 3–4 lines directly under the contact block.
-  - Formula: who they are + strongest relevant evidence + what they're targeting.
+- **Professional summary at the top**, directly under the contact line. Its shape is set in
+  `references/cv-craft.md`.
   - Rewrite it for every application; it must echo the JD's own vocabulary.
   - No "I": write "Data engineer with 4 years..." not "I am a data engineer...".
   - Ban clichés: "hard-working team player", "dynamic", "results-driven",
     "thinking outside the box". Replace each with a concrete fact.
 - Standard section order (experienced hire):
-  1. Name + contact details (+ right-to-work line if applicable)
+  1. Name + contact details
   2. Personal profile
   3. Work experience (reverse-chronological)
   4. Education
@@ -47,9 +47,9 @@ description (JD) explicitly overrides it. When UK and US conventions conflict, U
   software), centre, labour, behaviour, optimised, fulfil, specialise,
   licence (noun) / license (verb). Audit the final draft for US spellings —
   they read as an untailored American template.
-- **UK date style**: "Sept 2024 – Present", "March 2021 – June 2023", or
-  "September 2024". Month + year is enough. Never numeric US order (09/15/2024).
-  En dash with spaces for ranges. Be consistent about abbreviated vs full months.
+- **UK date style**: "Sep 2024 - Present", "Mar 2021 - Jun 2023". Month + year is
+  enough. Never numeric US order (09/15/2024). A plain hyphen with spaces for ranges,
+  never an en dash. Be consistent about abbreviated vs full months.
 - **Bullets, not prose.** Start each with a strong verb (led, built, delivered,
   reduced, negotiated); quantify wherever possible; 1–2 lines per bullet.
 - 3–6 bullets for recent/relevant roles; 1–2 for older or less relevant ones.
@@ -103,10 +103,10 @@ hide it.
     that would otherwise make screeners assume sponsorship is needed;
   - the candidate genuinely needs sponsorship.
   Otherwise omit it — UK citizens with UK-only histories don't need the line.
-- Placement: one line directly under the contact details, plainly labelled.
+- Placement: the closing line of the CV (`references/cv-craft.md`).
 - Phrasings by scenario:
   - Full, permanent rights (ILR, settled status, citizenship):
-    `Right to work in the UK — no sponsorship required`
+    `Eligible to work in the UK.`
     Do not name the immigration category; the status is the employer's business,
     the route is not.
   - Time-limited visa with full work rights:
@@ -134,23 +134,22 @@ line of evidence, so each one has to earn its place against *this* advert.
   international, or the region makes it useful. Never list English on an
   English-language application; writing the application in English is the
   evidence. Never list a test score.
-- **Right to work** — always present, one line, exact wording, no route detail.
+- **Right to work** — one line when the rules above call for it, exact wording, no route detail.
 - **Certificates** — the ones this employer would actually value. A first-aid or
   security certificate is an asset on site, front-of-house and technician roles
   and noise on an analyst CV.
 
 The test for every line: *would a recruiter reading this advert be worse off
 without it?* If not, cut it. Blanket-including these lines on every CV is the
-common failure — it looks thorough and reads as filler. The profile's rules block
-(`forbid-unless-jd-mentions`) enforces it mechanically via `validate_profile.py`.
+common failure — it looks thorough and reads as filler.
 
-## Education — selected per lane, never printed wholesale
+## Education — selected per role, never printed wholesale
 
-The profile's `education-for-lane` table (`references/master-profile-schema.md`) is
-the authority: only the listed degrees, in the listed order, grade marks only where
-the lane allows. A UK recruiter cannot place a mark on a foreign scale — the marks
-are the argument only where the reader is academic (see
-`references/academic-register.md`).
+Each master CV carries only the degrees that serve its role, in the order that
+serves it, with grade marks only where the reader will value them. A UK recruiter
+cannot place a mark on a foreign scale — the marks are the argument only where the
+reader is academic (see `references/academic-register.md`). Education lines carry no
+dates (`references/cv-craft.md`).
 
 ## References / referees
 
@@ -172,7 +171,8 @@ are the argument only where the reader is academic (see
 
 ## Education — UK presentation
 
-- Reverse-chronological: degree, institution, dates, classification/grade.
+- Reverse-chronological: degree, institution, classification/grade. No dates on
+  education lines (`references/cv-craft.md`).
 - Placement: lead with Education only for students, recent graduates, or
   academic roles; otherwise it sits below Experience.
 - **UK degree classifications**: First (1st), Upper Second (2:1), Lower Second
@@ -189,7 +189,7 @@ are the argument only where the reader is academic (see
 - Add one line of degree substance when relevant to the JD: dissertation title,
   key modules, prizes, scholarship.
 
-### International qualifications (first user: Iranian BSc + MSc, plus a UK MSc)
+### International qualifications
 
 - **Lead with the UK degree.** It anchors the candidate in the UK system and
   implicitly evidences English and UK academic standards. Give it the fullest
@@ -198,18 +198,18 @@ are the argument only where the reader is academic (see
   has to guess:
 
 ```
-MSc Data Science — University of Manchester, UK                    2023 – 2024
-Distinction. Dissertation: "..." (supervised by ...)
+MSc Data Science | University of Manchester, UK
+Distinction. Dissertation: "..."
 
-MSc Electrical Engineering — Sharif University of Technology, Iran 2018 – 2020
+MSc Electrical Engineering | <Home University>, <Country>
 GPA 17.8/20, ranked 3rd of 120 (equivalent to UK Masters with Distinction)
 
-BSc Computer Engineering — University of Tehran, Iran              2014 – 2018
+BSc Computer Engineering | <Home University>, <Country>
 GPA 16.4/20, top 10% of cohort (equivalent to UK 2:1 BSc (Hons))
 ```
 
-- Translate degree titles into English; keep the institution's real name —
-  Sharif, Tehran, and Amirkabir carry weight with informed reviewers.
+- Translate degree titles into English; keep the institution's real name. A
+  well-known one carries weight with informed reviewers.
 - **UK ENIC (Ecctis) Statements of Comparability confirm the *level* of a
   qualification ("comparable to British Bachelor (Honours) degree standard")
   but NOT the grade.** If the candidate holds one, add "UK ENIC confirmed" or
@@ -217,9 +217,9 @@ GPA 16.4/20, top 10% of cohort (equivalent to UK 2:1 BSc (Hons))
   sectors and grad schemes.
 - Because ENIC doesn't certify grades, any "2:1 equivalent" claim is a reasoned
   self-assessment: always back it with the raw GPA and rank, never assert it bare.
-- Iranian 20-point scale, rough banding used by UK university admissions:
-  ~17+/20 ≈ First/Distinction band; ~15–17 ≈ 2:1/Merit band. Institutions vary —
-  always show the underlying number alongside the claimed band.
+- For a 20-point scale, a rough banding used by UK university admissions is
+  ~17+/20 ≈ First/Distinction band; ~15–17 ≈ 2:1/Merit band. Countries and
+  institutions vary — always show the underlying number alongside the claimed band.
 - Never leave a foreign grade untranslated ("GPA: 17.8" alone means nothing to
   a UK screener) and never omit the country.
 

@@ -1,48 +1,49 @@
 # Firstname Lastname
 ## Target Role Title
-City, Country | +44 7XXX XXXXXX | you@email.com | linkedin.com/in/handle | github.com/handle
+City, Country | +44 7XXX XXXXXX | you@email.com | yourwebsite.com
 
 ## Professional Summary
-One tight paragraph (2–4 lines) positioning you for THIS role. Lead with what you are and your strongest matching evidence. No filler, no "results-driven". See cv-craft.md and cv-mistakes.md.
+Opens with the years-and-domains line, for example "6 years of operations experience, 3 years of data analysis". Then two short sentences that carry the role's top keywords with one number in them. Written last.
 
 ## Experience
-### Job Title — Organisation, City
-Month Year – Month Year
-- Strong verb + real task + method/tools + quantified outcome. (See cv-craft.md bullet anatomy.)
-- Each bullet earns its line; foreground JD-matching evidence at L1.
-- Weave keywords naturally, in context; pair acronyms with expansions, e.g. NLP (natural language processing).
+### Job Title | Jan 2022 - Present | Organisation, City
+- Strong verb, the real task, the method or tool, the outcome or scale where one exists.
+- The bullet is as long as the fact needs and no longer.
 
-### Previous Title — Organisation, City
-Month Year – Month Year
+### Previous Title | Mar 2019 - Dec 2021 | Organisation, City
 - ...
 
 ## Education
-### MSc Subject — University, City
-Year (or Month Year – Month Year)
-- Classification / relevant modules / dissertation title if early-career and relevant.
-
-### BSc Subject — University, City
-Year
-- International qualification: note UK equivalence if known (see uk-conventions.md).
+### MSc Subject | University, City
+### BSc Subject | University, City
 
 ## Skills
-- Category one (e.g. Data & Analysis): item, item, item
-- Category two (e.g. Laboratory): item, item, item
-- Category three (e.g. Tools): item, item, item
+- Data analysis in Python and SQL across sales and operations datasets
+- Reporting in Power BI for senior managers
+
+## Publications
+- Author, A. (Year). Title. Journal.
 
 ## Certifications
-- Certification / licence — issuer, year (mark expiry if relevant). Licences are often JD knockouts — state them precisely.
+- Certification, issuer
+
+## Additional
+- Eligible to work in the UK.
 
 <!--
-RENDER CONTRACT (read by render_docx.py):
-  #   -> name            ## -> section heading      ### -> entry title (role/degree)
-  `## <target role>` IMMEDIATELY after the name (no blank line between) -> the target-title
-  subtitle for the six-second scan. A blank line there resets the parser and the title
-  renders as a section heading instead — this shape shipped `## <title>` as the contact
-  line on 139 of 139 CVs, 23 Aug 2026.
-  first line after name/title -> contact line       -  -> bullet (indent 2 spaces for sub-bullet)
-  other non-empty line  -> paragraph (dates auto-italicised)
-ATS-safe by construction: single column, no tables, no columns, no text boxes, no
-images, no headers/footers. Do NOT add any of those. Keep to two pages.
-Rendered outputs: CV.docx (submittable) + CV.txt (paste-in-box applications).
+RENDER CONTRACT (read by scripts/render_docx.py):
+  #    -> name
+  ##   IMMEDIATELY under the name, no blank line -> the target role line
+  next line -> the contact line, plain text, no hyperlinks
+  ##   -> section heading        ### -> entry line (a job or a degree)
+  -    -> bullet (indent two spaces for a sub-bullet)
+  any other line -> a plain paragraph
+
+FORMAT (references/cv-craft.md):
+  Experience line: Job Title | Dates | Employer, City.
+  Education line:  Degree | Institution. NO dates on education. Dates only on jobs.
+  Date ranges use a plain hyphen with spaces, never an en dash or em dash.
+  Education may move above Experience for academic and research roles.
+  Publications and Certifications go in whichever order helps the role; drop either if empty.
+  Two pages at most. Single column. No tables, columns, text boxes, images, headers or footers.
 -->

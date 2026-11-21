@@ -5,7 +5,7 @@
     "name": "Soheil",
     "url": "https://github.com/soheilfallah"
   },
-  "description": "Job-hunting tooling for the UK and Canada: profile intake, ATS-safe CV tailoring, sourcing, cover letters, and application tracking.",
+  "description": "Agent-run job hunting for the UK and Canada: profile intake, master CVs per role, a wide agent-judged search, CV tailoring and cover letters.",
   "plugins": [
     {
       "name": "jobxhunter",
@@ -14,11 +14,19 @@
         "url": "https://github.com/soheilfallah/jobxhunter.git"
       },
       "displayName": "JobXHunter",
-      "version": "1.6.1",
-      "description": "Build a master profile from a dump folder, tailor ATS-safe CVs to a JD, source live UK roles across connectors, write cover letters, and track every application.",
+      "version": "2.0.0",
+      "description": "Build a profile from a dump folder, write a master CV per target role, search the UK and Canada job boards with agents judging every advert, and tailor the right master CV to the jobs you pick.",
       "repository": "https://github.com/soheilfallah/jobxhunter",
       "license": "MIT",
-      "keywords": ["jobs", "cv", "cover-letter", "ats", "uk", "recruitment"]
+      "keywords": [
+        "jobs",
+        "cv",
+        "cover-letter",
+        "ats",
+        "uk",
+        "canada",
+        "agents"
+      ]
     }
   ]
 }

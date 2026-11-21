@@ -1,8 +1,8 @@
 {
   "name": "jobxhunter",
   "displayName": "JobXHunter",
-  "version": "1.6.1",
-  "description": "Build a master profile from your own files, tailor ATS-safe CVs to any job description, source live UK and Canada roles, write cover letters, and track every application.",
+  "version": "2.0.0",
+  "description": "Agent-run job hunting for the UK and Canada: one profile from your own files, a master CV per target role, a wide search where agents judge every advert in full, a dated folder per job, and CV tailoring as a separate step.",
   "author": {
     "name": "Soheil Fallah",
     "url": "https://github.com/soheilfallah"
@@ -10,13 +10,24 @@
   "homepage": "https://github.com/soheilfallah/jobxhunter",
   "repository": "https://github.com/soheilfallah/jobxhunter",
   "license": "MIT",
-  "keywords": ["jobs", "job-search", "cv", "resume", "cover-letter", "ats", "uk", "recruitment", "tailoring"],
+  "keywords": [
+    "jobs",
+    "job-search",
+    "cv",
+    "resume",
+    "cover-letter",
+    "ats",
+    "uk",
+    "canada",
+    "agents",
+    "tailoring"
+  ],
   "mcpServers": "./.mcp.json",
   "userConfig": {
     "reed_api_key": {
       "type": "string",
       "title": "Reed API key",
-      "description": "Optional. Reed.co.uk Jobseeker API key (free at reed.co.uk/developers). Enables the bundled Reed job-search connector. Leave blank to skip Reed — sourcing falls back to web search.",
+      "description": "Optional. Reed.co.uk Jobseeker API key (free at reed.co.uk/developers). Enables the bundled Reed job-search connector. Leave blank to skip Reed — the search falls back to web search.",
       "sensitive": true
     },
     "adzuna_app_id": {

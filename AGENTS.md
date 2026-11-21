@@ -1,44 +1,50 @@
 # AGENTS.md
 
-jobxhunter is an agent-run job-hunting toolkit. Its core works in **any coding-agent CLI** that can read files and run Python: Claude Code, Codex, Gemini CLI / Antigravity, GitHub Copilot CLI, OpenCode, Qwen, Kimi, and others. This file tells your agent how to drive it. (Claude Code users get the full plugin experience; see `README.md`.)
-
-## Where the content comes from
-
-Everything submittable is built from the user's **master profile**. Select, reframe, reorder, and emphasise the experience in it; if evidence for a job requirement isn't there, surface it to the user as a gap. Only the `L2` "alternative-world" mode goes beyond the profile, and its output is never submitted.
+jobxhunter is an agent-run job-hunting toolkit. It works in **any coding-agent CLI** that can read
+and write files: Claude Code, Codex, Gemini CLI, GitHub Copilot CLI, OpenCode, Qwen, Kimi and
+others. This file tells your agent how to drive it. (Claude Code users get the full plugin
+experience; see `README.md`.)
 
 ## Start here
 
-**Setting a user up for the first time?** Follow [`SETUP.md`](SETUP.md) — five steps, in order, one question at a time, keys last and optional. That file has the agent procedure and the per-step check.
+**Setting a user up for the first time?** Follow [`SETUP.md`](SETUP.md): five steps, in order, one
+question at a time, keys last and optional.
 
-Otherwise read [`SKILL.md`](SKILL.md). It is the engine: a workflow map that pulls deeper knowledge from `references/` only when a step needs it. Everything below is a pointer into it.
+Otherwise read [`SKILL.md`](SKILL.md). It is the engine: a short workflow map that pulls deeper
+knowledge from `references/` only when a step needs it.
 
 ## The pipeline
 
 | Step | What to do | Read |
 |---|---|---|
-| **Intake** | Build a master profile from the user's raw files (old CVs, LinkedIn export, notes, certificates). | `references/profile-intake.md`, `references/master-profile-schema.md` |
-| **Source** | Find live roles that match. | `references/daily-hunt.md`, `references/job-search-guide.md` |
-| **Tailor** | Produce an ATS-safe CV for one JD, then run the recruiter-critic scoring loop until it passes. | `references/tailoring-levels.md`, `references/recruiter-rubric.md`, `references/ats-mechanics.md`, `references/cv-craft.md` |
-| **Cover / outreach** | Draft a cover letter or cold email in the user's own voice. | `references/cover-letter.md`, `references/company-discovery-cold-outreach.md`, `references/writing-voice.md` |
-| **Track & prep** | File a per-job folder + a locked tracker row; build interview prep from the filed role. | `references/interview-prep.md` |
+| **Setup** | Copy `assets/workspace/` to a private folder the user chooses; test what is connected. | `SKILL.md` "SETUP" |
+| **Intake** | Build one plain profile from the user's raw files and agree their target roles. | `references/profile-intake.md` |
+| **Masters** | Write one master CV per target role, from the profile alone. | `agents/master-builder.md`, `references/cv-craft.md` |
+| **Search** | Find adverts widely, then read each in full and judge it against the role's master CV. Never tailor here. | `references/search.md`, `agents/job-scout.md`, `agents/job-evaluator.md` |
+| **Tailor** | Reword one master CV to one advert the user picked. | `agents/cv-tailor.md`, `references/cv-craft.md` |
+| **Letter, interview, outreach** | On request. | `references/cover-letter.md`, `references/interview-prep.md`, `references/company-discovery-cold-outreach.md` |
 
-Each `commands/*.md` file reads as a plain-language task description, so use it directly even without slash-command support.
+Each `commands/*.md` file is a plain-language task description, usable without slash commands. Each
+`agents/*.md` file is the brief for one kind of worker: if your CLI has subagents, give each worker
+its own context; if not, do the same work one role or one advert at a time.
 
-## Running the deterministic scripts
+## Rules that hold everywhere
 
-Rendering, tracking, and keyword coverage are deterministic Python under `scripts/`. Run them from the repo root:
+- The profile is the only source of truth. Never invent a fact, and never question the profile.
+- A master CV is built from the profile alone; a tailored CV from its master and the advert alone.
+- Whether a job fits is an agent's judgement on the full advert. Do not score, rank or filter jobs
+  or CVs with code.
+- Search and tailoring are separate runs.
+- Never write a machine path or a key into this repo.
 
-```
-python scripts/tracker.py …            # the application tracker (xlsx + csv, applied rows locked)
-python scripts/render_docx.py …        # render the tailored CV to .docx
-python scripts/keyword_coverage.py …   # deterministic must-have / nice-to-have coverage check
-```
+## Portability notes
 
-Needs **Python 3** with `python-docx` + `openpyxl`. The scripts preflight and print the exact fix if a dependency is missing.
-
-## Portability notes (read once)
-
-- **`${CLAUDE_PLUGIN_ROOT}`** in `SKILL.md` means **the repo root** on non-Claude hosts. Substitute it wherever it appears.
-- **Slash commands** (`/jobxhunter:tailor`, …) are a Claude Code convenience. On other CLIs there are no slash commands, so perform the task in the matching `commands/*.md` file.
-- **Job connectors** (Reed / Adzuna / Firecrawl) are Claude Code **MCP** servers. Without them, do the sourcing step with whatever web-search / fetch tools your agent has. **The tailoring, tracking, and interview core is identical on every host.** Only live-board sourcing changes.
-- **No secrets in this repo.** The user brings their own API keys, and their real profile and applications live in a private, gitignored workspace.
+- **`${CLAUDE_PLUGIN_ROOT}`** means **the repo root** on non-Claude hosts.
+- **Slash commands** are a Claude Code convenience. Elsewhere, perform the task in the matching
+  `commands/*.md` file.
+- **Agent frontmatter** (`model`, `effort`) is read by Claude Code. Other hosts can ignore it; the
+  body of each file is the brief.
+- **Job connectors** (Reed, Adzuna, Firecrawl) are MCP servers. Without them, search with whatever
+  web-search and fetch tools your agent has.
+- **The one script** is `scripts/render_docx.py`, which turns a markdown CV into a Word file. Run it
+  with `uv run --script scripts/render_docx.py ...`, or with Python after `pip install python-docx`.

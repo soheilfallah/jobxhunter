@@ -1,32 +1,30 @@
 ---
-description: Tailor an ATS-safe CV to one job description from the master profile.
-argument-hint: "[JD: paste text, a file path, or a URL] [L0|L1|L2, default L1]"
+description: Tailor the right master CV to one evaluated job, or to an advert you paste. Run it after a search, never during one.
+argument-hint: "[a job folder | several | 'top N' from the latest shortlist | a pasted advert or link]"
 ---
 
-Use the **jobxhunter** skill's **TAILOR** routine (its core) for a single job description.
+Plugin folder: `${CLAUDE_PLUGIN_ROOT}`
 
-Parse the JD → build the coverage matrix (strong / partial / adjacent-provisional / hard-gap) → select and
-order real evidence → draft bullets (`strong verb + real task + method + quantified outcome`, anti-mirroring
-guard) → voice pass + integrity checks (date / gap / profile check) → render an ATS-safe `CV.docx` + `CV.txt`
-via `scripts/render_docx.py` → run the recruiter loop → file it. Respect the level (L0 / L1 default / L2).
+Before anything else, read `SKILL.md` in the plugin folder and `references/cv-craft.md`. Every `references/`, `assets/`, `agents/`
+and `scripts/` path below is inside the plugin folder; give that real path to every agent you dispatch.
 
-Every build runs `python scripts/validate_profile.py --profile <profile.md> --folder <dir>` (exit 0
-before rendering; exit 2 = the profile's rules block is broken — stop and report) and the mandatory
-humanizer pass before anything is called ready.
+Use the **jobxhunter** skill's **TAILOR** routine (`SKILL.md`, "TAILOR").
 
-Follow `SKILL.md` ("Command: TAILOR").
+1. Resolve the jobs. `top N` means the first N entries under "Kept, best first" in the newest
+   `SHORTLIST.md` (the closing-soon block above it is a reminder, not the ranking). For a pasted
+   advert or a link, file it first: `jobs/<today>/<Company> - <Role>/job-description.md` with the full
+   text, an empty `CV/` folder and a `notes.md`; ask which role's master to use only if it is not
+   obvious.
+2. For each job, find the role's master CV (the `Tailor from` line in `evaluation.md`). **No master,
+   no tailoring:** say so in one line and stop. Do not build a master on the way.
+3. Dispatch one **`cv-tailor`** agent per job, in a single message when there are several. Give each:
+   the plugin folder path, the job folder, the master CV path and the market.
+4. Set the job's row in `jobs/tracker.md` to `Tailored` yourself. The agent sets the `Status:` line
+   in the job's `notes.md`.
+5. Report each CV's path and how many requirements were left out, one or two lines per job. The
+   list itself is in the job's `notes.md`.
 
-**Which reference each step reads.** Load only what the step needs; a step whose file is listed here is
-not finished until that file has been applied.
+Tailoring is a keyword pass over the master: reword and reorder what is already there. It does not
+restructure the CV, add facts, score the result or ask for confirmation batches.
 
-| Step | Read |
-|---|---|
-| 1. Parse the JD | `references/jd-analysis.md` |
-| 2. Coverage matrix | `references/tailoring-levels.md` ("Gap classes"); for a career-change or non-linear story also `references/career-narrative.md` |
-| 3. Select + order | `references/keyword-taxonomy/<family>.md` — as a *palette* to match real evidence, never a source of new skills |
-| 4. Draft | `references/cv-craft.md` |
-| 5. Voice pass | **`references/writing-voice.md`** (the de-slop + register model — never ship prose that has not been through it) and `references/cv-mistakes.md` §1 (banned buzzwords); then the installed `humanizer` skill, if present, on the summary and every bullet (mandatory when installed; `validate_profile.py` WARNs on AI-tell vocabulary as the mechanical backstop) |
-| 5. Market conventions | pick by the profile's market: `references/uk-conventions.md` (`uk`) · `references/ca-conventions.md` (`ca`); academic/research targets also `references/academic-register.md` |
-| 6. Render | `references/ats-mechanics.md` §9 — the ATS-safe checklist the render must satisfy |
-| Recruiter loop | `references/recruiter-rubric.md`; the critic scores authenticity against `references/writing-voice.md`, the same standard the writer was held to |
-| L2 only | `references/tailoring-levels.md` ("L2 — The alternative world"); the delta is mandatory |
+When the user says they applied, set that row to `Applied`.

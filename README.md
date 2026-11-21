@@ -4,33 +4,17 @@
 
 <h1 align="center">jobxhunter</h1>
 
-<p align="center"><strong>Fills the gap to the job. Recommends the gaps to close.</strong></p>
+<p align="center"><strong>Finds the jobs worth your application. Then fits your CV to each one.</strong></p>
 
 <p align="center">
-  It searches live UK and Canada jobs, tailors an ATS-safe CV that fits each role from your real experience, and names the exact gaps worth closing.
+  Agents search the UK and Canada job boards, read every advert in full, judge it against your own master CV, and file the ones worth applying to. Tailoring is a separate step you start when you have chosen.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Claude%20Code-plugin%20%2B%20skill-590000" alt="Claude Code">
   <img src="https://img.shields.io/badge/markets-UK%20%2B%20Canada-6b4a45" alt="Markets">
-  <img src="https://img.shields.io/badge/recruiter--scored-4.0%2F5-590000" alt="Recruiter score">
+  <img src="https://img.shields.io/badge/agent--run-no%20scoring%20scripts-590000" alt="Agent-run">
   <img src="https://img.shields.io/badge/license-MIT-590000" alt="License">
-</p>
-
-<p align="center">
-  <img src="assets/brand/demo-tailor.svg" width="760" alt="A jobxhunter tailor run: it sources a role, fits the CV to it, marks each requirement filled, flags the one gap to close, and scores 4.0 out of 5 from the independent recruiter.">
-</p>
-
----
-
-jobxhunter searches live UK and Canada job boards, tailors an ATS-safe CV that fits each role from your real experience, then names the exact gaps worth closing. It sources through real API connectors with a web-search fallback, scores every draft with an independent recruiter agent, tracks the whole pipeline, and preps you for the interview. It drafts. You review and send.
-
-It works from one master profile of your real history. Where your experience falls short of a role, it shows you the gap and how to close it.
-
-**On one real UK role, blind-scored by the independent recruiter agent:**
-
-<p align="center">
-  <strong>4.0 / 5</strong> &nbsp;·&nbsp; <strong>4 real gaps flagged to close</strong>
 </p>
 
 ---
@@ -51,61 +35,71 @@ It's the tool I used for my own hunt, and my friends used for theirs. It's yours
 
 ## Quick start
 
-> **New here? Read [`SETUP.md`](SETUP.md) — five steps, about five minutes.**
-> Pasting this repo into Claude Code? Say *"set me up"* and it follows that same file, one step at a time.
-
 ```
 /plugin marketplace add soheilfallah/jobxhunter
 /plugin install jobxhunter@soheil-jobxhunter
 /jobxhunter:setup
 ```
 
-Leave the API-key prompts blank during install — they're optional and come last. `setup` scaffolds a private workspace. Drop your old CVs and notes into the `dump/` folder it makes, run `/jobxhunter:intake` to build your master profile, then `/jobxhunter:tailor` a role (or `/jobxhunter:hunt` to find and tailor many). Say *"I applied to this one"* and the tracker row locks.
-
-> ⭐ If it saves you one wasted application, a star helps other job-hunters find it.
+Leave the API-key prompts blank during install. They are optional and come last. Full walkthrough: [`SETUP.md`](SETUP.md), five steps. Pasting this repo into Claude Code? Say *"set me up"* and it follows that file one step at a time.
 
 ---
 
-## What makes it different
+## How it works
 
-- **The search does the digging.** It pulls live roles from Indeed, Reed, Adzuna and Firecrawl with a web-search fallback, reads the full job description behind Workday, Greenhouse and Lever links, and the autonomous daily hunt sources, triages, tailors and files every new match on its own.
-- **It fits you from your real experience.** CVs are built from your master profile, and every CV is shaped for both the ATS parser and the six-second recruiter scan.
-- **Then it recommends the gap to close.** Where a role needs something you cannot evidence, jobxhunter shows you the gap instead of papering over it. In its alternative-world mode it sketches the ideal candidate and the shortest path from you to them, a roadmap you can act on and never something it submits.
-- **The recruiter loop is genuinely independent.** A JD-specific recruiter persona scores each draft and demands fixes until it passes. In Claude Code the scoring runs in a separate `recruiter-critic` agent that sees only the JD and the finished CV, never the writer's own notes, so it cannot rubber-stamp itself. In testing it caught the tailorer drifting into unsupported buzzwords and stripped them.
-- **It doesn't stop at "applied".** Once a role is filed, `/jobxhunter:interview` builds a prep pack from the same coverage matrix: predicted questions, STAR answers from real evidence, and an honest defence for the exact gaps the CV surfaced. A deterministic keyword check confirms the must-have terms actually landed on the page (a parse diagnostic, never a fake "match score").
-- **No slop.** A researched ban-list blocks phrasing like *"results-driven team player, passionate about synergy."*
-- **Two markets, more coming.** UK and Canada both work out of the box (A4 vs US-Letter, British vs Canadian spelling, Reed/Adzuna vs Job Bank / Indeed.ca). Market is read from your profile, not hard-coded.
-
----
-
-## Validated
-
-Run end-to-end on live UK job descriptions, each CV blind-scored by the independent recruiter agent (the tailorer never grades its own work):
-
-| Case | Level | Recruiter score |
-|---|---|---|
-| Strong-match research placement | L1 | **4.0 / 5** |
-| Research assistant (partial fit) | L1 | 2.9 / 5, real gap surfaced |
-| Junior ML engineer (genuine stretch) | L1 + letter | 2.9 / 5, missing stack disclosed |
-
-A true match scored 4.0; genuine stretches scored lower, with the reasons stated on the page. ATS-safety was verified in the document XML. The fixtures live in [`evals/`](evals/).
-
----
-
-## Commands
+```
+setup  →  intake  →  masters  →  search  →  tailor
+folder    profile    one CV      find and    fit one CV
+          from your  per role    judge       to one job
+          files
+```
 
 | Command | What it does |
 |---|---|
-| `/jobxhunter:setup` | Scaffold your private workspace and connect job boards (bring your own keys) |
-| `/jobxhunter:intake` | Build your master profile from a folder of raw files: old CVs, LinkedIn export, notes, certificates |
-| `/jobxhunter:hunt` | Autonomous daily hunt. Sources, triages, and tailors every new live role, then files it |
-| `/jobxhunter:tailor` | Tailor an ATS-safe CV to one job description, with the recruiter scoring loop |
-| `/jobxhunter:cover-letter` | Draft a cover letter in your own voice, to your market's conventions |
-| `/jobxhunter:discover` | Find target companies in the hidden job market and draft a cold email to the named contact |
-| `/jobxhunter:interview` | Prep from a filed role: predicted questions, STAR answers from real evidence, honest gap-defence |
-| `/jobxhunter:dashboard` | Build a shareable HTML dashboard of your hunt (funnel, status, scores) from the tracker |
+| `/jobxhunter:setup` | Makes your private workspace, copies the connector guides into it, and tests which job boards are really connected |
+| `/jobxhunter:intake` | Reads the old CVs and notes you drop in `dump/`, writes one plain profile, and agrees the roles you are going for |
+| `/jobxhunter:masters` | Writes a master CV for each of those roles, from your profile alone. You edit them; they are yours |
+| `/jobxhunter:search` | Searches every board for every role and evaluates each advert against the right master CV. **Never tailors** |
+| `/jobxhunter:tailor` | Fits the role's master CV to one job you picked from the shortlist |
+| `/jobxhunter:cover-letter` | Writes a finished cover letter in your voice |
+| `/jobxhunter:interview` | Builds interview prep from a filed job, gaps included |
+| `/jobxhunter:discover` | Finds employers to approach directly and drafts the cold email |
 
 You can also just talk to it in plain language. The commands are shortcuts.
+
+## What makes it different
+
+- **Agents judge, not scripts.** Whether a job fits you is decided by an agent that has read the whole advert and your master CV. Nothing ranks a role by keyword overlap or a title match.
+- **More than one master CV.** A data role and an operations role need different evidence up front. You get a master CV per role you are going for, and every tailored CV starts from the right one.
+- **The first search is massive.** Every title, on every connected board, with no date limit, until the boards run dry. Later searches only fetch what is new.
+- **Search and tailoring never mix.** A search ends at a ranked shortlist. You read it, choose, and then tailor. No CV is written for a job you would not apply to.
+- **A folder for every job.** Each kept job gets the full advert, an evaluation (what it asks, what you can show, the gaps) and your notes, in a folder dated by the day it was found.
+- **Honest about what it searched.** Each connector is tested with a live call before a search. A board that fails is named, and the search is never presented as complete when it was not.
+- **Tailoring that keeps your CV yours.** It carries the advert's keywords into what your master already says. It does not restructure, pad or invent, and it never states a fact differently to two employers.
+- **No slop.** Short and straight to the point. A researched ban-list blocks phrasing like *"results-driven team player, passionate about synergy."*
+- **Two markets.** UK and Canada both work out of the box (A4 or US Letter, British or Canadian spelling, the right boards for each).
+
+## Your workspace
+
+Everything lives in one private folder that you choose. Nothing in it is uploaded or committed.
+
+```
+your-workspace/
+  dump/            your old CVs, certificates and notes
+  profile.md       your one plain profile
+  setup/           step-by-step guides for each job-board connector
+  master-cvs/      TARGETS.md and one master CV per role
+  jobs/
+    tracker.md     every advert seen, and where each application stands
+    2026-01-15/
+      SHORTLIST.md
+      Acme - Data Analyst/
+        job-description.md
+        evaluation.md
+        notes.md
+        CV/
+          Your Name - CV.docx
+```
 
 ---
 
@@ -121,27 +115,35 @@ In Claude Code:
 /reload-plugins
 ```
 
-Or from a terminal, for scripted setups:
+Or from a terminal:
 
 ```bash
 claude plugin marketplace add soheilfallah/jobxhunter
 claude plugin install jobxhunter@soheil-jobxhunter
 ```
 
-> [!IMPORTANT]
-> **You'll want the job connectors.** Claude Code prompts for the API keys during install, and nothing is committed. jobxhunter *runs* without any of them, because sourcing falls back to web search, but you get fewer roles and job descriptions aren't deep-crawled.
->
-> | Connector | How | What you lose without it |
-> |---|---|---|
-> | **Indeed** ⭐ | built into claude.ai, **no key**: [Settings → Connectors](https://claude.ai/settings/connectors) → Indeed → Connect | UK **and Canada** search with full job descriptions |
-> | **[Adzuna](https://developer.adzuna.com/signup)** ⭐ | free key: create an app, copy App ID + App Key | UK **and Canada** job search, plus salary data |
-> | **[Firecrawl](https://www.firecrawl.dev)** ⭐ | free key: dashboard → API Keys (`fc-…`) | Full job-description crawling on Workday / Greenhouse / Lever and PDFs |
-> | **[Reed](https://www.reed.co.uk/developers/jobseeker)** | free Jobseeker API key | UK-only listings (skip it if you're hunting in Canada) |
-> | **Dice** | built into claude.ai, no key: Settings → Connectors → Dice → Connect | US-leaning tech roles (optional) |
->
-> ⭐ = the three that matter most. All are free to start; leave any blank to skip it.
->
-> Installed from a terminal? Set keys afterwards with `/plugin configure jobxhunter@soheil-jobxhunter`, or pass `--config KEY=VALUE` to `claude plugin install`. Check what's live: `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" doctor`.
+Then run `/jobxhunter:setup`. It creates the workspace and tells you exactly what is connected.
+
+### Connectors: bring your own keys
+
+No keys ship in this repo. Every connector is optional; with none, the search runs on web search and finds fewer roles. `setup` copies a step-by-step guide for each one into your workspace.
+
+| Connector | Adds | Needs |
+|---|---|---|
+| **Indeed** | the biggest board for the UK and Canada, full adverts | a click in [claude.ai → Settings → Connectors](https://claude.ai/settings/connectors), no key |
+| **[Adzuna](https://developer.adzuna.com/signup)** | UK and Canada search plus salary data | free app id and key |
+| **[Firecrawl](https://www.firecrawl.dev)** | the full advert behind any link, including company career sites | free key |
+| **[Reed](https://www.reed.co.uk/developers/jobseeker)** | UK only, full adverts | free key |
+
+Set keys with `/plugin configure jobxhunter@soheil-jobxhunter`, then restart Claude Code. If a connector still reports a missing key, put the keys in `~/.jobxhunter/.env`: that file sits outside the plugin, so it survives every update.
+
+### Requirements
+
+| Requirement | Needed for |
+|---|---|
+| **Claude Code** | everything, or any `SKILL.md`-compatible host |
+| **[`uv`](https://docs.astral.sh/uv/getting-started/installation/)** (≥ 0.4) | the Reed and Adzuna connectors and the Word renderer. It fetches their dependencies by itself, so there is nothing to `pip install` |
+| **Node.js / `npx`** | the Firecrawl connector only |
 
 <details>
 <summary><strong>Other ways to install</strong></summary>
@@ -155,98 +157,53 @@ git clone https://github.com/soheilfallah/jobxhunter
 claude --plugin-dir ./jobxhunter
 ```
 
-**In Cowork (Claude Desktop).** jobxhunter installs as a plugin in Cowork too (same marketplace flow), and the whole pipeline runs. One difference: the bundled Reed / Adzuna / Firecrawl connectors are local stdio servers that don't run in Cowork's sandbox, so **sourcing** uses the remote Indeed / Dice connectors plus web search instead. Everything else (tailoring, the recruiter loop, tracking, interview prep, native `docx` / `xlsx` rendering) is identical. Full detail in [`SKILL.md`](SKILL.md) ("Running in Cowork").
+**In Cowork (Claude Desktop).** jobxhunter installs as a plugin in Cowork too. One difference: the bundled Reed, Adzuna and Firecrawl connectors are local processes that do not run in Cowork's sandbox, so searching uses the Indeed and Dice connectors plus web search, and Word files are made with the native `docx` skill. Everything else is the same.
 
 **As a plain skill** (for hosts with no plugin system):
 
 ```bash
 git clone https://github.com/soheilfallah/jobxhunter ~/.claude/skills/jobxhunter
-pip install python-docx openpyxl
 ```
 
-In this mode `${CLAUDE_PLUGIN_ROOT}` isn't set. Read it as the clone directory wherever a command mentions it.
+In this mode `${CLAUDE_PLUGIN_ROOT}` is not set. Read it as the clone directory wherever a file mentions it.
+
+**Other agent CLIs.** Point Codex, Gemini CLI, Copilot, OpenCode and others at [`AGENTS.md`](AGENTS.md).
 
 </details>
 
-### Requirements
+### Updating
 
-| Requirement | Needed for |
+```
+/plugin marketplace update soheil-jobxhunter
+/plugin update jobxhunter@soheil-jobxhunter
+```
+
+Your workspace is never touched by an update. Coming from 1.x? Read the 2.0.0 entry in [`CHANGELOG.md`](CHANGELOG.md): the workflow and the workspace layout both changed.
+
+---
+
+## Under the hood
+
+The engine is [`SKILL.md`](SKILL.md), a short workflow map. The depth lives in `references/` and loads only when a step needs it. Four agents do the work:
+
+| Agent | Job |
 |---|---|
-| **Claude Code** | everything, or any `SKILL.md`-compatible host |
-| **[`uv`](https://docs.astral.sh/uv/getting-started/installation/)** (≥ 0.4) | the Reed / Adzuna connectors only. They self-resolve deps on first launch from a committed lockfile |
-| **Node.js / `npx`** | the ⭐ Firecrawl connector only (`npx firecrawl-mcp`). Skip it and JD crawling falls back to WebSearch / WebFetch |
-| **Python 3** | CV rendering and the tracker, via `python-docx` + `openpyxl`. The scripts preflight and print the exact fix if missing |
+| `job-scout` | searches every board for one role |
+| `job-evaluator` | reads each advert in full against the role's master CV and decides |
+| `master-builder` | writes one master CV from your profile |
+| `cv-tailor` | fits one master CV to one advert |
 
-### Other agent CLIs
-
-Not on Claude Code? The tailoring core runs anywhere. Clone the repo and point Codex, Gemini CLI / Antigravity, Copilot, OpenCode, Qwen, or Kimi at [`AGENTS.md`](AGENTS.md), which drives the whole pipeline from `SKILL.md`. Live-board sourcing uses the MCP connectors on Claude Code and falls back to your agent's own web search elsewhere. Everything else is identical.
-
----
-
-## How it works
-
-```
-intake → source → tailor (ATS + independent recruiter loop) → cover letter → track & file → interview prep
-```
-
-The engine is `SKILL.md`, a lean workflow map; the deep knowledge lives in `references/` and loads only when a step needs it. Deterministic Python (`scripts/`) owns rendering and tracking, so results are reproducible rather than improvised. Full detail: [`SKILL.md`](SKILL.md).
-
-The **tailoring dial:** `L0` true-and-reframed · `L1` aggressive-but-true (default) · `L2` an "alternative-world" ideal candidate plus the gap-to-close (a roadmap, never submitted).
-
----
-
-## Dashboard
-
-`/jobxhunter:dashboard` turns your tracker into one self-contained HTML page: headline tiles, the apply → interview → offer funnel with conversion, status and category breakdowns, and your recruiter-score spread. It opens offline and makes **no network requests**, so your private workspace never leaks.
-
-<p align="center">
-  <img src="assets/brand/dashboard-preview.jpg" width="820" alt="The jobxhunter hunt dashboard: headline tiles, an apply-to-offer funnel with conversion rates, status and category breakdowns, and the recruiter-score distribution.">
-</p>
-
-<p align="center"><em>Example on sample data. Your real numbers stay on your machine.</em></p>
-
----
-
-## Connectors: bring your own keys
-
-No keys ship in this repo. Two kinds of connector, all optional; missing ones fall back to web search.
-
-| Connector | Type | Get it | Cost |
-|---|---|---|---|
-| **Indeed** (UK + Canada jobs, full JDs) | built-in claude.ai connector (OAuth) | [claude.ai → Settings → Connectors](https://claude.ai/settings/connectors) → Indeed → Connect | free |
-| **Adzuna** (UK + Canada jobs, salary data) | bundled MCP, your key | [developer.adzuna.com/signup](https://developer.adzuna.com/signup) → App ID + App Key | free tier |
-| **Firecrawl** (job-description crawling) | bundled MCP, your key | [firecrawl.dev](https://www.firecrawl.dev) → API Keys | free tier + paid |
-| **Reed** (UK jobs) | bundled MCP, your key | [reed.co.uk/developers/jobseeker](https://www.reed.co.uk/developers/jobseeker) | free |
-| **Dice** (US-leaning tech, optional) | built-in claude.ai connector (OAuth) | claude.ai → Settings → Connectors → Dice → Connect | free |
-
-Built-in connectors need nothing on your machine: once connected on your claude.ai account their tools appear in Claude Code and Cowork. Keys for the bundled MCPs are the plugin's user-config (`/plugin configure jobxhunter@soheil-jobxhunter`), so there's no manual JSON editing. The canonical per-connector table, verification steps, and what Claude should say to walk you through it: [`references/tools-and-connectors.md`](references/tools-and-connectors.md).
-
----
-
-## Roadmap
-
-Tracked here rather than half-built:
-
-- **ATS text-layer readback:** render the CV to PDF, extract what the parser actually sees, and confirm the must-have terms survived the round-trip.
-- **Ghost-job & legitimacy checks** in triage, so you don't tailor for a scam or a re-posted ghost role.
-- **Enforcement hooks:** a `PostToolUse` gate that runs the ATS-safety and de-slop checks automatically after each render. Deferred until reliably cross-platform; today those checks run inline.
-- **Eval regression harness**, **Gmail status sync**, **scheduled watch-list monitoring**, and an **offer / salary-negotiation** capstone.
-
----
+Each agent names its model by family alias (`sonnet`, `opus`), not by version, so the plugin moves to the newest model of each family without an edit. The one bundled script turns a markdown CV into an ATS-safe Word file.
 
 ## Privacy & supply chain
 
-- **Your data stays yours.** Your real profiles and filed applications live in a private workspace, gitignored and never committed. No keys ship in this repo.
-- **Connector installs stay pinned.** `uv` and `npx` read config from the working directory, so a stray `uv.toml` or `.npmrc` could otherwise redirect a connector's install to someone else's package index. All three connectors pin resolution to the real registries and to committed hash-verified lockfiles. A stale lock fails the connector closed rather than silently resolving something else.
-- **Responsibility sits with you.** jobxhunter is provided as-is, with no warranty (see the [licence](#licence)). You own the data you put in your own workspace, and each contributor owns what they submit. Contributions are reviewed for privacy and safety before anything is merged, but that review is diligence on my side, not a guarantee, and it does not shift responsibility for a contribution onto the maintainer.
-
----
+- **Your data stays yours.** Your profile, CVs and applications live in your private workspace. Nothing is sent anywhere except the search queries you ask for. No keys ship in this repo.
+- **Connector installs stay pinned.** `uv` and `npx` read config from the working directory, so a stray `uv.toml` or `.npmrc` could otherwise redirect a connector's install to someone else's package index. The connectors pin resolution to the real registries and to committed hash-verified lockfiles.
+- **Responsibility sits with you.** jobxhunter is provided as-is, with no warranty (see the [licence](#licence)). You review and send every application yourself.
 
 ## Contributing
 
-Issues and PRs welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md): the one rule every change has to hold (it works only from the master profile), how to test a real install, and the three things that silently break the plugin.
-
-See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
+Issues and PRs welcome. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md). See [`CHANGELOG.md`](CHANGELOG.md) for what's landed.
 
 ## Licence
 

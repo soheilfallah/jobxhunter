@@ -35,9 +35,18 @@ from pydantic import BaseModel, ConfigDict, Field
 # step) pick up credentials without exporting them by hand. override=False keeps
 # any real env vars — e.g. the .mcp.json `env` block — winning over the file.
 # Optional dependency: if python-dotenv isn't installed, fall back to env vars only.
+#
+# An unset plugin option reaches us as an EMPTY variable (or as the literal, unresolved
+# "${user_config...}" text), which counts as "set" and would block both files below.
+for _k in ("REED_API_KEY",):
+    if not os.environ.get(_k, "").strip() or os.environ[_k].startswith("${"):
+        os.environ.pop(_k, None)
 try:
     from dotenv import load_dotenv
 
+    # ~/.jobxhunter/.env first: it lives outside the plugin, so it survives plugin updates.
+    load_dotenv(dotenv_path=os.path.join(os.path.expanduser("~"), ".jobxhunter", ".env"),
+                override=False)
     # Anchor to THIS file's directory so the connector's own .env is found even when
     # launched as a plugin (cwd is wherever Claude Code runs, not the connector dir).
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"),

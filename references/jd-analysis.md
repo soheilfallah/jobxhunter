@@ -5,8 +5,9 @@ pipeline consumes. Be literal first, inferential second. Extract what the postin
 annotate what it WANTS. List only requirements the JD supports. UK conventions
 govern: right-to-work, SIA, university pay spines, £/year and £/hour, hybrid day-counts.
 
-Your output is the `JDAnalysis` object defined at the bottom. Fill every field or mark it
-`null`/`unknown` — the pipeline treats missing fields as "not stated", not "not required".
+Use this file as a way of reading an advert. What you write is set by whoever sent you here: an
+evaluator writes `evaluation.md` in its own layout, and seniority is never a reason to skip on its
+own. The `JDAnalysis` object at the bottom is a checklist of what to notice, not a format to emit.
 
 ---
 
@@ -14,8 +15,7 @@ Your output is the `JDAnalysis` object defined at the bottom. Fill every field o
 
 Before anything else, scan for HARD KNOCKOUTS. A knockout is a binary gate: fail it and the
 application is dead regardless of skill fit. If the candidate fails a knockout, the tailorer
-must surface it to the user, NOT paper over it. Recurring UK knockouts (from live JD capture —
-see `kb-build/live-jds/_index.md`, "Recurring structural observations"):
+must surface it to the user, NOT paper over it. Recurring UK knockouts (from live UK adverts):
 
 - **Right-to-work / visa / sponsorship.** "UK-based candidates only", "must have right to work
   in the UK", "no sponsorship available", "work authorisation required". Appears explicitly in
@@ -32,9 +32,9 @@ see `kb-build/live-jds/_index.md`, "Recurring structural observations"):
 - **"Immediate start" / notice period.** A gate if the candidate cannot start immediately.
 - **Required degree / field.** "Master's degree a MUST", "first or masters degree in a
   biological science", "degree in a quantitative field". Field-specific degree gates are common
-  in research and plant-science roles and are heavily weighted.
+  in research and science roles and are heavily weighted.
 - **"Covering letter required" / application questions.** A process knockout: the application is
-  rejected if the artefact is missing. Plant-science (Hypocotyl) and many public posts enforce
+  rejected if the artefact is missing. Research institutes and many public posts enforce
   this. Flag it so the tailorer produces the letter.
 - **Location / on-site mandate.** "On-site 5 days", "must live within commuting distance of X".
 
@@ -71,7 +71,7 @@ Cloud Platform in data; disambiguate from context).
 
 ## 2. Seniority / level signals
 
-Infer level; it drives which vocabulary tier the taxonomy reaches for (junior vs senior) and
+Infer level; it drives which vocabulary tier to use (junior vs senior) and
 whether the role is even eval-eligible for this junior-to-mid skill.
 
 - **Entry / junior:** "junior", "graduate", "trainee", "apprentice", "assistant", "entry-level",
@@ -116,7 +116,7 @@ Populate `salary` even when the JD omits a figure — infer a range from level +
   read a London figure as the national rate.
 - **Frontline floor:** SIA security pay sits at/just above National Living Wage (£12.71/hr from
   1 Apr 2026), typically £12.71-16/hr; casino/CP/specialist environments pay the top of that.
-- **Inference when unstated:** entry data/AI London ~£30-45k; mid ~£45-60k. Entry lab/plant-science
+- **Inference when unstated:** entry data/AI London ~£30-45k; mid ~£45-60k. Entry lab roles
   £24-30k or £15-23/hr. Research assistant (uni) £30-38k; associate £40-49k. Mark `salary.source:
   stated|inferred`.
 
@@ -135,7 +135,7 @@ After the literal pass, infer the unstated. This is where tailoring earns its ke
 - Named specific tool (Teradata, IAPTus, M365 Purview, Polars) = they have that stack in
   production and value exact-match evidence; a transferable equivalent is worth naming.
 - Enumerated duties (NHS/uni) = the CV should map bullet-to-duty; coverage breadth is scored.
-- Degree-field emphasis in research/plant roles = field match is a near-knockout; foreground the
+- Degree-field emphasis in research and science roles = field match is a near-knockout; foreground the
   matching degree early.
 - "Training provided" against a desirable = genuinely optional; do not let its absence block.
 
@@ -158,8 +158,8 @@ Execute in order:
 6. **Read tone** (Section 3) → `culture_signals`.
 7. **Resolve salary** (Section 4) → stated or inferred range with source flag.
 8. **Infer subtext** (Section 5) → `subtext[]`.
-9. **Family-map** the extracted terms against the matching keyword-taxonomy file
-   (`references/keyword-taxonomy/*`) to normalise synonyms and weight them.
+9. **Normalise synonyms** in the extracted terms: the same skill under two names is one
+   requirement, and the advert's own spelling is the one to carry into the CV.
 10. **Emit** the `JDAnalysis` object. Leave unknowns explicit.
 
 Downstream, the tailorer matches `must_haves`/`nice_to_haves` to REAL profile evidence only. If
@@ -173,7 +173,7 @@ the profile lacks a must-have, the tailorer flags a gap.
 {
   "title_raw": "Junior Machine Learning Engineer",
   "title_variants": ["Junior ML Engineer", "Machine Learning Engineer", "ML Engineer"],
-  "family": "ai-technician-junior-ai",
+  "family": "data/data-analyst",
   "level": "entry",
   "eval_eligible": true,
   "employer": "Information Tech Consultants",
@@ -209,9 +209,8 @@ the profile lacks a must-have, the tailorer flags a gap.
 ```
 
 Field rules:
-- `title_variants` — seed from the taxonomy file's TITLE VARIANTS; include the raw title.
-- `family` — one of: `plant-science-research`, `research-assistant-lead`,
-  `ai-technician-junior-ai`, `data-research-analysis`, `security-frontline`.
+- `title_variants` — the raw title plus the titles the same work goes by elsewhere.
+- `family` — the role folder under `master-cvs/` this advert belongs to.
 - `required_artifacts` — add `cover_letter` whenever a covering letter / application questions
   are demanded; add `portfolio`/`references` if requested.
 - `candidate_status` — set only when profile data is available; else `unknown`.
@@ -220,8 +219,7 @@ Field rules:
 ---
 
 ## Sources
-- Live UK JD capture (primary), 2026-07-06: `kb-build/live-jds/_index.md`, `ai-ml.md`,
-  `data-analysis.md`, `research-assistant.md`, `security-frontline.md`, `plant-science.md`.
+- Live UK job adverts across research, data, technical and front-line roles (primary), 2026.
 - GOV.UK — SIA licensing (licence types, clearance gates): https://www.gov.uk/guidance/find-out-if-you-need-an-sia-licence
 - UCEA / New JNCHES HE single pay spine 2026-27: https://www.ucea.ac.uk/our-work/collective-pay-negotiations-landing/2026-27-nj-pay-round/ ; UCU: https://www.ucu.org.uk/he_singlepayspine
 - O*NET OnLine occupation structure (levels, task/skill vocabulary): https://www.onetonline.org

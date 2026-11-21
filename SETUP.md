@@ -1,111 +1,102 @@
-# Set up jobxhunter — five steps, about five minutes
+# Set up jobxhunter: five steps
 
 Two readers use this file. **You**, following the steps. And **Claude Code**, when you paste this
-repo's link into it and say *"set me up"* — it follows the same steps, in the same order, and asks
-you one thing at a time.
+repo's link into it and say *"set me up"*: it follows the same steps in the same order and asks you
+one thing at a time.
 
 ## You: the five steps
 
-**1. Install** — paste these two lines into Claude Code:
+**1. Install.** Paste these into Claude Code:
 
 ```
 /plugin marketplace add soheilfallah/jobxhunter
 /plugin install jobxhunter@soheil-jobxhunter
 ```
 
-Claude Code will ask for API keys during install. **Leave them blank for now.** Everything works
-without them; you can add them in step 5.
+Claude Code asks for API keys during install. **Leave them blank.** Everything works without them
+and you can add them later.
 
-**2. Make your private workspace** — run:
+**2. Make your workspace.**
 
 ```
 /jobxhunter:setup
 ```
 
-It asks where to keep your files (say a folder like `~/jobxhunter`), creates it, and stops. Nothing
-in that folder is ever sent anywhere.
+It asks where to keep your files (a folder like `~/jobxhunter`), creates it, and tells you which job
+boards are connected right now. Nothing in that folder is ever sent anywhere.
 
-**3. Drop your history in.** Put your old CVs, a LinkedIn export, certificates, any notes — in any
-format, any language — into the `dump/` folder it just made. Messy is fine. Then say *"done"*.
-
-**4. Build your profile** — run:
+**3. Drop your history in, then build your profile.** Put your old CVs, a LinkedIn export,
+certificates and any notes into the `dump/` folder. Any format, any language, messy is fine. Then:
 
 ```
 /jobxhunter:intake
 ```
 
-It reads everything in `dump/` and writes one master profile of your real history. Read it once and
-correct anything wrong — CVs are built from your master profile, so an error here is an error on
-every CV.
+It writes one plain profile of your real history and agrees with you which roles you are going
+for. Read the profile once and correct anything wrong: every CV is built from it.
 
-**5. Use it.**
+**4. Build your master CVs.**
+
+```
+/jobxhunter:masters
+```
+
+One master CV per role. Open them and edit them until they sound like you. Every tailored CV starts
+from the master for its role, so time spent here pays back on every application.
+
+**5. Search, choose, tailor.**
 
 | You want | Run |
 |---|---|
-| a CV for one job you've found | `/jobxhunter:tailor` and paste the advert |
-| it to find and tailor many jobs for you | `/jobxhunter:hunt` |
+| to find jobs and have each one judged | `/jobxhunter:search` |
+| a CV for a job from the shortlist | `/jobxhunter:tailor` and name the job |
+| a CV for an advert you found yourself | `/jobxhunter:tailor` and paste the advert |
 | a cover letter | `/jobxhunter:cover-letter` |
-| interview prep from a filed application | `/jobxhunter:interview` |
+| interview prep | `/jobxhunter:interview` |
 
-Say *"I applied to this one"* and that application locks in the tracker.
+The first search is a big one and takes a while: it covers every title on every board. It ends at a
+shortlist in `jobs/<date>/SHORTLIST.md`. It does not write CVs. You read the shortlist, pick, and
+tailor those.
 
-**Optional — live job boards.** Without connectors, `hunt` uses web search and finds fewer roles.
-In order of value:
-
-| Connector | Type | Do this |
-|---|---|---|
-| **Indeed** (UK + Canada, full adverts) | built into claude.ai, **no key** | [claude.ai → Settings → Connectors](https://claude.ai/settings/connectors) → **Indeed** → **Connect**. Restart Claude Code. |
-| **[Adzuna](https://developer.adzuna.com/signup)** (UK + Canada, salaries) | free key | create an app, copy **App ID** + **App Key** |
-| **[Firecrawl](https://www.firecrawl.dev)** (full adverts on Workday/Greenhouse/Lever) | free key | dashboard → API Keys → copy the `fc-…` key |
-| **[Reed](https://www.reed.co.uk/developers/jobseeker)** (UK only) | free key | copy the Jobseeker API key |
-| **Dice** (US-leaning tech, optional) | built into claude.ai, **no key** | claude.ai → Settings → Connectors → **Dice** → **Connect** |
-
-Keys go in with `/plugin configure jobxhunter@soheil-jobxhunter` — or just tell Claude Code *"here's
-my Adzuna key"* and it registers it for you. Check what's live with
-`python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" doctor`. Full detail per connector:
-[`references/tools-and-connectors.md`](references/tools-and-connectors.md).
-
-That's it. Your history never leaves your machine; you review and send.
+**Optional: connect the job boards.** Without connectors the search uses web search and finds fewer
+roles. Your workspace has a `setup/` folder with a step-by-step guide for each one, in order of
+value: Indeed (no key), Adzuna, Firecrawl, Reed. Or say *"set up Adzuna"* and Claude walks you
+through it.
 
 ---
 
 ## Claude Code: if the user pasted this repo and asked to be set up
 
 Follow the five steps above **in order**, one at a time. Tell the user at the start: *"This is five
-steps and about five minutes. I'll do the plumbing; you'll paste two commands and drop some files
-in a folder."* Rules that matter more than speed:
+steps. I'll do the plumbing; you'll paste two commands and drop some files in a folder."*
 
-- **One question at a time.** The only question step 2 needs is *where the workspace should live*.
-  Suggest `~/jobxhunter` (or `Documents\jobxhunter` on Windows) and accept whatever they say.
-- **Never lead with API keys.** They are step 5 and optional. If the install prompts for them, tell
-  the user to leave them blank. A user who is asked for three sign-ups before seeing anything work
-  stops here — that is the feedback this file exists to answer.
-- **Never run `hunt` or `tailor` against an empty profile.** Step 4 must have produced a profile
-  the user has looked at.
-- **Verify each step before the next**, with a command, not an assumption.
-
-The procedure, with the check for each step:
+- **One question at a time.** Step 2 needs only one: where the workspace should live.
+- **Never lead with API keys.** They are optional and come after something has worked. If the
+  install prompts for them, tell the user to leave them blank.
+- **Verify each step before the next,** by looking, not by assuming.
+- **Never search or tailor against an empty profile or with no master CV.**
 
 | Step | Do | Verify |
 |---|---|---|
-| 1 Install | Run the two `/plugin` lines (or `claude plugin marketplace add …` / `claude plugin install …` from a shell). If it is already installed, say so and move on. | `/jobxhunter:setup` is listed as a command. If not: `/reload-plugins`, then check again. |
-| 2 Workspace | Ask where. Then `python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> --name <firstname>`. | The dir holds `profiles/`, `applications/`, `dump/`, `WORKSPACE-MAP.md`. Tell the user the path. |
-| 3 Dump | Say exactly: *"Put your old CVs, LinkedIn export, certificates and any notes into `<dir>/dump/` — any format — then tell me 'done'."* Wait. | `dump/` is non-empty. If they have nothing, one old CV is enough; if they have no CV at all, offer to build the profile from a conversation instead (`references/profile-intake.md`). |
-| 4 Profile | `/jobxhunter:intake` (the INTAKE routine in `SKILL.md`). | `profiles/<name>.md` exists. Show the user its path and the Experience headings, and ask them to correct anything wrong. Do not proceed until they have. |
-| 5 Hand over | Show the four-row table above. Ask once: *"Do you want live job boards now or later?"* If later, stop — nothing breaks. If now, run `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" doctor`, then follow the **Agent script** in `references/tools-and-connectors.md` for whatever is missing — Indeed first (claude.ai → Settings → Connectors → Indeed → Connect, no key), then Adzuna, Firecrawl, Reed; one connector per message, never blocking. Register keys with `/plugin configure …` or `claude plugin install … --config KEY=VALUE`, then re-run the doctor. | The doctor lists each key-based connector as set or not, prints the Indeed/Dice enable steps, and says which fallback covers a missing one. |
+| 1 Install | The two `/plugin` lines (or `claude plugin marketplace add ...` and `claude plugin install ...` from a shell). If already installed, say so and move on. | `/jobxhunter:setup` is listed. If not: `/reload-plugins`, then check again. |
+| 2 Workspace | Ask where. Copy `<plugin folder>/assets/workspace/` there without overwriting anything. Test each connector with a live call and write `setup/STATUS.md`. | The folder holds `dump/`, `setup/`, `master-cvs/TARGETS.md` and `jobs/tracker.md`. Tell the user the path and what is connected. |
+| 3 Profile | Say: *"Put your old CVs, LinkedIn export, certificates and notes into `<dir>/dump/`, then tell me 'done'."* Wait. Then run the INTAKE routine. | `profile.md` exists and the user has read it. `TARGETS.md` lists at least one role with its titles. |
+| 4 Masters | The MASTERS routine. | Each role in `TARGETS.md` has a `<First Last> - CV.md` and `.docx`. Tell the user to read and edit them. |
+| 5 Hand over | Show the table above. Ask once: *"Do you want to connect job boards now or later?"* If now, open the guides in `setup/` one at a time, Indeed first. | `setup/STATUS.md` reflects what really works. |
 
-Then stop. Do not start a hunt on the user's behalf; tell them which command to run next.
+Then stop. Do not start a search on the user's behalf; tell them the command.
 
-**If the user is not on Claude Code** (Codex, Gemini CLI, Copilot, …): the same steps apply, minus
-the slash commands — `${CLAUDE_PLUGIN_ROOT}` is the clone directory, and each `commands/*.md` file
-is the task in plain language. `AGENTS.md` has the map.
+**If the user is not on Claude Code** (Codex, Gemini CLI, Copilot): the same steps apply without
+the slash commands. The plugin folder is the clone directory, and each `commands/*.md` file is
+the task in plain language. `AGENTS.md` has the map.
 
 ## When something goes wrong
 
 | Symptom | Fix |
 |---|---|
-| `/jobxhunter:…` commands not found after install | `/reload-plugins`, or restart Claude Code. |
-| A script says `python-docx` or `openpyxl` is missing | `pip install python-docx openpyxl` — the script prints the exact line. |
-| "No workspace resolved" | Run from inside the workspace, or set `JOBXHUNTER_DIR=<dir>` so it is found from anywhere. |
-| A connector reports "credentials rejected" | The key is present but wrong. Re-copy it from the provider and run `/plugin configure jobxhunter@soheil-jobxhunter` again. |
-| Running in Cowork (Claude Desktop) | Everything works except the local Reed/Adzuna/Firecrawl connectors; sourcing uses the Indeed/Dice connectors and web search there. |
+| `/jobxhunter:...` commands not found after install | `/reload-plugins`, or restart Claude Code. |
+| A connector says the key is missing, but you set it | Restart Claude Code first. If it persists, put the key in `~/.jobxhunter/.env` (the connector's guide in `setup/` gives the exact lines). |
+| A connector says the credentials were rejected | The key is present but wrong. Copy it again from the provider. |
+| The Word file is not created | Install `uv` (<https://docs.astral.sh/uv/>). The renderer runs through it. |
+| The search found very little | Check `setup/STATUS.md` for failing boards, then widen the "same work, different name" titles in `master-cvs/TARGETS.md`. |
+| Running in Cowork (Claude Desktop) | The local Reed, Adzuna and Firecrawl connectors do not run there. The search uses Indeed, Dice and web search. |

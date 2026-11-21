@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>jobxhunter: fills the gap to the job, recommends the gaps to close</title>
-<meta name="description" content="jobxhunter searches live UK and Canada jobs, tailors an ATS-safe CV that fits each role from your real experience, and recommends the gaps to close. A Claude Code plugin, and any AGENTS.md CLI.">
+<meta name="description" content="jobxhunter searches live UK and Canada jobs, has agents judge every advert against your own master CV, then fits your CV to the roles you pick and names the gaps to close. A Claude Code plugin, and any AGENTS.md CLI.">
 <meta property="og:title" content="jobxhunter">
-<meta property="og:description" content="Searches live jobs, fits your CV to each role, and recommends the gaps to close. Source-available, free for your own job hunt.">
+<meta property="og:description" content="Searches live jobs, judges each one against your own CV, fits your CV to the roles you pick, and names the gaps to close. Source-available, free for your own job hunt.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>%F0%9F%8E%AF</text></svg>">
 <script>try{var t=localStorage.getItem('jx-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
@@ -142,7 +142,7 @@
     <div class="hero-grid">
       <div>
         <h1 class="fade d1">Fills the gap to the job. <span class="r">Recommends</span> the gaps to close.</h1>
-        <p class="lede fade d2">jobxhunter searches live UK and Canada job boards, tailors an ATS-safe CV that fits each role from your real experience, then names the exact gaps worth closing. It drafts. You review and send.</p>
+        <p class="lede fade d2">jobxhunter searches live UK and Canada job boards, has agents read every advert against your own master CV, and files the ones worth applying to with the gaps named. Then it fits your CV to the roles you pick. It drafts. You review and send.</p>
         <div class="cta-row fade d3">
           <a class="btn primary" href="https://github.com/soheilfallah/jobxhunter">Get it on GitHub</a>
           <a class="btn ghost" href="#search">See how it works</a>
@@ -152,13 +152,13 @@
       <div class="panel fade d4" aria-hidden="true">
         <div class="panel-top"></div>
         <div class="panel-body" id="panel">
-          <div class="ln"><span class="p-mut">$</span> <span class="p-acc">jobxhunter hunt</span> <span class="p-ink">--uk</span></div>
-          <div class="ln p-mut">&gt; sourced live roles &#183; Reed / Adzuna / Firecrawl</div>
-          <div class="ln p-mut">&gt; Backend Engineer, Northwind</div>
-          <div class="ln"><span class="p-ink">    Core stack (Python, Go) </span><span class="p-mut">...</span> FILLED</div>
-          <div class="ln"><span class="p-ink">    REST API design </span><span class="p-mut">...........</span> FILLED</div>
-          <div class="ln"><span class="p-ink">    Kubernetes in production </span><span class="p-mut">..</span> <span class="p-acc">GAP</span> <span class="p-mut">(recommend closing)</span></div>
-          <div class="ln p-mut">&gt; recruiter score <span class="p-ink">4.0 / 5</span> &#183; ATS-safe</div>
+          <div class="ln"><span class="p-mut">$</span> <span class="p-acc">jobxhunter search</span> <span class="p-ink">--uk</span></div>
+          <div class="ln p-mut">&gt; searched Indeed / Reed / Adzuna / employer boards</div>
+          <div class="ln p-mut">&gt; Backend Engineer, Northwind &#183; KEEP A</div>
+          <div class="ln"><span class="p-ink">    Core stack (Python, Go) </span><span class="p-mut">...</span> STRONG</div>
+          <div class="ln"><span class="p-ink">    REST API design </span><span class="p-mut">...........</span> STRONG</div>
+          <div class="ln"><span class="p-ink">    Kubernetes in production </span><span class="p-mut">..</span> <span class="p-acc">GAP</span> <span class="p-mut">(worth closing)</span></div>
+          <div class="ln p-mut">&gt; filed with advert, evaluation and notes</div>
         </div>
       </div>
     </div>
@@ -167,24 +167,24 @@
 
   <section id="search"><div class="wrap"><div class="sec-grid">
     <div><h2>The <span class="r">search</span> does the digging for you.</h2></div>
-    <div><p class="body">It pulls live roles straight from <strong>Reed, Adzuna and Firecrawl</strong>, and falls back to web search when a board has no API. It reads the <strong>full job description</strong> behind Workday, Greenhouse and Lever links, not just the teaser. Point it at a workspace and the daily hunt sources every new role, triages the fits, tailors them and files them while you get on with your day. UK and Canada work out of the box.</p>
+    <div><p class="body">It pulls live roles from <strong>Indeed, Reed, Adzuna</strong> and employers&#39; own job boards, and falls back to web search when a board has no API. The first search is a wide one, every title on every board. Then an agent reads the <strong>full job description</strong> of each advert against your own master CV and decides whether it is worth your application. Nothing is ranked by keyword counting. UK and Canada work out of the box.</p>
       <div class="chips"><span class="chip">Reed</span><span class="chip">Adzuna</span><span class="chip">Firecrawl</span><span class="chip">Indeed / Dice</span><span class="chip">web-search fallback</span></div>
     </div>
   </div></div></section>
 
   <section><div class="wrap"><div class="sec-grid">
     <div><h2>It fits you to the <span class="r">role</span>.</h2></div>
-    <div><p class="body">Every CV is built from one master profile of your real experience, and shaped for <strong>both the ATS parser and the six second recruiter scan</strong>. An independent recruiter agent scores each draft in its own context, seeing only the job and the finished CV, so the score is earned rather than self-graded. On one real UK role it came back <strong>4.0 out of 5</strong>, ATS clean.</p></div>
+    <div><p class="body">You get a <strong>master CV for each kind of role</strong> you are going for, built from your real experience and yours to edit. When you pick a job from the shortlist, jobxhunter carries the advert&#39;s own words into what your master already says, shaped for <strong>both the ATS parser and the quick recruiter scan</strong>. It does not restructure, pad or invent.</p></div>
   </div></div></section>
 
   <section><div class="wrap"><div class="sec-grid">
     <div><h2>Then it <span class="r">recommends</span> the gap to close.</h2></div>
-    <div><p class="body">Where your experience falls short of a role, jobxhunter does not paper over it. It shows you the missing piece, and in its <strong>alternative-world mode</strong> it sketches the ideal candidate for the job and the shortest path from you to them. A roadmap you can act on, never something it puts on your CV.</p></div>
+    <div><p class="body">Where your experience falls short of a role, jobxhunter does not paper over it. Every job it keeps comes with an evaluation that sets what the advert asks against what you can show, and <strong>names the gaps</strong>. That list is what to close next, and what to prepare for at interview. It never goes on your CV.</p></div>
   </div></div></section>
 
   <section><div class="wrap"><div class="sec-grid">
     <div><h2>The whole hunt, in <span class="r">one view</span>.</h2></div>
-    <div><p class="body">Every application lands in a locked tracker, and a local dashboard renders the funnel, the live status of each role and the spread of recruiter scores. Interview prep pulls the questions you are likely to face, with answers drawn from your real evidence.</p></div>
+    <div><p class="body">Every job gets its own dated folder with the advert, the evaluation, your notes and your CV. One tracker lists every advert seen and where each application stands, so you never see the same job twice. Interview prep pulls the questions you are likely to face, with answers drawn from your real evidence.</p></div>
   </div></div></section>
 
   <section><div class="wrap"><div class="sec-grid">
@@ -195,7 +195,7 @@
   </div></div></section>
 
   <section class="proof"><div class="wrap"><div class="sec-grid">
-    <blockquote><p class="q">Blind-scored on a real UK role, a tailored CV came back <b>4.0 / 5</b>, with four real gaps flagged to close.</p></blockquote>
+    <blockquote><p class="q">Search first, <b>choose</b>, then tailor. No CV is written for a job you would not apply to.</p></blockquote>
     <div><p class="attrib">Built by Soheil Fallah for his own search. It worked, he found a job in the UK. Then a friend in Canada asked to run their search, and a friend in Italy after that. So the market became a setting, and jobxhunter became something anyone can point at their own profile.</p></div>
   </div></div></section>
 

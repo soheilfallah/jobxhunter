@@ -13,26 +13,19 @@ __pycache__/
 .venv/
 venv/
 
-# Personal data feed — never publish real profiles or filed applications.
-# In this build these live OUTSIDE the skill (career/job-hunt/); if you nest a
-# data dir inside the skill, exclude it here:
-/profiles/
-/applications/
+# Personal data — never publish a real profile, CV or application.
+# A workspace belongs OUTSIDE this repo. If one is ever created at the repo root
+# by mistake, these keep it out of a commit. Anchored with a leading slash so the
+# templates under assets/workspace/ are NOT swept up.
+/profile.md
+/STATE.md
 /dump/
-# A live tracker at the repo ROOT only. Anchored with a leading slash so the
-# committed eval fixtures (evals/**/tracker.csv|xlsx) are NOT swept up — an
-# unanchored `tracker.csv` matched them, leaving contributors without the
-# fixtures CONTRIBUTING.md references.
-/tracker.xlsx
-/tracker.csv
+/setup/
+/master-cvs/
+/jobs/
 
 # Rendered documents (regenerated from markdown by scripts/render_docx.py).
-# Eval fixtures deliberately store CV.txt (text), never .docx, so this is safe.
 *.docx
-
-# Optional: exclude eval runs if they contain anything you don't want public.
-# The included eval uses a SAMPLE persona; keep or scrub before publishing.
-# evals/*-run/
 
 # Local Claude session notes — session-continuity docs, never published
 *.local.md

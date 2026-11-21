@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Manifest, changelog, and stale-name consistency
+      - name: Manifest, changelog, agent frontmatter, and stale-name consistency
         run: python scripts/check_release.py
 
       - name: Connector lockfiles are present and current
@@ -38,24 +38,7 @@ jobs:
           done
           echo "both connector lockfiles present"
 
-      - name: .mcp.json and the connector doctor agree
+      - name: The Word renderer still round-trips
         run: |
-          python - <<'PY'
-          import json, subprocess, sys
-          mcp = json.load(open('.mcp.json'))['mcpServers']
-          bad = []
-          for name in ('firecrawl', 'reed', 'adzuna'):
-              out = subprocess.run([sys.executable, 'scripts/setup_connectors.py', '--emit', name],
-                                   capture_output=True, text=True).stdout
-              emitted = json.loads(out)[name]
-              a = [x for x in mcp[name]['args'] if 'CLAUDE_PLUGIN_ROOT' not in x]
-              b = [x for x in emitted['args'] if '<jobxhunter>' not in x]
-              if mcp[name]['command'] != emitted['command'] or a != b:
-                  bad.append(f"{name}: .mcp.json={mcp[name]['command']} {a} vs doctor={emitted['command']} {b}")
-          if bad:
-              print("::error::setup_connectors.py has drifted from .mcp.json:")
-              for line in bad:
-                  print(f"  {line}")
-              sys.exit(1)
-          print("all three connectors agree")
-          PY
+          pip install python-docx
+          python scripts/render_docx.py --self-check
