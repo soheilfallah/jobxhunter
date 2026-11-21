@@ -1,28 +1,33 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["python-docx"]
+# ///
 """Render an ATS-safe .docx and a plain-text .txt from a structured markdown CV.
+
+The only script in the plugin: turning markdown into a Word file is mechanical, so
+it is code. Everything that needs judgement is done by agents.
 
 ATS-safe by construction: single column, no tables, no text boxes, no images,
 no headers/footers, standard fonts, conventional section headings. This is a
 hold-the-line invariant of the skill — do not add tables or columns here.
 
-Input markdown convention (produced by the tailorer):
+Input markdown convention (assets/cv-markdown-template.md):
 
     # Full Name
-    City, Country | +44 7… | email@x.com | linkedin.com/in/handle | github.com/handle
+    ## Target Role Title
+    City, Country | +44 7... | email@x.com | website.com
 
     ## Professional Summary
     A short paragraph.
 
     ## Experience
-    ### Job Title — Organisation, City
-    September 2023 – July 2024
+    ### Job Title | Sep 2023 - Jul 2024 | Organisation, City
     - Bullet with verb + task + method + outcome.
     - Another bullet.
 
     ## Education
-    ### MSc Something — University, City
-    2024
-    - Optional detail line.
+    ### MSc Something | University, City
 
     ## Skills
     - Category: item, item, item
@@ -39,8 +44,8 @@ Rules:
   other non-empty line -> normal paragraph (dates, summary text)
 
 Usage:
-  python render_docx.py --in cv.md --out-docx CV.docx --out-txt CV.txt
-  python render_docx.py --in cv.md --outdir <folder>   # writes CV.docx + CV.txt
+  uv run render_docx.py --in "Jane Doe - CV.md" --outdir <folder>   # writes the .docx + .txt
+  uv run render_docx.py --to-md "Jane Doe - CV.docx"                # Word edits back into the .md
 """
 import argparse
 import os
@@ -61,7 +66,8 @@ try:
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.oxml.ns import qn
 except ImportError:
-    sys.exit("python-docx is required: pip install python-docx")
+    sys.exit("python-docx is required. Run this with `uv run` (it installs it), "
+             "or: pip install python-docx")
 
 # Page size by market. UK-first default is A4; Canada/US use US Letter. python-docx
 # otherwise defaults to Letter, so UK renders needed this to be correct.
@@ -70,7 +76,7 @@ PAGE_SIZES = {
     "letter": (Inches(8.5), Inches(11)),  # Canada, US
 }
 
-BODY_FONT = "Calibri"      # widely parseable, standard
+BODY_FONT = "Arial"        # widely parseable, standard
 BODY_SIZE = 10.5
 NAME_SIZE = 20
 SECTION_SIZE = 12
@@ -168,7 +174,7 @@ def build_docx(tokens, out_path, page="a4"):
             r = p.add_run(_strip_md_inline(val))
             r.bold = True
             r.font.size = Pt(BODY_SIZE + 1)
-            r.font.color.rgb = ACCENT
+            r.font.color.rgb = DARK
             p.paragraph_format.space_after = Pt(2)
         elif kind == "contact":
             p = doc.add_paragraph()
@@ -207,7 +213,7 @@ def build_docx(tokens, out_path, page="a4"):
             r = p.add_run(_strip_md_inline(val))
             r.font.size = Pt(BODY_SIZE)
             r.italic = _looks_like_dates(val)
-            p.paragraph_format.space_after = Pt(2)
+            p.paragraph_format.space_after = Pt(6)   # a cover letter is all paragraphs
     doc.save(out_path)
 
 
@@ -247,9 +253,49 @@ def build_txt(tokens, out_path):
             prefix = "  - " if level == 1 else "    * "
             out.append(prefix + _strip_md_inline(text))
         elif kind == "para":
-            out.append(_strip_md_inline(val))
+            out += [_strip_md_inline(val), ""]     # blank line after: letters paste as paragraphs
+    text = re.sub(r"\n{3,}", "\n\n", "\n".join(out)).rstrip() + "\n"
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(out).rstrip() + "\n")
+        f.write(text)
+
+
+def docx_to_md(path):
+    """Read a .docx this script rendered (and a person then edited in Word) back into markdown.
+
+    shortcut: paragraphs are recognised by the formatting build_docx() gives them (font size,
+    bold, list style), so it only understands files this renderer made. Upgrade to real Word
+    styles if people start bringing their own documents.
+    """
+    def size(par):
+        for r in par.runs:
+            if r.text.strip() and r.font.size is not None:
+                return r.font.size.pt, bool(r.bold)
+        return None, False
+
+    out, head = [], 0          # head: 0 = before the name, 1 = in the name/title/contact block
+    for par in Document(path).paragraphs:
+        text = par.text.strip()
+        if not text:
+            continue
+        pt, bold = size(par)
+        style = (par.style.name or "") if par.style is not None else ""
+        if head == 0:
+            out.append("# " + text)
+            head = 1
+        elif head == 1 and bold and pt == BODY_SIZE + 1:
+            out.append("## " + text)
+        elif head == 1:
+            out += [text, ""]
+            head = 2
+        elif style.startswith("List Bullet"):
+            out.append(("  - " if style.endswith("2") else "- ") + text)
+        elif bold and pt == SECTION_SIZE:
+            out += ["", "## " + text.title()]
+        elif bold and pt == ENTRY_SIZE:
+            out += ["", "### " + text]
+        else:
+            out.append(text)
+    return "\n".join(out).strip() + "\n"
 
 
 def self_check():
@@ -277,6 +323,16 @@ def self_check():
         build_txt(toks, p)
         got = open(p, encoding="utf-8").read()
         assert "AI Lead" in got and "IELTS" not in got and "##" not in got, got
+        build_txt(parse("# A B\na@b.com\n\nDear team,\n\nFirst para.\n\nSecond para.\n"), p)
+        assert "First para.\n\nSecond para.\n" in open(p, encoding="utf-8").read()
+        # round trip: what we render, we can read back (the path a Word-edited master takes)
+        md2 = ("# Firstname Lastname\n## AI Lead\na@b.com | london\n\n"
+               "## Professional Summary\nShips things.\n\n"
+               "## Experience\n### Analyst | Jan 2022 - Present | Acme, Leeds\n"
+               "- Built it.\n  - Twice.\n")
+        dx = _os.path.join(d, "CV.docx")
+        build_docx(parse(md2), dx)
+        assert parse(docx_to_md(dx)) == parse(md2), docx_to_md(dx)
     finally:
         import shutil
         shutil.rmtree(d, ignore_errors=True)
@@ -289,6 +345,13 @@ def main():
     ap.add_argument("--self-check", action="store_true")
     if "--self-check" in sys.argv:
         return self_check()
+    if "--to-md" in sys.argv:
+        src = sys.argv[sys.argv.index("--to-md") + 1]
+        dst = os.path.splitext(src)[0] + ".md"
+        with open(dst, "w", encoding="utf-8") as f:
+            f.write(docx_to_md(src))
+        print(f"Wrote {dst}")
+        return 0
     ap.add_argument("--in", dest="infile", required=True)
     ap.add_argument("--out-docx")
     ap.add_argument("--out-txt")
@@ -319,6 +382,8 @@ def main():
 
     build_docx(tokens, out_docx, page=args.page)
     build_txt(tokens, out_txt)
+    # Touch the source last, so a .docx NEWER than its .md can only mean it was edited in Word.
+    os.utime(args.infile)
     print(f"Wrote {out_docx} ({args.page.upper()})")
     print(f"Wrote {out_txt}")
 

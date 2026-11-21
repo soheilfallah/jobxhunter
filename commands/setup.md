@@ -1,25 +1,25 @@
 ---
-description: Scaffold a jobxhunter workspace and help register the job connectors (bring-your-own-keys).
-argument-hint: "[optional: workspace directory to scaffold]"
+description: Create your private jobxhunter workspace, copy the connector tutorials into it, and test which job boards are connected.
+argument-hint: "[optional: folder to create the workspace in]"
 ---
 
-Use the **jobxhunter** skill's **SETUP** routine.
+Plugin folder: `${CLAUDE_PLUGIN_ROOT}`
 
-**Walk the user through `SETUP.md`, one step at a time, and verify each step before the next.**
-Keys are step 5 and optional — never lead with them, never block on them. Stop after the profile
-is built and the user has looked at it; tell them which command to run next.
+Before anything else, read `SKILL.md` in the plugin folder. Every `references/`, `assets/`, `agents/`
+and `scripts/` path below is inside the plugin folder; give that real path to every agent you dispatch.
 
-1. Resolve or create the workspace (`python "${CLAUDE_PLUGIN_ROOT}/scripts/_lib.py" resolve`; if none, scaffold with
-   `python "${CLAUDE_PLUGIN_ROOT}/scripts/init_workspace.py" --workspace <dir> [--name <who>]`). This drops the profile template,
-   the `dump/` folder, `WORKSPACE-MAP.md`, and the tracker, then stops.
-2. Onboard the connectors (only after the profile exists and the user said "now"): run
-   `python "${CLAUDE_PLUGIN_ROOT}/scripts/setup_connectors.py" doctor` for a report of what's set vs
-   missing, then follow the **Agent script** in `references/tools-and-connectors.md` for each missing
-   one, in its order: Indeed first (built into claude.ai — *Settings → Connectors → Indeed → Connect*,
-   no key), then Adzuna, Firecrawl, Reed, Dice optional. One connector per message; never block on a
-   key; say what still works without it. Keys are the plugin's user-config values (`/plugin configure`
-   or `claude plugin install … --config KEY=VALUE`) — no manual JSON editing. Re-run the doctor after
-   the user restarts Claude Code.
+Use the **jobxhunter** skill's **SETUP** routine (`SKILL.md`, "SETUP").
 
-Follow `SKILL.md` ("Command: SETUP") and `references/tools-and-connectors.md`. Stop after setup so
-nothing runs against an empty profile.
+1. Ask where the workspace should live if no path was given. One question; suggest `~/jobxhunter`.
+2. Copy `<plugin folder>/assets/workspace/` into it. Never overwrite a file that already exists.
+3. Test every connector with the one small live call listed in the workspace's `setup/README.md`,
+   and write what you found to `setup/STATUS.md`. A connector that answers with an auth error is not
+   connected, whatever the tool list says.
+4. Say which optional skills are present (`humanizer`, `docx`).
+5. Tell the user what works now and the next step: drop files in `dump/`, then `/jobxhunter:intake`.
+
+**Keys are optional and come last.** Everything works on web search without them. If the user wants
+a connector, open its tutorial in `setup/` and go one step per message. Never ask for three sign-ups
+before anything has worked.
+
+Stop after setup. Do not start an intake or a search on the user's behalf.

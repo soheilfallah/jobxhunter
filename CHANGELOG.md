@@ -4,6 +4,88 @@ All notable changes to this plugin are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-11-20
+
+A rewrite of how the plugin works. Agents now do everything that needs judgement, the search is
+separated from tailoring, and the workspace has a new layout. **Breaking:** commands, agents and
+the workspace all changed. A 1.x workspace is not read by 2.0; see "Moving from 1.x" below.
+
+### Changed
+
+- **Agent-based, not script-based.** The Python pipeline is gone (26 scripts: the sweep, harvest,
+  consolidate, rank, fit, triage, verify, validator, CV generators, tracker and the rest). Whether a
+  job fits is decided by an agent that has read the full advert and the role's master CV. Nothing
+  scores, ranks or filters a job or a CV with code. One script remains, `render_docx.py`, because
+  turning markdown into a Word file is mechanical.
+- **Search and tailoring are separate runs.** `/jobxhunter:hunt` is replaced by
+  `/jobxhunter:search`, which finds and evaluates only and ends at a ranked shortlist, and
+  `/jobxhunter:tailor`, which the user runs on the jobs they pick. A search never writes a CV.
+- **The first search is always massive.** Every title of every role on every working source, no
+  date limit, paging until nothing new comes back. Later searches are incremental from the last
+  search date.
+- **Master CVs, one per target role.** New `/jobxhunter:masters` builds a master CV for each role
+  from the profile alone, with no advert read, so no master leans towards one employer. The user
+  edits them; every tailored CV starts from the edited master of its role.
+- **Tailoring is a keyword pass over the master.** It rewords and reorders what the master already
+  holds so the advert's own terms appear where they are true. It does not restructure or add facts.
+  It may change which role leads, the space each role gets, the achievements shown, the summary,
+  the skills and the target title. It never changes dates, titles, employers, team sizes or
+  qualifications.
+- **New workspace layout.** `dump/`, `setup/`, `profile.md`, `master-cvs/<family>/<role>/` and
+  `jobs/<date>/<Company> - <Role>/` holding `job-description.md`, `evaluation.md`, `notes.md` and a
+  `CV/` folder. Every CV file is named `<First Last> - CV`. One plain `jobs/tracker.md` is both the
+  dedupe ledger and the application record.
+- **The profile is plain.** No schema, no rules block. Once the user has confirmed it, nothing
+  questions it or fact-checks it.
+- **Writing rules.** Short and straight to the point. No colon in the middle of a sentence. No fixed
+  bullet length or bullet count. Experience lines read `Job Title | Dates | Employer, City`;
+  education lines carry no dates. The summary opens with a years-and-domains line. Skills are short
+  phrases in context. LinkedIn appears only where it supports the role.
+- **Honest searches.** Every connector is tested with a live call before a search, a failing board
+  is named with its error, and an advert whose full text cannot be fetched is marked `unread`
+  instead of being judged from a snippet.
+
+### Added
+
+- **Four agents with model and effort set:** `job-scout` (sonnet, low), `job-evaluator` (sonnet,
+  medium), `master-builder` (opus, high), `cv-tailor` (opus, high). Models are named by family
+  alias, never by version, so they follow each Claude release without an edit.
+  `check_release.py` fails the build on a pinned model id or a missing `effort`.
+- **Connector tutorials in the workspace.** `/jobxhunter:setup` copies a step-by-step guide for
+  Indeed, Adzuna, Firecrawl and Reed into `setup/`, and writes `setup/STATUS.md` from real test
+  calls.
+- **`~/.jobxhunter/.env` as a key fallback.** The Reed and Adzuna connectors read it when the
+  plugin options arrive empty. It sits outside the plugin, so it survives every update.
+- **`render_docx.py --to-md`** reads a rendered Word file back into markdown, so a master CV edited
+  in Word is the one that gets tailored.
+- **`references/search.md`**, the search method, including the open vacancy feeds of the common
+  applicant-tracking systems for reading employers' own job boards.
+
+### Fixed
+
+- **An unset key no longer blocks the fallback.** An unconfigured plugin option reached the Reed and
+  Adzuna connectors as an empty variable, which counted as "set" and stopped the `.env` file being
+  read. Empty and unresolved values are now treated as unset.
+- **No `pip install` step.** The renderer declares its one dependency inline and runs through `uv`,
+  which the connectors already need.
+
+### Removed
+
+- The recruiter-critic loop, the L0/L1/L2 levels and the alternative-world CV, the coverage-matrix
+  gate, the pending-confirmation batch, the profile validator and its rules block, the profile
+  schema, the keyword-taxonomy files, the dashboard, the xlsx tracker and the daily bundle.
+- The sample profile, the eval run and the knowledge-base build notes. They were modelled on a real
+  history, and an example like that should not ship.
+
+### Moving from 1.x
+
+1. Update the plugin, then run `/jobxhunter:setup` and choose a **new** folder.
+2. Copy your old profile file into the new `dump/` and run `/jobxhunter:intake`.
+3. Run `/jobxhunter:masters`, edit the masters, then `/jobxhunter:search`.
+
+Your 1.x workspace is left untouched. Its tracker is not imported, so jobs you already applied to
+may appear again in the first search; mark them `Applied` in `jobs/tracker.md`.
+
 ## [1.6.1] - 2026-08-27
 
 ### Changed
@@ -269,7 +351,7 @@ grammar and a new pipeline stage.
   not catch. A check that silently stops matching is worse than no check, because the passing
   build reads as proof.
 - **The guard was still blind to forward-slash Windows paths, and too narrow besides.** A re-sweep
-  from fresh clones found `D:/soh-workspace/...` in `evals/2026-07-06-run/tracker.csv` — four
+  from fresh clones found an absolute local path in `evals/2026-07-06-run/tracker.csv` — four
   `folder_path` values in the public repo — which the backslash-only pattern could not see. The
   patterns now cover both separators, and a third general drive-letter rule catches any absolute
   Windows path rather than only the two workspace names that happened to be hardcoded. URLs are

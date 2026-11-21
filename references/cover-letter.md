@@ -78,11 +78,11 @@ for a cover letter, apply its **voice-preservation** register, not its neutral-C
   translate the ENERGY, not the words: "I genuinely want this one" — still them,
   just dressed for the occasion.
 
-## First-person and profile-grounded — no levels dial
+## First-person and profile-grounded
 
-- Cover letters are inherently first-person and signed by the user. The CV's
-  L0/L1/L2 framing dial does NOT apply here. There is exactly one register:
-  the user, saying only what the profile supports, in their own voice.
+- Cover letters are inherently first-person and signed by the user. There is
+  exactly one register: the user, saying only what the profile supports, in
+  their own voice.
 - Facts (skills, outcomes, numbers, employers, dates) come from the profile; no new
   achievements are minted for the letter. Motivation comes from the advert, public research and
   the user's own words where given; facts come from the profile. Never let one
@@ -204,8 +204,8 @@ Better patterns (seeded from the user's words or from verifiable research):
 1. Complete — no placeholder, no bracketed gap, no "draft" label; the employer is
    named in the body; the user's own words used where they gave any.
 2. Voice test passed — could the user have typed this? Humanizer pass done.
-3. Every factual claim traceable to the profile (`scripts/validate_profile.py`
-   exits 0 on the folder)?
+3. Every factual claim traceable to the profile, and stated the same way the
+   CV for this job states it?
 4. Named recipient hunted for; sincerely/faithfully matches the salutation?
 5. Under one page; 3–4 paragraphs; opener not on the banned list?
 6. UK spelling; "CV" not "resume"; exact job title appears once?

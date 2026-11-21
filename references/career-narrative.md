@@ -68,23 +68,23 @@ Rules:
 - **Hybrid** (recommended for most career-changers): reverse-chronological history kept intact and dated, but preceded by a strong summary plus a "Key skills" or "Selected relevant experience/projects" evidence block that carries the thread. The reader gets the story first and the verifiable timeline second. This is the format to reach for in this skill.
 - **Pure skills-based/functional** (skills sections replace the dated history): avoid. Recruiters read it as concealment — of gaps, of thin experience, of the timeline — and many ATS parse it badly. Use only when a chronological story is genuinely unusable (e.g. long absence from the workforce with rich untimed experience), and even then keep a minimal dated employment list at the bottom.
 
-## Worked example — plant-science researcher → data analyst
+## Worked example — lab researcher → data analyst
 
-History (all true): PhD + postdoc in plant science (7 yrs: field trials, R statistics, imaging data); 18 months as a data scientist at an agritech start-up (Python, dashboards; company folded); 2 years as operations coordinator at a food-logistics firm (scheduling, KPI reporting, process improvement). Target: **Data Analyst** at a mid-size commercial firm.
+History (all true): PhD + postdoc in experimental psychology (7 yrs: lab studies, R statistics, survey data); 18 months as a data scientist at a health-tech start-up (Python, dashboards; company folded); 2 years as operations coordinator at a logistics firm (scheduling, KPI reporting, process improvement). Target: **Data Analyst** at a mid-size commercial firm.
 
-**Red thread**: a decade of turning messy real-world data into decisions people act on — in the field, in a start-up, and on the warehouse floor. NOT "plant scientist who drifted"; the operations role is reframed as the place the analyses met reality, not a detour.
+**Red thread**: a decade of turning messy real-world data into decisions people act on — in the lab, in a start-up, and on the warehouse floor. NOT "psychologist who drifted"; the operations role is reframed as the place the analyses met reality, not a detour.
 
 **Layout**: hybrid. Summary → Key skills → Experience (reverse-chronological, all roles kept and dated) → Education. Education stays below experience — the PhD supports the story but must not lead it, or the CV reads as an academic's.
 
 **Bridging summary**:
-> Data analyst with 10 years' experience turning complex operational and experimental data into decisions, across research, agritech, and logistics. Built Python dashboards used daily by 25 growers; designed and analysed field trials (10k+ observations, R); as operations coordinator, built the KPI reporting that supported a 15% cut in delivery delays. Now seeking a full-time analyst role applying this end-to-end skill set commercially.
+> Data analyst with 10 years' experience turning complex operational and experimental data into decisions, across research, health tech, and logistics. Built Python dashboards used daily by 25 clinics; designed and analysed lab studies (10k+ observations, R); as operations coordinator, built the KPI reporting that supported a 15% cut in delivery delays. Now seeking a full-time analyst role applying this end-to-end skill set commercially.
 
 **Reframing per role** (facts unchanged, facet chosen for the thread):
 - *Operations coordinator* — foreground the analytical facet, compress the routine: "Built weekly KPI dashboards in Excel/Power BI tracking on-time delivery across 3 depots; analysis informed route changes that cut delays 15%." The scheduling grind gets one line.
-- *Agritech data scientist* — the strongest on-thread role: give it the most bullets despite being neither longest nor latest. Company folding is not explained on the CV (dates speak; cover letter or interview if asked): "Developed crop-yield prediction dashboards (Python/pandas/Plotly) used daily by 25 client growers."
-- *PhD/postdoc* — translate outputs into analyst language: "Designed and analysed multi-season field trials (10k+ observations; mixed-effects models in R)"; "Presented findings to non-specialist funders and industry partners"; "Published 6 peer-reviewed papers" compressed to one line — publication count is off-thread, the analysis behind it is on-thread. Drop: taxonomy expertise, conference organising, teaching load detail (unless the target values training).
+- *Health-tech data scientist* — the strongest on-thread role: give it the most bullets despite being neither longest nor latest. Company folding is not explained on the CV (dates speak; cover letter or interview if asked): "Developed appointment-demand dashboards (Python/pandas/Plotly) used daily by 25 client clinics."
+- *PhD/postdoc* — translate outputs into analyst language: "Designed and analysed multi-cohort studies (10k+ observations; mixed-effects models in R)"; "Presented findings to non-specialist funders and industry partners"; "Published 6 peer-reviewed papers" compressed to one line — publication count is off-thread, the analysis behind it is on-thread. Drop: theory-specific expertise, conference organising, teaching load detail (unless the target values training).
 
-**What this example is NOT allowed to do**: retitle the operations job "Operations Analyst"; blur the agritech dates to hide the company's collapse; claim SQL because analysts need it if the candidate never used it. The candidate's real history, aimed — that is the whole method.
+**What this example is NOT allowed to do**: retitle the operations job "Operations Analyst"; blur the start-up dates to hide the company's collapse; claim SQL because analysts need it if the candidate never used it. The candidate's real history, aimed — that is the whole method.
 
 ## Sources
 

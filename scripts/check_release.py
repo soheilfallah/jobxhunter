@@ -25,6 +25,8 @@ This check makes that failure loud instead of silent. It verifies:
      (GitHub Pages serves `docs/` from it), so a hardcoded home directory
      publishes a username and workspace layout — and is wrong as documentation
      anyway, since no reader shares that path.
+  8. Every agent names its model by family alias and states an effort. An alias
+     follows each Claude release by itself; a dated model id goes stale silently.
 
 Run it before opening a PR, and in CI:
 
@@ -56,6 +58,11 @@ SEMVER = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 #   JOBSMITH_DIR / JOBHUNT_DIR — documented backward-compatible env vars (old names)
 #   career/job-hunt/     — the user's private data workspace, not the plugin
 #   references/*.md      — "(UK-first)" doc titles describe real content
+# Agents name a model FAMILY, never a dated version, so they move to the newest model
+# of that family with every Claude release and nobody has to remember to edit them.
+AGENT_MODELS = {"sonnet", "opus", "haiku", "fable", "inherit"}
+AGENT_EFFORTS = {"low", "medium", "high", "xhigh", "max"}
+
 # The plugin was named job-hunt (pre-1.2), then jobsmith (1.2.x), then jobxhunter
 # (1.3+). Flag any dead reference to EITHER old name so an install command never 404s.
 STALE_PATTERNS = [
@@ -87,14 +94,14 @@ STALE_ALLOWED_FILES = ("CHANGELOG.md", "scripts/check_release.py")
 # JSON form went right past it. `[\\]+` is unambiguous under git grep's ERE.
 # _selftest_local_paths() proves this on every run; do not "simplify" it back.
 #
-# A Windows path also appears with FORWARD slashes (D:/soh-workspace/...) — git
+# A Windows path also appears with FORWARD slashes (D:/my-workspace/...) — git
 # and CSV exports both write them that way. Anchoring only on `Users` and
-# `soh-workspace` was too narrow as well: it recognises two magic words rather
+# `my-workspace` was too narrow as well: it recognises two magic words rather
 # than the actual rule, so any other machine or workspace name walked straight
 # through. The third pattern is therefore a general drive-letter rule, with
 # genuine placeholders excused via LOCAL_PATH_ALLOWED_SEGMENTS.
 LOCAL_PATH_PATTERNS = [
-    (r"[A-Za-z]:[\\/]+(Users|soh-workspace)", "absolute Windows path from a real machine"),
+    (r"[A-Za-z]:[\\/]+(Users|my-workspace)", "absolute Windows path from a real machine"),
     (r"/(Users|home)/[A-Za-z0-9._-]+/", "absolute POSIX home path from a real machine"),
     # The drive letter must stand alone. Without the leading boundary this also
     # matches every URL, because "https://x" ends in `s` + `:` + `//`.
@@ -106,10 +113,10 @@ LOCAL_PATH_PATTERNS = [
 # is worse than no pattern, because the passing build reads as "clean".
 LOCAL_PATH_MUST_MATCH = [
     r"sessions read and write files under `C:\Users\someone\Claude`",
-    r'      "args": ["D:\\soh-workspace\\projects\\thing\\server.py"],',
+    r'      "args": ["D:\\my-workspace\\projects\\thing\\server.py"],',
     r'      "command": "C:\\Users\\someone\\.venv\\Scripts\\python.exe",',
     r"script lives at /home/someone/projects/thing/server.py",
-    r"folder_path,D:/soh-workspace/projects/thing/evals/run,notes",
+    r"folder_path,D:/my-workspace/projects/thing/evals/run,notes",
     r"output went to E:/builds/nightly/artifact.zip",
 ]
 LOCAL_PATH_MUST_NOT_MATCH = [
@@ -195,10 +202,35 @@ def check():
                 "documenting it means users receive a change they cannot read about."
             )
 
+    problems.extend(_check_agents())
     problems.extend(_check_stale_name())
     problems.extend(_check_owner_consistency())
     problems.extend(_selftest_local_paths())
     problems.extend(_check_local_paths())
+    return problems
+
+
+def _check_agents():
+    """Every agent states a model alias and an effort in its frontmatter."""
+    problems = []
+    for path in sorted((ROOT / "agents").glob("*.md")):
+        m = re.match(r"---\r?\n(.*?)\r?\n---", path.read_text(encoding="utf-8"), re.S)
+        front = dict(
+            (k.strip(), v.strip()) for k, v in
+            (line.split(":", 1) for line in (m.group(1) if m else "").splitlines() if ":" in line)
+        )
+        model, effort = front.get("model", ""), front.get("effort", "")
+        if model not in AGENT_MODELS:
+            problems.append(
+                f"agents/{path.name}: model is {model or 'missing'!r}. Use a family alias "
+                f"({', '.join(sorted(AGENT_MODELS))}), never a dated model id — the alias "
+                "follows each new Claude release, a pinned id does not."
+            )
+        if effort not in AGENT_EFFORTS:
+            problems.append(
+                f"agents/{path.name}: effort is {effort or 'missing'!r}. State one of "
+                f"{', '.join(sorted(AGENT_EFFORTS))} so the step's cost is a decision."
+            )
     return problems
 
 

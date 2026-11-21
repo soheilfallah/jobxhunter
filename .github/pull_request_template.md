@@ -11,10 +11,12 @@
 ## Checklist
 
 - [ ] `python scripts/check_release.py` passes
+- [ ] `python scripts/render_docx.py --self-check` passes, if this touches the renderer
 - [ ] `claude plugin validate . --strict` passes
 - [ ] Tested with `claude --plugin-dir .` from a directory **outside** the repo, if this touches paths, connectors, or `SKILL.md`
 - [ ] `CHANGELOG.md` updated, if this affects users
-- [ ] No API keys, real profiles, or real personal details added
+- [ ] No API keys, real profiles, real personal details or machine paths added
+- [ ] No script that scores, ranks or filters jobs or CVs added: judgement belongs to the agents
 
 ## The truth rule
 

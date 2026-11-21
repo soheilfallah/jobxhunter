@@ -29,8 +29,8 @@ It never applies to industry CVs.
 - **First person sparingly, passive tolerated.** Academic convention accepts "measurements
   were taken"; the ban on passive voice in `writing-voice.md` is relaxed here, not lifted —
   prefer active where it reads naturally.
-- **Scope.** "Conceptual knowledge only" techniques (the profile's not-on-CV list) stay off
-  the page exactly as on industry CVs. An academic reader will probe them at interview.
+- **Scope.** Techniques the profile marks as conceptual knowledge only, or as not for the CV, stay
+  off the page exactly as on industry CVs. An academic reader will probe them at interview.
 
 ## Mechanics
 
